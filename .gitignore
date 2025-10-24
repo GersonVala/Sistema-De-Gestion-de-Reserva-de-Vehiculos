@@ -1,0 +1,9 @@
+# Carpetas compiladas/generadas
+target/
+
+# IDE (IntelliJ IDEA)
+.idea/
+out/
+
+# Maven wrapper (solo el JAR)
+.mvn/wrapper/maven-wrapper.jar
