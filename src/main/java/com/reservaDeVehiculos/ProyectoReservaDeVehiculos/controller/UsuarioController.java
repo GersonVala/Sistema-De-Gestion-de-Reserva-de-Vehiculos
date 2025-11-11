@@ -1,4 +1,3 @@
-}
 package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.controller;
 
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.dto.request.ActualizarUsuarioRequest;
@@ -60,4 +59,4 @@ public class UsuarioController {
         usuarioService.eliminar(id);
         return ResponseEntity.ok(new MensajeResponse("Usuario eliminado exitosamente", true));
     }
-
+}

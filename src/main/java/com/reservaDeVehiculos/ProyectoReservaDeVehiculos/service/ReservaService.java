@@ -65,7 +65,7 @@ public class ReservaService {
     }
 
     public List<ReservaResponse> obtenerPorUsuario(Integer idUsuario) {
-        return reservaRepository.findByUsuario_IdUsuario(idUsuario).stream()
+        return reservaRepository.findByUsuarioId(idUsuario).stream()
                 .map(this::convertirAResponse)
                 .collect(Collectors.toList());
     }

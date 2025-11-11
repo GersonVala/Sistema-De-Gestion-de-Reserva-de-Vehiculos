@@ -35,10 +35,11 @@
                                             <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Seleccioná una Oficina de alquiler</label>
                                             <select name="pickupOffice" class="form-select form-select-lg" style="border-radius: 8px; border: 2px solid #ddd;">
                                                 <option value="">-- Seleccionar oficina --</option>
-                                                <option>Buenos Aires - Centro</option>
-                                                <option>Buenos Aires - Aeropuerto</option>
-                                                <option>Córdoba</option>
-                                                <option>Mendoza</option>
+                                                <option th:each="sucursal : ${sucursales}" 
+                                                        th:value="${sucursal.id_sucursal}" 
+                                                        th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}">
+                                                    Sucursal
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -99,38 +100,25 @@
                     <p class="text-muted">Contamos con sucursales en los principales puntos de Argentina</p>
                 </div>
                 <div class="row g-4">
-                    <!-- Oficina 1 -->
-                    <div class="col-lg-4 col-md-6">
+                    <!-- Lista dinámica de sucursales desde el backend -->
+                    <div class="col-lg-4 col-md-6" th:each="sucursal, iterStat : ${sucursales}" th:if="${iterStat.index < 6}">
                         <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_ofi_buenos_aires.jpg}" alt="Buenos Aires" style="height: 220px; object-fit: cover;">
+                            <!-- Imágenes dinámicas basadas en ID de sucursal -->
+                            <img th:src="@{/img/img_ofi_buenos_aires.jpg}" th:if="${sucursal.id_sucursal == 1}" alt="Sucursal" style="height: 220px; object-fit: cover;">
+                            <img th:src="@{/img/img_ofi_cordoba.jpg}" th:if="${sucursal.id_sucursal == 2}" alt="Sucursal" style="height: 220px; object-fit: cover;">
+                            <img th:src="@{/img/img_ofi_mendoza.jpg}" th:if="${sucursal.id_sucursal == 3}" alt="Sucursal" style="height: 220px; object-fit: cover;">
+                            <img th:src="@{/img/img_ofi_buenos_aires.jpg}" th:unless="${sucursal.id_sucursal == 1 or sucursal.id_sucursal == 2 or sucursal.id_sucursal == 3}" alt="Sucursal" style="height: 220px; object-fit: cover;">
+                            
                             <div class="card-body">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-city me-2" style="color:var(--blue);"></i> Buenos Aires - CABA</h5>
-                                <p class="card-text text-muted small">Ubicación céntrica con fácil acceso y estacionamiento</p>
-                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Oficina 2 -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_ofi_cordoba.jpg}" alt="Córdoba" style="height: 220px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-city me-2" style="color:var(--blue);"></i> Córdoba</h5>
-                                <p class="card-text text-muted small">Sucursal en el corazón de la provincia de Córdoba</p>
-                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Oficina 3 -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_ofi_mendoza.jpg}" alt="Mendoza" style="height: 220px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-wine-bottle me-2" style="color:var(--red);"></i> Mendoza</h5>
-                                <p class="card-text text-muted small">Acceso perfecto a viñedos y regiones turísticas</p>
-                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;">
+                                    <i class="fa-solid fa-city me-2" style="color:var(--blue);"></i>
+                                    <span th:text="${'Sucursal #' + sucursal.id_sucursal}">Sucursal</span>
+                                </h5>
+                                <p class="card-text text-muted small">
+                                    <i class="fa-solid fa-phone me-1"></i>
+                                    <span th:text="${sucursal.telefono_sucursal}">Teléfono</span>
+                                </p>
+                                <a th:href="@{/reservas(sucursal=${sucursal.id_sucursal})}" class="btn btn-pink btn-sm fw-bold">Reservar</a>
                             </div>
                         </div>
                     </div>
@@ -146,38 +134,18 @@
                     <p class="text-muted" style="font-size: 18px;">Elige el transporte perfecto para tu viaje</p>
                 </div>
                 <div class="row g-5" style="justify-content: center;">
-                    <!-- Económicos -->
-                    <div class="col-lg-4 col-md-6">
+                    <!-- Lista dinámica de tipos de vehículos desde el backend -->
+                    <div class="col-lg-4 col-md-6" th:each="tipo : ${tiposDeVehiculos}">
                         <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_cat_auto.jpg}" alt="Económicos" style="height: 250px; object-fit: cover;">
+                            <!-- Imágenes dinámicas basadas en el nombre del tipo de vehículo -->
+                            <img th:src="@{/img/img_cat_auto.jpg}" th:if="${tipo.nombre_vehiculo.toLowerCase().contains('auto')}" alt="Auto" style="height: 250px; object-fit: cover;">
+                            <img th:src="@{/img/img_cat_camioneta.jpg}" th:if="${tipo.nombre_vehiculo.toLowerCase().contains('camioneta')}" alt="Camioneta" style="height: 250px; object-fit: cover;">
+                            <img th:src="@{/img/img_cat_moto.jpg}" th:if="${tipo.nombre_vehiculo.toLowerCase().contains('moto')}" alt="Moto" style="height: 250px; object-fit: cover;">
+                            
                             <div class="card-body" style="padding: 30px;">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">AUTOS</h5>
-                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Ideales para la ciudad, con excelente rendimiento</p>
-                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Medianos -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_cat_camioneta.jpg}" alt="Medianos" style="height: 250px; object-fit: cover;">
-                            <div class="card-body" style="padding: 30px;">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">CAMIONETAS</h5>
-                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Espacio y confort para viajes a larga distancia.</p>
-                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SUV -->
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
-                            <img th:src="@{/img/img_cat_moto.jpg}" alt="SUV" style="height: 250px; object-fit: cover;">
-                            <div class="card-body" style="padding: 30px;">
-                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">MOTOS</h5>
-                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Rapidez, eficiencia a todos lados.</p>
-                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
+                                <h5 class="card-title fw-bold text-uppercase" style="color: #1a1a2e; font-size: 24px;" th:text="${tipo.nombre_vehiculo}">Tipo de Vehículo</h5>
+                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;" th:text="${tipo.descripcion_vehiculo}">Descripción del vehículo</p>
+                                <a th:href="@{/reservas(tipoVehiculo=${tipo.id_tipo_vehiculo})}" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
                             </div>
                         </div>
                     </div>

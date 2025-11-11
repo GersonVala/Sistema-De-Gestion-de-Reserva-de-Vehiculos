@@ -1,9 +1,3 @@
-    private String email_usuario;
-    private String dni_usuario;
-    private String telefono_usuario;
-    private DireccionResponse direccion;
-    private List<String> roles;
-}
 package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.dto.response;
 
 import lombok.AllArgsConstructor;
@@ -22,4 +16,9 @@ public class UsuarioResponse {
     private Integer id_usuario;
     private String nombre_usuario;
     private String apellido_usuario;
-
+    private String email_usuario;
+    private String dni_usuario;
+    private String telefono_usuario;
+    private DireccionResponse direccion;
+    private List<String> roles;
+}

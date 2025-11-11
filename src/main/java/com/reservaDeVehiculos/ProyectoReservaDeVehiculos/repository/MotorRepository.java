@@ -4,6 +4,8 @@ import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.Motor;
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.TipoCombustible;
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.TipoMotor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public interface MotorRepository extends JpaRepository<Motor, Integer> {
     List<Motor> findByCilindrada(double cilindrada);
 
     // Buscar motores por caballos de fuerza
-    List<Motor> findByCaballosDeFuerza(Integer caballos_de_fuerza);
+    @Query("SELECT m FROM Motor m WHERE m.caballos_de_fuerza = :caballos")
+    List<Motor> findByCaballosDeFuerza(@Param("caballos") Integer caballos);
 }
 
