@@ -1,0 +1,8 @@
+package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.exception;
+
+public class VehiculoNoDisponibleException extends RuntimeException {
+    public VehiculoNoDisponibleException(String mensaje) {
+        super(mensaje);
+    }
+}
+

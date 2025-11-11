@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum EstadoReservaEnum {
 
-    ENTREGADO("Entregado"),
-    RESERVADO("Reservado"),
-    DISPONIBLE("Disponible");
+    PENDIENTE("Pendiente"),
+    CONFIRMADA("Confirmada"),
+    CANCELADA("Cancelada"),
+    COMPLETADA("Completada");
 
     private final String descripcion;
 }

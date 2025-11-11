@@ -32,7 +32,7 @@ public class VehiculosEntity {
     @Column(name = "estado", nullable = false, length = 30)
     private EstadoVehiculo estado;
 
-    @Column(name = "cant_puertas", nullable = false)
+    @Column(name = "cant_puertas")
     private Integer cant_puertas;
 
     // Relación Many-to-One: Muchos vehículos pueden tener el mismo motor
@@ -44,4 +44,9 @@ public class VehiculosEntity {
     @ManyToOne
     @JoinColumn(name = "id_tipo_vehiculo", referencedColumnName = "id_tipo_vehiculo", nullable = false)
     private TipoDeVehiculo tipoDeVehiculo;
+
+    // Relación Many-to-One: Muchos vehículos pertenecen a una sucursal
+    @ManyToOne
+    @JoinColumn(name = "id_sucursal", referencedColumnName = "id_sucursal", nullable = false)
+    private SucursalesEntity sucursal;
 }
