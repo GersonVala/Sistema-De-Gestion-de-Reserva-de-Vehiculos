@@ -3,6 +3,8 @@ package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.repository;
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.EstadoVehiculo;
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.VehiculosEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,7 +26,8 @@ public interface VehiculoRepository extends JpaRepository<VehiculosEntity, Integ
     List<VehiculosEntity> findByModelo(String modelo);
 
     // Buscar vehículos por tipo
-    List<VehiculosEntity> findByTipoDeVehiculo_IdTipoVehiculo(Integer id_tipo_vehiculo);
+    @Query("SELECT v FROM VehiculosEntity v WHERE v.tipoDeVehiculo.id_tipo_vehiculo = :idTipo")
+    List<VehiculosEntity> findByTipoVehiculo(@Param("idTipo") Integer idTipo);
 
     // Verificar si existe un vehículo con esa patente
     boolean existsByPatente(String patente);

@@ -48,7 +48,7 @@ public class DireccionService {
     }
 
     public List<DireccionResponse> obtenerPorCiudad(Integer idCiudad) {
-        return direccionRepository.findByCiudades_IdCiudad(idCiudad).stream()
+        return direccionRepository.findByCiudadId(idCiudad).stream()
                 .map(this::convertirAResponse)
                 .collect(Collectors.toList());
     }

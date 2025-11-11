@@ -31,12 +31,12 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponse registrarUsuario(RegistroUsuarioRequest request) {
         // Validar que no exista el email
-        if (usuarioRepository.existsByEmailUsuario(request.getEmail_usuario())) {
+        if (usuarioRepository.existsByEmail(request.getEmail_usuario())) {
             throw new RecursoDuplicadoException("El email ya está registrado");
         }
 
         // Validar que no exista el DNI
-        if (usuarioRepository.existsByDniUsuario(request.getDni_usuario())) {
+        if (usuarioRepository.existsByDni(request.getDni_usuario())) {
             throw new RecursoDuplicadoException("El DNI ya está registrado");
         }
 
@@ -72,7 +72,7 @@ public class UsuarioService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        UsuariosEntity usuario = usuarioRepository.findByEmailUsuario(request.getEmail_usuario())
+        UsuariosEntity usuario = usuarioRepository.findByEmail(request.getEmail_usuario())
                 .orElseThrow(() -> new CredencialesInvalidasException("Credenciales inválidas"));
 
         if (!passwordEncoder.matches(request.getContrasena(), usuario.getContrasena())) {
@@ -115,7 +115,7 @@ public class UsuarioService {
         }
         if (request.getEmail_usuario() != null) {
             if (!request.getEmail_usuario().equals(usuario.getEmail_usuario())
-                && usuarioRepository.existsByEmailUsuario(request.getEmail_usuario())) {
+                && usuarioRepository.existsByEmail(request.getEmail_usuario())) {
                 throw new RecursoDuplicadoException("El email ya está registrado");
             }
             usuario.setEmail_usuario(request.getEmail_usuario());
@@ -142,7 +142,7 @@ public class UsuarioService {
     }
 
     private UsuarioResponse convertirAResponse(UsuariosEntity usuario) {
-        List<String> roles = usuarioRolRepository.findByUsuario_IdUsuario(usuario.getId_usuario())
+        List<String> roles = usuarioRolRepository.findByUsuarioId(usuario.getId_usuario())
                 .stream()
                 .map(ur -> ur.getRol().getNombre_rol())
                 .collect(Collectors.toList());

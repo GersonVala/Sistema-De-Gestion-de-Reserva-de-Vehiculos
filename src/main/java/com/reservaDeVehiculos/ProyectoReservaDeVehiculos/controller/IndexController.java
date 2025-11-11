@@ -1,11 +1,10 @@
 package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // Verifica este import
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.ArrayList; // Verifica este import
 
 // Objeto simple para el formulario (puede ser una clase real después)
 class BusquedaFormPlaceholder {} 
@@ -13,16 +12,17 @@ class BusquedaFormPlaceholder {}
 @Controller
 public class IndexController {
 
+    // NOTA: Las rutas "/" y "/reservation" ahora son manejadas por WebViewController
+    // que proporciona datos dinámicos desde el backend
+
+    /*
     @GetMapping("/") 
     public String index(Model model) { 
-        
         // Adjuntamos un objeto REAL (aunque vacío) para el formulario
         model.addAttribute("busquedaForm", new BusquedaFormPlaceholder()); 
-        
         // Adjuntamos las listas vacías
         model.addAttribute("listaOficinas", new ArrayList<>()); 
         model.addAttribute("listaCategorias", new ArrayList<>()); 
-
         return "index";
     }
 
@@ -30,6 +30,7 @@ public class IndexController {
     public String showReservation(Model model) {
         return "reservation";
     }
+    */
 
     @GetMapping("/login")
     public String showLogin() {

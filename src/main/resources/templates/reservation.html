@@ -364,10 +364,11 @@
                                 <label>Oficina de Retiro</label>
                                 <select class="form-select" id="pickupOffice">
                                     <option value="">-- Seleccionar oficina --</option>
-                                    <option value="ba-centro">Buenos Aires - Centro</option>
-                                    <option value="ba-aeroparque">Buenos Aires - Aeroparque</option>
-                                    <option value="cordoba">Córdoba</option>
-                                    <option value="mendoza">Mendoza</option>
+                                    <option th:each="sucursal : ${sucursales}" 
+                                            th:value="${sucursal.id_sucursal}" 
+                                            th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}">
+                                        Sucursal
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -420,62 +421,53 @@
                     <h3><i class="fa-solid fa-car me-2" style="color: var(--primary-orange);"></i>Selecciona tu Vehículo</h3>
                     
                     <div class="row g-4 mb-4">
-                        <!-- Auto 1 -->
-                        <div class="col-lg-6">
-                            <div class="vehicle-card" onclick="selectVehicle(this, 'toyota-corolla', 'Toyota Corolla 2024')">
-                                <img th:src="@{/img/img_cat_auto.jpg}" alt="Toyota Corolla">
+                        <!-- Lista dinámica de vehículos desde el backend -->
+                        <div class="col-lg-6" th:each="vehiculo : ${vehiculos}">
+                            <div class="vehicle-card" 
+                                 th:onclick="'selectVehicle(this, \'' + ${vehiculo.id_vehiculo} + '\', \'' + ${vehiculo.marca + ' ' + vehiculo.modelo} + '\')'"
+                                 th:data-vehiculo-id="${vehiculo.id_vehiculo}"
+                                 th:data-vehiculo-nombre="${vehiculo.marca + ' ' + vehiculo.modelo}"
+                                 th:data-vehiculo-estado="${vehiculo.estado}">
+                                
+                                <!-- Imagen dinámica según tipo de vehículo -->
+                                <img th:src="@{/img/img_cat_auto.jpg}" 
+                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('auto')}" 
+                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
+                                <img th:src="@{/img/img_cat_camioneta.jpg}" 
+                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('camioneta')}" 
+                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
+                                <img th:src="@{/img/img_cat_moto.jpg}" 
+                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('moto')}" 
+                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
+                                
                                 <div class="vehicle-info">
-                                    <div class="vehicle-name">Toyota Corolla</div>
+                                    <div class="vehicle-name" th:text="${vehiculo.marca + ' ' + vehiculo.modelo}">Vehículo</div>
                                     <div class="vehicle-details">
-                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
-                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
+                                        <span th:if="${vehiculo.cant_puertas != null}">
+                                            <i class="fa-solid fa-door-closed me-2"></i>
+                                            <span th:text="${vehiculo.cant_puertas + ' puertas'}"></span>
+                                        </span>
+                                        <span class="ms-3" th:if="${vehiculo.tipoCombustible != null}">
+                                            <i class="fa-solid fa-droplet me-2"></i>
+                                            <span th:text="${vehiculo.tipoCombustible}"></span>
+                                        </span>
                                     </div>
-                                    <div class="vehicle-price">$45.000/día</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Auto 2 -->
-                        <div class="col-lg-6">
-                            <div class="vehicle-card" onclick="selectVehicle(this, 'ford-focus', 'Ford Focus 2024')">
-                                <img th:src="@{/img/img_cat_auto.jpg}" alt="Ford Focus">
-                                <div class="vehicle-info">
-                                    <div class="vehicle-name">Ford Focus</div>
-                                    <div class="vehicle-details">
-                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
-                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
+                                    <div class="vehicle-details mt-2">
+                                        <span th:if="${vehiculo.tipoMotor != null}">
+                                            <i class="fa-solid fa-gears me-2"></i>
+                                            <span th:text="${vehiculo.tipoMotor}"></span>
+                                        </span>
+                                        <span class="ms-3" th:if="${vehiculo.color != null}">
+                                            <i class="fa-solid fa-palette me-2"></i>
+                                            <span th:text="${vehiculo.color}"></span>
+                                        </span>
                                     </div>
-                                    <div class="vehicle-price">$48.000/día</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Camioneta 1 -->
-                        <div class="col-lg-6">
-                            <div class="vehicle-card" onclick="selectVehicle(this, 'ford-ranger', 'Ford Ranger 2024')">
-                                <img th:src="@{/img/img_cat_camioneta.jpg}" alt="Ford Ranger">
-                                <div class="vehicle-info">
-                                    <div class="vehicle-name">Ford Ranger</div>
-                                    <div class="vehicle-details">
-                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
-                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Diésel
+                                    <div class="vehicle-price">
+                                        <span class="badge" 
+                                              th:classappend="${vehiculo.estado.toString() == 'DISPONIBLE'} ? 'bg-success' : 'bg-danger'"
+                                              th:text="${vehiculo.estado}">
+                                        </span>
                                     </div>
-                                    <div class="vehicle-price">$65.000/día</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Moto 1 -->
-                        <div class="col-lg-6">
-                            <div class="vehicle-card" onclick="selectVehicle(this, 'honda-cb500', 'Honda CB500 2024')">
-                                <img th:src="@{/img/img_cat_moto.jpg}" alt="Honda CB500">
-                                <div class="vehicle-info">
-                                    <div class="vehicle-name">Honda CB500</div>
-                                    <div class="vehicle-details">
-                                        <i class="fa-solid fa-users me-2"></i>2 pasajeros
-                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
-                                    </div>
-                                    <div class="vehicle-price">$25.000/día</div>
                                 </div>
                             </div>
                         </div>

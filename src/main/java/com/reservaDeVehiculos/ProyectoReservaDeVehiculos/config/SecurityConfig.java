@@ -22,9 +22,31 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Permitir acceso público a recursos estáticos
+                .requestMatchers("/css/**", "/js/**", "/img/**", "/vendor/**", "/favicon.ico").permitAll()
+                // Permitir acceso público a las vistas principales (home y reservas)
+                .requestMatchers("/", "/reservas", "/oficinas").permitAll()
+                // Permitir acceso a la consola H2 (solo para desarrollo)
+                .requestMatchers("/h2-console/**").permitAll()
+                // Permitir acceso público a la API REST
                 .requestMatchers("/api/**").permitAll()
+                // Permitir acceso público al login y registro
+                .requestMatchers("/login", "/register", "/logout").permitAll()
+                // Todas las demás rutas requieren autenticación (dashboard, admin, etc.)
                 .anyRequest().authenticated()
-            );
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
+            )
+            // Deshabilitar frame options para permitir H2 Console
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
