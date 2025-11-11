@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Iniciar Sesión - TGSMAX CARS</title>
+    <style>
+        :root{--red:#e74c3c;--blue:#0b5ed7;--muted:#6c757d;--white:#ffffff}
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: var(--blue);
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-header .brand-text {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .login-header .brand-text span:first-child {
+            color: var(--red);
+        }
+
+        .login-header .brand-text span:last-child {
+            color: var(--blue);
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--red) 0%, #c0392b 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.2);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-footer a {
+            color: var(--red);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            color: #999;
+            margin: 25px 0;
+            font-size: 13px;
+        }
+
+        .divider::before {
+            content: '';
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .divider::after {
+            content: '';
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            border-color: var(--red);
+            background: #fafafa;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--red);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 25px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="brand-text">
+                    <span>TGSMAX</span> <span>CARS</span>
+                </div>
+                <p>Accede a tu cuenta para continuar</p>
+            </div>
+
+            <!-- Formulario de login -->
+            <form method="post" th:action="@{/login}" class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fa-solid fa-envelope"></i> Email o Usuario
+                    </label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="tu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fa-solid fa-lock"></i> Contraseña
+                    </label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-group d-flex justify-content-between align-items-center">
+                    <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="remember" id="remember">
+                        Recuérdame
+                    </label>
+                    <a href="/forgot-password" style="font-size: 14px; color: var(--red); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-sign-in-alt me-2"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="divider">O continúa con</div>
+
+            <!-- Social login (opcional) -->
+            <div class="social-login">
+                <button type="button" class="social-btn" title="Google">
+                    <i class="fab fa-google" style="color: #EA4335;"></i>
+                </button>
+                <button type="button" class="social-btn" title="Facebook">
+                    <i class="fab fa-facebook" style="color: #1877F2;"></i>
+                </button>
+                <button type="button" class="social-btn" title="Apple">
+                    <i class="fab fa-apple" style="color: #000;"></i>
+                </button>
+            </div>
+
+            <!-- Registro -->
+            <div class="form-footer">
+                ¿No tienes cuenta?
+                <a href="/register">Regístrate aquí</a>
+            </div>
+
+            <!-- Volver a home -->
+            <div class="back-home">
+                <a href="/">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

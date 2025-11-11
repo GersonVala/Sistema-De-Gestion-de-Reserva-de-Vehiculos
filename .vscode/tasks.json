@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Spring Boot App",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "-jar",
+        "target\\ProyectoReservaDeVehiculos-0.0.1-SNAPSHOT.jar"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "isBackground": false
+    },
+    {
+      "label": "Build Project",
+      "type": "shell",
+      "command": ".\\mvnw.cmd",
+      "args": [
+        "clean",
+        "package",
+        "-DskipTests"
+      ],
+      "group": {
+        "kind": "build"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "isBackground": false
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img" aria-label="TGSMAX CARS logo">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ff9a3a"/>
+      <stop offset="100%" stop-color="#ff7a00"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="64" rx="8" fill="none" />
+  <!-- Simple car icon -->
+  <g transform="translate(8,8)">
+    <path d="M8 28 L12 20 H56 L60 28 L64 28 L64 36 L56 36 L52 32 L16 32 L12 36 L4 36 L4 28 Z" fill="#0b5ed7" opacity="0.95" />
+    <circle cx="16" cy="36" r="4" fill="#1a1a1a" />
+    <circle cx="52" cy="36" r="4" fill="#1a1a1a" />
+  </g>
+  <!-- Text -->
+  <g transform="translate(84,20)">
+    <text x="0" y="0" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="20" fill="#1a1a2e"> 
+      <tspan x="0" dy="0"> </tspan>
+    </text>
+    <text x="0" y="22" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="22" fill="#1a1a2e">
+      <tspan fill="#ff7a00">TGSMAX</tspan>
+      <tspan x="106" fill="#0b5ed7"> CARS</tspan>
+    </text>
+  </g>
+</svg>

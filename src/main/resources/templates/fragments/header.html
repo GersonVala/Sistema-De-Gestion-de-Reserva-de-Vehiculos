@@ -1,0 +1,29 @@
+<header th:fragment="main-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="border-bottom: 2px solid #f0f0f0;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-0" href="/" style="text-decoration: none;">
+                <!-- Logo sin texto - 150px -->
+                <img th:src="@{/img/logo-sin-texto.png}" src="/img/logo-sin-texto.png" alt="TGSMAX CARS" style="height: 135px; width: auto; object-fit: contain;">
+                <!-- Texto TGSMAX CARS - Muy pegado al logo -->
+                <span style="font-weight: 700; color: #026faa; font-size: 35px; letter-spacing: 1px; line-height: 1; margin-left: -55px;">TGSMAX <span style="color: #ff7a00;">CARS</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#autos">Vehículos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#oficinas">Oficinas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+                </ul>
+                <div class="d-flex ms-3">
+                    <!-- Trigger modal -->
+                    <button type="button" class="btn btn-outline-pink me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</button>
+                    <a href="/reservation" class="btn btn-primary-brand" style="color: white; border: none;">Reservar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

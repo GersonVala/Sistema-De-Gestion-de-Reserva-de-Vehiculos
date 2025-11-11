@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Registro - TGSMAX CARS</title>
+</head>
+
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <main class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h3 class="mb-4 fw-bold">Crear cuenta</h3>
+
+                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                            <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+
+                            <form th:action="@{/register}" method="post">
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">Nombre completo</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo electrónico</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="tu@correo.com" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="********" required>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary-brand btn-lg">Crear cuenta</button>
+                                </div>
+                            </form>
+
+                            <div class="text-center mt-3">
+                                <small>¿Ya tenés cuenta? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="fw-bold" style="color: var(--red);">Iniciar sesión</a></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+</body>
+
+</html>

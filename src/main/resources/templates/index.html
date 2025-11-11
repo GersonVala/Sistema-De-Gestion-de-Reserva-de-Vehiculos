@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>TGSMAX CARS - Alquiler de Autos en Argentina</title>
+</head>
+
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <main>
+        <!-- SECCIÓN 1: HERO CON BÚSQUEDA -->
+        <section class="hero-section">
+            <div class="hero-bg" th:style="'background-image: url(' + @{/img/hero-car.jpg} + '); background-size: cover; background-position: center;'">
+                <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);"></div>
+            </div>
+            
+            <div class="container position-relative" style="z-index: 10;">
+                <div class="row align-items-center justify-content-center" style="min-height: 500px;">
+                    <div class="col-lg-8 text-center text-white">
+                        <h1 class="display-3 fw-bold mb-3" style="font-size: 60px; text-shadow: 3px 3px 8px rgba(8, 8, 8, 0.8), 0px 0px 20px rgba(42, 41, 41, 0.7); letter-spacing: 2px;">
+                            RESERVA TU VEHÍCULO<br>AHORA
+                        </h1>
+                        <p class="lead fs-5 mb-5" style="color: #ff7a00; text-shadow: 2px 2px 6px rgba(220, 111, 3, 0.8), 0px 0px 15px rgba(0,0,0,0.6); font-weight: 500;">
+                            Alquiler de autos en Argentina
+                        </p>
+                        
+                        <!-- SEARCH FORM -->
+                        <div class="search-form-wrapper">
+                            <form th:action="@{/buscar}" th:object="${busquedaForm}" method="post" class="search-form">
+                                <div class="row g-3">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Seleccioná una Oficina de alquiler</label>
+                                            <select name="pickupOffice" class="form-select form-select-lg" style="border-radius: 8px; border: 2px solid #ddd;">
+                                                <option value="">-- Seleccionar oficina --</option>
+                                                <option>Buenos Aires - Centro</option>
+                                                <option>Buenos Aires - Aeropuerto</option>
+                                                <option>Córdoba</option>
+                                                <option>Mendoza</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Fecha de retiro</label>
+                                            <input type="date" name="pickupDate" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Hora de retiro</label>
+                                            <input type="time" name="pickupTime" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="devolverMisma" name="devolverMisma" checked>
+                                            <label class="form-check-label" for="devolverMisma" style="color: #333; font-weight: 500;">Devolver en la misma oficina</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Fecha de devolución</label>
+                                            <input type="date" name="dropoffDate" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Hora de devolución</label>
+                                            <input type="time" name="dropoffTime" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <a href="/reservation" class="btn btn-pink btn-lg w-100 fw-bold" style="border-radius: 8px; padding: 14px 24px; font-size: 18px; text-decoration: none;">
+                                            BUSCAR MI AUTO
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: OFICINAS MÁS SOLICITADAS -->
+        <section id="oficinas" class="py-5" style="background: #ffffff;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold" style="color: #1a1a2e; font-size: 36px;">NUESTRAS OFICINAS MÁS SOLICITADAS</h2>
+                    <p class="text-muted">Contamos con sucursales en los principales puntos de Argentina</p>
+                </div>
+                <div class="row g-4">
+                    <!-- Oficina 1 -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_ofi_buenos_aires.jpg}" alt="Buenos Aires" style="height: 220px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-city me-2" style="color:var(--blue);"></i> Buenos Aires - CABA</h5>
+                                <p class="card-text text-muted small">Ubicación céntrica con fácil acceso y estacionamiento</p>
+                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oficina 2 -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_ofi_cordoba.jpg}" alt="Córdoba" style="height: 220px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-city me-2" style="color:var(--blue);"></i> Córdoba</h5>
+                                <p class="card-text text-muted small">Sucursal en el corazón de la provincia de Córdoba</p>
+                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oficina 3 -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_ofi_mendoza.jpg}" alt="Mendoza" style="height: 220px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-wine-bottle me-2" style="color:var(--red);"></i> Mendoza</h5>
+                                <p class="card-text text-muted small">Acceso perfecto a viñedos y regiones turísticas</p>
+                                <a href="/reservation" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CATEGORÍAS DE VEHÍCULOS -->
+        <section id="autos" class="py-6" style="background: #f7f7f9; padding-top: 80px; padding-bottom: 80px;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold" style="color: #1a1a2e; font-size: 48px; margin-bottom: 20px;">CATEGORÍAS DE VEHÍCULOS</h2>
+                    <p class="text-muted" style="font-size: 18px;">Elige el transporte perfecto para tu viaje</p>
+                </div>
+                <div class="row g-5" style="justify-content: center;">
+                    <!-- Económicos -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_cat_auto.jpg}" alt="Económicos" style="height: 250px; object-fit: cover;">
+                            <div class="card-body" style="padding: 30px;">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">AUTOS</h5>
+                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Ideales para la ciudad, con excelente rendimiento</p>
+                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medianos -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_cat_camioneta.jpg}" alt="Medianos" style="height: 250px; object-fit: cover;">
+                            <div class="card-body" style="padding: 30px;">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">CAMIONETAS</h5>
+                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Espacio y confort para viajes a larga distancia.</p>
+                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUV -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; overflow: hidden; background: #ffffff; transition: transform 0.3s;">
+                            <img th:src="@{/img/img_cat_moto.jpg}" alt="SUV" style="height: 250px; object-fit: cover;">
+                            <div class="card-body" style="padding: 30px;">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e; font-size: 24px;">MOTOS</h5>
+                                <p class="card-text text-muted" style="font-size: 16px; margin: 15px 0;">Rapidez, eficiencia a todos lados.</p>
+                                <a href="/reservation" class="btn btn-pink fw-bold" style="padding: 10px 30px; font-size: 16px;">VER MÁS</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: POR QUÉ ELEGIR TGSMAX CARS -->
+        <section class="py-5" style="background: linear-gradient(135deg, #f7f7f9 0%, #ffffff 100%);">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold" style="color: #1a1a2e; font-size: 36px;">¿Por qué elegir TGSMAX CARS?</h2>
+                    <p class="text-muted">Somos tu mejor opción en alquiler de vehículos</p>
+                </div>
+                <div class="row g-4">
+                    <!-- Ventaja 1: Seguridad -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <div class="feature-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold" style="color: #1a1a2e;">Seguridad Total</h5>
+                            <p class="text-muted small">Todos nuestros vehículos cuentan con seguro integral y sistemas de seguridad avanzados</p>
+                        </div>
+                    </div>
+
+                    <!-- Ventaja 2: Precios -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <div class="feature-icon">
+                                    <i class="fa-solid fa-tags"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold" style="color: #1a1a2e;">Precios Competitivos</h5>
+                            <p class="text-muted small">Las mejores tarifas del mercado con transparencia total, sin cargos ocultos</p>
+                        </div>
+                    </div>
+
+                    <!-- Ventaja 3: Atención 24/7 -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <div class="feature-icon">
+                                    <i class="fa-solid fa-headset"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold" style="color: #1a1a2e;">Atención 24/7</h5>
+                            <p class="text-muted small">Soporte constante para resolver cualquier inconveniente en tu viaje</p>
+                        </div>
+                    </div>
+
+                    <!-- Ventaja 4: Flota Moderna -->
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <div class="feature-icon">
+                                    <i class="fa-solid fa-car-side"></i>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold" style="color: #1a1a2e;">Flota Moderna</h5>
+                            <p class="text-muted small">Vehículos nuevos, revisados y en perfectas condiciones de mantenimiento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: OFICINAS POR REGIÓN - SUCURSALES -->
+        <section class="py-5" style="background: #f7f7f9;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold" style="color: #1a1a2e; font-size: 36px;">SUCURSALES EN ARGENTINA</h2>
+                    <p class="text-muted">Oficinas estratégicas en los puntos turísticos más importantes del país</p>
+                </div>
+                
+                <!-- Sucursales adicionales con imágenes -->
+                <div class="row g-4 mb-5">
+                    <!-- Chaco -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
+                            <img th:src="@{/img/sucursal-chaco.jpg}" alt="Chaco" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Chaco</h5>
+                                <p class="card-text text-muted small">Servicios en el norte del país</p>
+                                <a href="#" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chubut -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
+                            <img th:src="@{/img/sucursal-chubut.jpg}" alt="Chubut" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Chubut</h5>
+                                <p class="card-text text-muted small">Explora la Patagonia argentina</p>
+                                <a href="#" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buenos Aires -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
+                            <img th:src="@{/img/sucursal-buenos-aires.jpg}" alt="Buenos Aires" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Buenos Aires</h5>
+                                <p class="card-text text-muted small">Capital federal y centro del país</p>
+                                <a href="#" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Córdoba -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
+                            <img th:src="@{/img/sucursal-cordoba.jpg}" alt="Córdoba" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Córdoba</h5>
+                                <p class="card-text text-muted small">Ciudad histórica y cultural</p>
+                                <a href="#" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mendoza -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
+                            <img th:src="@{/img/sucursal-mendoza.jpg}" alt="Mendoza" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-wine-bottle me-2" style="color:var(--red);"></i>Mendoza</h5>
+                                <p class="card-text text-muted small">Viñedos y paisajes únicos</p>
+                                <a href="#" class="btn btn-pink btn-sm fw-bold">Reservar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- SECCIÓN 6: CONTACTO E INFORMACIÓN -->
+        <section class="py-5" style="background: #ffffff;">
+            <div class="container">
+                <div class="row g-5">
+                    <!-- Columna 1: Locaciones -->
+                    <div class="col-lg-4">
+                        <h5 class="fw-bold mb-3" style="color: #1a1a2e; border-bottom: 3px solid var(--red); padding-bottom: 10px;">
+                            Localidades de Alquiler
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Alquiler de autos en Chaco</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Alquiler de autos en Chubut</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Alquiler de autos en Buenos Aires</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Alquiler de autos en Córdoba</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Alquiler de autos en Mendoza</a></li>
+                            <li><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Ver todas las sucursales</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Columna 2: Empresa -->
+                    <div class="col-lg-4">
+                        <h5 class="fw-bold mb-3" style="color: #1a1a2e; border-bottom: 3px solid var(--blue); padding-bottom: 10px;">
+                            Información de la Empresa
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-info-circle me-2" style="color:var(--blue);"></i>Acerca de TGSMAX CARS</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-bullseye me-2" style="color:var(--blue);"></i>Nuestra Misión</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-briefcase me-2" style="color:var(--blue);"></i>Trabajo con nosotros</a></li>
+                            <li class="mb-2"><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-users me-2" style="color:var(--blue);"></i>Equipo de profesionales</a></li>
+                            <li><a href="#" style="color: #666; text-decoration: none; font-size: 14px; transition: color 0.3s;"><i class="fa-solid fa-file-lines me-2" style="color:var(--blue);"></i>Políticas y términos</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Columna 3: Contacto -->
+                    <div class="col-lg-4">
+                        <h5 class="fw-bold mb-3" style="color: #1a1a2e; border-bottom: 3px solid var(--red); padding-bottom: 10px;">
+                            Contacto
+                        </h5>
+                        <div style="background: #f7f7f9; padding: 15px; border-radius: 8px;">
+                            <p style="color: #666; font-size: 14px; margin-bottom: 12px;">
+                                <strong style="color: #1a1a2e;"><i class="fa-solid fa-phone me-2" style="color:var(--red);"></i>Teléfono</strong><br>
+                                +54 (11) 5555-1004<br>
+                                <small class="text-muted">Línea general</small>
+                            </p>
+                            <p style="color: #666; font-size: 14px; margin-bottom: 12px;">
+                                <strong style="color: #1a1a2e;"><i class="fa-solid fa-clock me-2" style="color:var(--blue);"></i>Horarios de Atención</strong><br>
+                                Lunes a Viernes: 8:00 - 20:00hs<br>
+                                Sábado: 9:00 - 15:00hs<br>
+                                <small class="text-muted">Domingo cerrado</small>
+                            </p>
+                            <p style="color: #666; font-size: 14px;">
+                                <strong style="color: #1a1a2e;"><i class="fa-solid fa-envelope me-2" style="color:var(--red);"></i>Email</strong><br>
+                                info@tgsmaxcars.com.ar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- LOGIN MODAL (flotante) -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+                    <div class="modal-header border-0" style="background: var(--white);">
+                        <h5 class="modal-title fw-bold" id="loginModalLabel">Iniciar sesión</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="username" name="username" placeholder="tu@correo.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="rememberMe">
+                                    <label class="form-check-label small" for="rememberMe">Recordarme</label>
+                                </div>
+                                <a href="#" class="small">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-pink btn-lg">Iniciar sesión</button>
+                            </div>
+                        </form>
+                        <div class="text-center mt-3">
+                            <small>¿Eres nuevo? <a href="/register" class="fw-bold" style="color: var(--red);">Regístrate</a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+
+</body>
+</html>

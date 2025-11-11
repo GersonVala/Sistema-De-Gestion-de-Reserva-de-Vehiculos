@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Reserva tu Vehículo - TGSMAX CARS</title>
+    <style>
+        :root {
+            --primary-blue: #026faa;
+            --primary-orange: #ff7a00;
+            --white: #ffffff;
+            --light-gray: #f7f7f9;
+            --dark-gray: #1a1a2e;
+        }
+
+        /* BARRA DE PASOS */
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 0;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-number {
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 122, 0, 0.3);
+        }
+
+        .step.completed .step-number {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-orange);
+            font-weight: 700;
+        }
+
+        .step.completed .step-label {
+            color: var(--primary-blue);
+        }
+
+        /* CONTENEDOR DE PASOS */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ESTILOS DE FORMULARIOS */
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: var(--dark-gray);
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.15);
+        }
+
+        /* VEHÍCULOS DISPONIBLES */
+        .vehicle-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .vehicle-card:hover {
+            border-color: var(--primary-orange);
+            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.2);
+        }
+
+        .vehicle-card.selected {
+            border-color: var(--primary-orange);
+            background-color: rgba(255, 122, 0, 0.05);
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+        }
+
+        .vehicle-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .vehicle-info {
+            padding: 15px;
+        }
+
+        .vehicle-name {
+            font-weight: 700;
+            color: var(--dark-gray);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .vehicle-details {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .vehicle-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
+        /* ADICIONALES */
+        .additional-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .additional-item:hover {
+            border-color: var(--primary-orange);
+            background-color: rgba(255, 122, 0, 0.02);
+        }
+
+        .additional-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-orange);
+            margin-right: 15px;
+        }
+
+        .additional-info {
+            flex: 1;
+        }
+
+        .additional-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 3px;
+        }
+
+        .additional-description {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .additional-price {
+            font-weight: 700;
+            color: var(--primary-orange);
+            font-size: 16px;
+        }
+
+        /* BOTONES */
+        .btn-group-nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-prev, .btn-next, .btn-finish {
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-prev {
+            background-color: #f0f0f0;
+            color: var(--dark-gray);
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-prev:hover {
+            background-color: #e8e8e8;
+            border-color: #d0d0d0;
+        }
+
+        .btn-next, .btn-finish {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+
+        .btn-next:hover, .btn-finish:hover {
+            background-color: #e66d00;
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3);
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* RESUMEN */
+        .summary-box {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--primary-orange);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary-orange);
+            border-top: 2px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .steps-container {
+                flex-wrap: wrap;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .step-label {
+                font-size: 12px;
+            }
+
+            .btn-group-nav {
+                flex-direction: column;
+            }
+
+            .btn-prev, .btn-next, .btn-finish {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <main style="background-color: #f7f7f9; padding: 40px 0;">
+        <div class="container" style="max-width: 900px;">
+            <!-- INDICADOR DE PASOS -->
+            <div class="steps-container">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Reservá un auto</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Selecciona un auto</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Adicionales</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Tu información</div>
+                </div>
+            </div>
+
+            <!-- PASO 1: RESERVA UN AUTO -->
+            <div class="step-content active" id="step-1">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-calendar me-2" style="color: var(--primary-orange);"></i>Detalles de la Reserva</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Oficina de Retiro</label>
+                                <select class="form-select" id="pickupOffice">
+                                    <option value="">-- Seleccionar oficina --</option>
+                                    <option value="ba-centro">Buenos Aires - Centro</option>
+                                    <option value="ba-aeroparque">Buenos Aires - Aeroparque</option>
+                                    <option value="cordoba">Córdoba</option>
+                                    <option value="mendoza">Mendoza</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Fecha de Retiro</label>
+                                <input type="date" class="form-control" id="pickupDate">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Hora de Retiro</label>
+                                <input type="time" class="form-control" id="pickupTime" value="10:00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="additional-item" style="border: none; padding: 0; margin-bottom: 20px;">
+                        <input type="checkbox" id="sameOffice" checked>
+                        <label for="sameOffice" style="margin: 0; font-weight: 600; color: var(--dark-gray); cursor: pointer;">Devolver en la misma oficina</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Fecha de Devolución</label>
+                                <input type="date" class="form-control" id="dropoffDate">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Hora de Devolución</label>
+                                <input type="time" class="form-control" id="dropoffTime" value="10:00">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group-nav">
+                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+
+            <!-- PASO 2: SELECCIONA UN AUTO -->
+            <div class="step-content" id="step-2">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-car me-2" style="color: var(--primary-orange);"></i>Selecciona tu Vehículo</h3>
+                    
+                    <div class="row g-4 mb-4">
+                        <!-- Auto 1 -->
+                        <div class="col-lg-6">
+                            <div class="vehicle-card" onclick="selectVehicle(this, 'toyota-corolla', 'Toyota Corolla 2024')">
+                                <img th:src="@{/img/img_cat_auto.jpg}" alt="Toyota Corolla">
+                                <div class="vehicle-info">
+                                    <div class="vehicle-name">Toyota Corolla</div>
+                                    <div class="vehicle-details">
+                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
+                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
+                                    </div>
+                                    <div class="vehicle-price">$45.000/día</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Auto 2 -->
+                        <div class="col-lg-6">
+                            <div class="vehicle-card" onclick="selectVehicle(this, 'ford-focus', 'Ford Focus 2024')">
+                                <img th:src="@{/img/img_cat_auto.jpg}" alt="Ford Focus">
+                                <div class="vehicle-info">
+                                    <div class="vehicle-name">Ford Focus</div>
+                                    <div class="vehicle-details">
+                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
+                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
+                                    </div>
+                                    <div class="vehicle-price">$48.000/día</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Camioneta 1 -->
+                        <div class="col-lg-6">
+                            <div class="vehicle-card" onclick="selectVehicle(this, 'ford-ranger', 'Ford Ranger 2024')">
+                                <img th:src="@{/img/img_cat_camioneta.jpg}" alt="Ford Ranger">
+                                <div class="vehicle-info">
+                                    <div class="vehicle-name">Ford Ranger</div>
+                                    <div class="vehicle-details">
+                                        <i class="fa-solid fa-users me-2"></i>5 pasajeros
+                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Diésel
+                                    </div>
+                                    <div class="vehicle-price">$65.000/día</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moto 1 -->
+                        <div class="col-lg-6">
+                            <div class="vehicle-card" onclick="selectVehicle(this, 'honda-cb500', 'Honda CB500 2024')">
+                                <img th:src="@{/img/img_cat_moto.jpg}" alt="Honda CB500">
+                                <div class="vehicle-info">
+                                    <div class="vehicle-name">Honda CB500</div>
+                                    <div class="vehicle-details">
+                                        <i class="fa-solid fa-users me-2"></i>2 pasajeros
+                                        <i class="fa-solid fa-droplet me-2 ms-3"></i>Nafta
+                                    </div>
+                                    <div class="vehicle-price">$25.000/día</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group-nav">
+                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+
+            <!-- PASO 3: ADICIONALES -->
+            <div class="step-content" id="step-3">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-plus me-2" style="color: var(--primary-orange);"></i>Adicionales y Servicios</h3>
+                    
+                    <label class="additional-item">
+                        <input type="checkbox" class="additional-checkbox" data-price="8000">
+                        <div class="additional-info">
+                            <div class="additional-name"><i class="fa-solid fa-shield me-2"></i>Seguro Completo</div>
+                            <div class="additional-description">Cobertura integral + 0 franquicia</div>
+                        </div>
+                        <div class="additional-price">$8.000</div>
+                    </label>
+
+                    <label class="additional-item">
+                        <input type="checkbox" class="additional-checkbox" data-price="5000">
+                        <div class="additional-info">
+                            <div class="additional-name"><i class="fa-solid fa-car me-2"></i>GPS Incluido</div>
+                            <div class="additional-description">Navegador GPS + actualizaciones gratis</div>
+                        </div>
+                        <div class="additional-price">$5.000</div>
+                    </label>
+
+                    <label class="additional-item">
+                        <input type="checkbox" class="additional-checkbox" data-price="3000">
+                        <div class="additional-info">
+                            <div class="additional-name"><i class="fa-solid fa-car-child me-2"></i>Asiento Infantil</div>
+                            <div class="additional-description">Asiento de seguridad para niños</div>
+                        </div>
+                        <div class="additional-price">$3.000</div>
+                    </label>
+
+                    <label class="additional-item">
+                        <input type="checkbox" class="additional-checkbox" data-price="2000">
+                        <div class="additional-info">
+                            <div class="additional-name"><i class="fa-solid fa-gas-pump me-2"></i>Tanque Lleno</div>
+                            <div class="additional-description">Retira con tanque completo</div>
+                        </div>
+                        <div class="additional-price">$2.000</div>
+                    </label>
+
+                    <label class="additional-item">
+                        <input type="checkbox" class="additional-checkbox" data-price="1500">
+                        <div class="additional-info">
+                            <div class="additional-name"><i class="fa-solid fa-phone me-2"></i>Conductor Extra</div>
+                            <div class="additional-description">Hasta 2 conductores autorizados</div>
+                        </div>
+                        <div class="additional-price">$1.500</div>
+                    </label>
+                </div>
+
+                <div class="btn-group-nav">
+                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+
+            <!-- PASO 4: TU INFORMACIÓN -->
+            <div class="step-content" id="step-4">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-user me-2" style="color: var(--primary-orange);"></i>Tus Datos Personales</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Nombre Completo</label>
+                                <input type="text" class="form-control" placeholder="Ej: Juan García">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Apellido</label>
+                                <input type="text" class="form-control" placeholder="Ej: Pérez">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Correo Electrónico</label>
+                                <input type="email" class="form-control" placeholder="Ej: juan@example.com">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" class="form-control" placeholder="Ej: +54 9 11 1234-5678">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Número de Documento</label>
+                                <input type="text" class="form-control" placeholder="Ej: 12.345.678">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Número de Licencia</label>
+                                <input type="text" class="form-control" placeholder="Ej: ABCD-1234567">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" placeholder="Ej: Calle Principal 123">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="d-flex align-items-center">
+                            <input type="checkbox" class="form-check-input me-3" checked>
+                            Acepto los términos y condiciones de alquiler
+                        </label>
+                    </div>
+
+                    <!-- RESUMEN FINAL -->
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <span>Vehículo Seleccionado:</span>
+                            <span id="selected-vehicle">No seleccionado</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Fechas:</span>
+                            <span id="selected-dates">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Adicionales:</span>
+                            <span id="selected-additionals">Ninguno</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total a Pagar:</span>
+                            <span id="total-price">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group-nav">
+                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
+                    <button class="btn-finish" onclick="submitReservation()"><i class="fa-solid fa-check me-2"></i>Confirmar Reserva</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+
+    <script>
+        let currentStep = 1;
+        let selectedVehicle = null;
+        let selectedVehiclePrice = 0;
+        let additionalsCost = 0;
+
+        function showStep(step) {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Mostrar paso actual
+            document.getElementById(`step-${step}`).classList.add('active');
+
+            // Actualizar indicadores
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                } else if (index + 1 < step) {
+                    stepEl.classList.add('completed');
+                }
+            });
+
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextStep() {
+            if (currentStep < 4) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function selectVehicle(element, vehicleId, vehicleName) {
+            // Remover selección anterior
+            document.querySelectorAll('.vehicle-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Seleccionar nuevo vehículo
+            element.classList.add('selected');
+            selectedVehicle = vehicleName;
+
+            // Extraer precio del elemento
+            const priceText = element.querySelector('.vehicle-price').textContent;
+            selectedVehiclePrice = parseInt(priceText.replace(/\D/g, ''));
+
+            updateSummary();
+        }
+
+        document.querySelectorAll('.additional-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateAdditionalsCost();
+                updateSummary();
+            });
+        });
+
+        function updateAdditionalsCost() {
+            additionalsCost = 0;
+            let selectedAdditionals = [];
+
+            document.querySelectorAll('.additional-checkbox:checked').forEach(checkbox => {
+                const price = parseInt(checkbox.getAttribute('data-price'));
+                additionalsCost += price;
+                selectedAdditionals.push(checkbox.closest('.additional-item').querySelector('.additional-name').textContent.trim());
+            });
+
+            document.getElementById('selected-additionals').textContent = 
+                selectedAdditionals.length > 0 ? selectedAdditionals.join(', ') : 'Ninguno';
+        }
+
+        function updateSummary() {
+            // Actualizar vehículo
+            document.getElementById('selected-vehicle').textContent = selectedVehicle || 'No seleccionado';
+
+            // Actualizar fechas
+            const pickupDate = document.getElementById('pickupDate').value;
+            const dropoffDate = document.getElementById('dropoffDate').value;
+            if (pickupDate && dropoffDate) {
+                document.getElementById('selected-dates').textContent = `${pickupDate} - ${dropoffDate}`;
+            }
+
+            // Calcular total
+            const totalPrice = selectedVehiclePrice + additionalsCost;
+            document.getElementById('total-price').textContent = `$${totalPrice.toLocaleString('es-AR')}`;
+        }
+
+        // Vincular cambios de fechas al resumen
+        document.getElementById('pickupDate').addEventListener('change', updateSummary);
+        document.getElementById('dropoffDate').addEventListener('change', updateSummary);
+
+        // Inicializar
+        document.getElementById('dropoffDate').addEventListener('change', function() {
+            if (!this.value && document.getElementById('sameOffice').checked) {
+                this.value = document.getElementById('pickupDate').value;
+            }
+        });
+
+        document.getElementById('sameOffice').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('dropoffDate').value = document.getElementById('pickupDate').value;
+            }
+        });
+
+        function submitReservation() {
+            alert('¡Reserva confirmada! Serás redirigido al pago.');
+            // Aquí se conectaría con el backend para procesar la reserva
+        }
+    </script>
+</body>
+
+</html>
