@@ -22,16 +22,25 @@ public class DataInitializer implements CommandLineRunner {
     private final VehiculoRepository vehiculoRepository;
 
     @Override
-    @Transactional
-    public void run(String... args) throws Exception {
-        
-        // Verificar si ya hay datos cargados
-        if (ciudadRepository.count() > 0) {
-            System.out.println("✅ Datos ya cargados, omitiendo inicialización.");
-            return;
-        }
+    public void run(String... args) {
+        try {
+            // Verificar si ya hay datos cargados
+            if (ciudadRepository.count() > 0) {
+                System.out.println("✅ Datos ya cargados, omitiendo inicialización.");
+                return;
+            }
 
-        System.out.println("🚀 Iniciando carga de datos de prueba...");
+            System.out.println("🚀 Iniciando carga de datos de prueba...");
+            inicializarDatos();
+        } catch (Exception e) {
+            System.err.println("⚠️ Error al inicializar datos: " + e.getMessage());
+            e.printStackTrace();
+            // No lanzar la excepción para que la aplicación siga corriendo
+        }
+    }
+    
+    @Transactional
+    private void inicializarDatos() {
 
         // ============================================
         // 1. CREAR CIUDADES
@@ -134,7 +143,7 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("   - Sucursales: 6 (Buenos Aires, Córdoba, Mendoza, Chaco, Chubut, Corrientes)");
         System.out.println("   - Tipos de Vehículos: 3");
         System.out.println("   - Vehículos disponibles: 9");
-    }
+    } // Fin de inicializarDatos()
 
     // ============================================
     // MÉTODOS AUXILIARES

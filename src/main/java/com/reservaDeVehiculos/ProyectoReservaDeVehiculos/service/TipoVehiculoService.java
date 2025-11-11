@@ -21,7 +21,7 @@ public class TipoVehiculoService {
 
     @Transactional
     public TipoVehiculoResponse crear(CrearTipoVehiculoRequest request) {
-        if (tipoVehiculoRepository.existsByNombreVehiculo(request.getNombre_vehiculo())) {
+        if (tipoVehiculoRepository.existsByNombre(request.getNombre_vehiculo())) {
             throw new RecursoDuplicadoException("Ya existe un tipo de vehículo con el nombre: " + request.getNombre_vehiculo());
         }
 

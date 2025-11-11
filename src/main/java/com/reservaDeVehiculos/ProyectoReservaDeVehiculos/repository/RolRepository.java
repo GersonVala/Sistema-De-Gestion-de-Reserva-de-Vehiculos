@@ -2,6 +2,8 @@ package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.repository;
 
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.RolesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,8 +12,10 @@ import java.util.Optional;
 public interface RolRepository extends JpaRepository<RolesEntity, Integer> {
 
     // Buscar rol por nombre
-    Optional<RolesEntity> findByNombreRol(String nombre_rol);
+    @Query("SELECT r FROM RolesEntity r WHERE r.nombre_rol = :nombre")
+    Optional<RolesEntity> findByNombreRol(@Param("nombre") String nombre);
 
     // Buscar rol por descripción
-    Optional<RolesEntity> findByDescripcionRol(String descripcion_rol);
+    @Query("SELECT r FROM RolesEntity r WHERE r.descripcion_rol = :descripcion")
+    Optional<RolesEntity> findByDescripcionRol(@Param("descripcion") String descripcion);
 }
