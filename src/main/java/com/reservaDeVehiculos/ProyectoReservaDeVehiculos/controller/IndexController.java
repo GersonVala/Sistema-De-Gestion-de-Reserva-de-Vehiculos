@@ -32,6 +32,10 @@ public class IndexController {
     }
     */
 
+    // NOTA: Las rutas "/login" y "/register" ahora son manejadas por AuthController
+    // que tiene la implementación completa con autenticación real y sesiones
+    
+    /*
     @GetMapping("/login")
     public String showLogin() {
         return "login";
@@ -99,4 +103,5 @@ public class IndexController {
         public String password;
         public String confirmPassword;
     }
+    */
 }
