@@ -19,8 +19,8 @@ public class RolesEntity {
     @Column(name = "id_rol", nullable = false)
     private Integer id_rol;
 
-    @Enumerated(EnumType.STRING)
-    private RolEnum estado;
+    @Column(name = "nombre_rol", length = 30, nullable = false)
+    private String nombre_rol;
 
     @Column(name = "descripcion_rol", length = 30, nullable = false)
     private String descripcion_rol;
