@@ -1,9 +1,3 @@
-                ciudad.getId_ciudad(),
-                ciudad.getNombre_ciudad(),
-                ciudad.getEstado()
-        );
-    }
-}
 package com.reservaDeVehiculos.ProyectoReservaDeVehiculos.service;
 
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.dto.request.CrearCiudadRequest;
@@ -67,4 +61,10 @@ public class CiudadService {
 
     private CiudadResponse convertirAResponse(CiudadesEntity ciudad) {
         return new CiudadResponse(
+                ciudad.getId_ciudad(),
+                ciudad.getNombre_ciudad(),
+                ciudad.getEstado()
+        );
+    }
+}
 

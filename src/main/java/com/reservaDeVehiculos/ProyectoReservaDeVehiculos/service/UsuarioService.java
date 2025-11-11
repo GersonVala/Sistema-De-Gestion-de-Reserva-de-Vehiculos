@@ -60,7 +60,7 @@ public class UsuarioService {
         UsuariosEntity usuarioGuardado = usuarioRepository.save(usuario);
 
         // Asignar rol CLIENTE por defecto
-        RolesEntity rolCliente = rolRepository.findByEstado(RolEnum.CLIENTE)
+        RolesEntity rolCliente = rolRepository.findByNombreRol(RolEnum.CLIENTE.name())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Rol CLIENTE no encontrado"));
 
         Usuario_rolesEntity usuarioRol = new Usuario_rolesEntity();
@@ -144,7 +144,7 @@ public class UsuarioService {
     private UsuarioResponse convertirAResponse(UsuariosEntity usuario) {
         List<String> roles = usuarioRolRepository.findByUsuario_IdUsuario(usuario.getId_usuario())
                 .stream()
-                .map(ur -> ur.getRol().getEstado().name())
+                .map(ur -> ur.getRol().getNombre_rol())
                 .collect(Collectors.toList());
 
         return new UsuarioResponse(
