@@ -4,44 +4,482 @@
 <head>
     <th:block th:replace="~{fragments/head :: head-links}"></th:block>
     <title>Dashboard - TGSMAX CARS</title>
+    <style>
+        :root{--red:#e74c3c;--blue:#0b5ed7;--muted:#6c757d;--white:#ffffff;--success:#198754;--warning:#ffc107;--danger:#dc3545;--info:#0dcaf0}
+        
+        .dashboard-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--red) 0%, #c0392b 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2);
+        }
+
+        .welcome-card h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stats-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stats-card .label {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .stats-card .trend {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .icon-primary { background: var(--blue); }
+        .icon-success { background: var(--success); }
+        .icon-warning { background: var(--warning); }
+        .icon-danger { background: var(--danger); }
+        .icon-info { background: var(--info); }
+
+        .trend-up { background: rgba(25, 135, 84, 0.1); color: var(--success); }
+        .trend-down { background: rgba(220, 53, 69, 0.1); color: var(--danger); }
+        .trend-stable { background: rgba(108, 117, 125, 0.1); color: var(--muted); }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reserva-item {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .reserva-item:hover {
+            border-color: var(--red);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.1);
+        }
+
+        .reserva-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .reserva-id {
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .estado-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .estado-confirmada { background: rgba(25, 135, 84, 0.1); color: var(--success); }
+        .estado-pendiente { background: rgba(255, 193, 7, 0.1); color: var(--warning); }
+        .estado-cancelada { background: rgba(220, 53, 69, 0.1); color: var(--danger); }
+        .estado-completada { background: rgba(13, 202, 240, 0.1); color: var(--info); }
+
+        .reserva-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .action-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: var(--red);
+            color: inherit;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 20px;
+        }
+
+        .action-card .title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .action-card .description {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            
+            .welcome-card {
+                padding: 20px;
+            }
+            
+            .stats-card .number {
+                font-size: 2rem;
+            }
+            
+            .reserva-details {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <header th:replace="~{fragments/header :: main-header}"></header>
 
-    <main class="py-5">
+    <div class="dashboard-container">
         <div class="container">
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">¡Bienvenido!</h4>
-                <p th:text="${mensaje}">Mensaje de bienvenida</p>
-                <hr>
-                <p class="mb-0">Aquí puedes ver tu dashboard y tus reservas.</p>
+            <!-- Mostrar mensajes -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Error message</span>
+            </div>
+            
+            <div th:if="${mensaje}" class="alert alert-success" role="alert">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span th:text="${mensaje}">Success message</span>
             </div>
 
-            <div class="row mt-5">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Mis Reservas</h5>
-                            <p class="card-text">Aún no tienes reservas registradas.</p>
-                            <a href="/" class="btn btn-primary">Hacer una reserva</a>
+            <!-- Bienvenida -->
+            <div class="welcome-card">
+                <h1><i class="fa-solid fa-dashboard me-3"></i>¡Bienvenido/a!</h1>
+                <p th:text="'Hola ' + ${userName} + ', este es tu panel de control personal.'">Mensaje de bienvenida</p>
+                <small th:if="${sessionInfo}" th:text="${sessionInfo}">Información de sesión</small>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="icon icon-primary">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="number" th:text="${estadisticas.totalReservas}">0</div>
+                        <div class="label">Total Reservas</div>
+                        <div class="trend trend-stable">
+                            <i class="fa-solid fa-equals me-1"></i> Este mes
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Mi Perfil</h5>
-                            <p class="card-text">Gestiona tu información personal.</p>
-                            <a href="#" class="btn btn-secondary">Editar perfil</a>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="icon icon-success">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="number" th:text="${estadisticas.reservasActivas}">0</div>
+                        <div class="label">Reservas Activas</div>
+                        <div class="trend trend-up">
+                            <i class="fa-solid fa-arrow-up me-1"></i> Confirmadas
                         </div>
                     </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="icon icon-info">
+                            <i class="fa-solid fa-history"></i>
+                        </div>
+                        <div class="number" th:text="${estadisticas.reservasCompletadas}">0</div>
+                        <div class="label">Completadas</div>
+                        <div class="trend trend-up">
+                            <i class="fa-solid fa-check me-1"></i> Finalizadas
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="icon icon-warning">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                        <div class="number" th:text="'$' + ${#numbers.formatDecimal(estadisticas.gastoTotal, 0, 2)}">$0.00</div>
+                        <div class="label">Gasto Total</div>
+                        <div class="trend trend-stable">
+                            <i class="fa-solid fa-chart-line me-1"></i> Acumulado
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservas Recientes -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-clock"></i>
+                    Reservas Recientes
+                </h2>
+                
+                <div th:if="${#lists.isEmpty(reservasRecientes)}" class="empty-state">
+                    <div class="icon">
+                        <i class="fa-regular fa-calendar"></i>
+                    </div>
+                    <h4>No tienes reservas aún</h4>
+                    <p>¡Haz tu primera reserva y comienza a disfrutar de nuestros servicios!</p>
+                    <a href="/" class="btn btn-primary mt-3">
+                        <i class="fa-solid fa-plus me-2"></i>Hacer una Reserva
+                    </a>
+                </div>
+                
+                <div th:if="${!#lists.isEmpty(reservasRecientes)}">
+                    <div th:each="reserva : ${reservasRecientes}" class="reserva-item">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="reserva-id">
+                                <i class="fa-solid fa-hashtag me-1"></i>Reserva #<span th:text="${reserva.id_reserva}">001</span>
+                            </div>
+                            <span class="estado-badge" 
+                                  th:classappend="'estado-' + ${#strings.toLowerCase(reserva.estado.name())}"
+                                  th:text="${reserva.estado.name()}">CONFIRMADA</span>
+                        </div>
+                        
+                        <div class="reserva-details">
+                            <div class="detail-item">
+                                <i class="fa-solid fa-calendar-start text-primary"></i>
+                                <span th:text="${#temporals.format(reserva.fecha_inicio, 'dd/MM/yyyy')}">01/12/2024</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fa-solid fa-calendar-end text-danger"></i>
+                                <span th:text="${#temporals.format(reserva.fecha_fin, 'dd/MM/yyyy')}">05/12/2024</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fa-solid fa-dollar-sign text-success"></i>
+                                <span th:text="'$' + ${#numbers.formatDecimal(reserva.precio_reserva, 0, 2)}">$150.00</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fa-solid fa-building text-info"></i>
+                                <span th:text="${reserva.telefonoSucursal}">Sucursal Central</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a th:href="@{/reservas/{id}(id=${reserva.id_reserva})}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fa-solid fa-eye me-1"></i>Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="/reservas" class="btn btn-primary">
+                            <i class="fa-solid fa-list me-2"></i>Ver Todas las Reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-bolt"></i>
+                    Acciones Rápidas
+                </h2>
+                
+                <div class="quick-actions">
+                    <a href="/" class="action-card">
+                        <div class="icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="title">Nueva Reserva</div>
+                        <div class="description">Reserva un vehículo para tus próximos viajes</div>
+                    </a>
+                    
+                    <a href="/reservas" class="action-card">
+                        <div class="icon">
+                            <i class="fa-solid fa-list"></i>
+                        </div>
+                        <div class="title">Mis Reservas</div>
+                        <div class="description">Consulta el estado de todas tus reservas</div>
+                    </a>
+                    
+                    <a href="/profile" class="action-card">
+                        <div class="icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="title">Mi Perfil</div>
+                        <div class="description">Actualiza tu información personal</div>
+                    </a>
+                    
+                    <a href="/logout" class="action-card">
+                        <div class="icon">
+                            <i class="fa-solid fa-sign-out-alt"></i>
+                        </div>
+                        <div class="title">Cerrar Sesión</div>
+                        <div class="description">Salir de tu cuenta de forma segura</div>
+                    </a>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+    
+    <!-- Scripts adicionales -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animaciones de entrada
+            const cards = document.querySelectorAll('.stats-card, .section-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Ocultar alertas automáticamente después de 5 segundos
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+            
+            // Actualizar números con animación
+            const numbers = document.querySelectorAll('.stats-card .number');
+            numbers.forEach(number => {
+                const finalValue = parseInt(number.textContent) || 0;
+                if (finalValue > 0) {
+                    animateNumber(number, 0, finalValue, 1000);
+                }
+            });
+        });
+        
+        function animateNumber(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 16);
+        }
+    </script>
 </body>
 
 </html>

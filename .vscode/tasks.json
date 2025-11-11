@@ -1,49 +1,62 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Run Spring Boot App",
-      "type": "shell",
-      "command": "java",
-      "args": [
-        "-jar",
-        "target\\ProyectoReservaDeVehiculos-0.0.1-SNAPSHOT.jar"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": false
-      },
-      "problemMatcher": [],
-      "isBackground": false
-    },
-    {
-      "label": "Build Project",
-      "type": "shell",
-      "command": ".\\mvnw.cmd",
-      "args": [
-        "clean",
-        "package",
-        "-DskipTests"
-      ],
-      "group": {
-        "kind": "build"
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "shared"
-      },
-      "problemMatcher": [],
-      "isBackground": false
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Spring Boot App",
+			"type": "shell",
+			"command": "java",
+			"args": [
+				"-jar",
+				"target\\ProyectoReservaDeVehiculos-0.0.1-SNAPSHOT.jar"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [],
+			"isBackground": false
+		},
+		{
+			"label": "Build Project",
+			"type": "shell",
+			"command": ".\\mvnw.cmd",
+			"args": [
+				"clean",
+				"package",
+				"-DskipTests"
+			],
+			"group": {
+				"kind": "build"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"problemMatcher": [],
+			"isBackground": false
+		},
+		{
+			"label": "Run Spring Boot (Dev Mode)",
+			"type": "shell",
+			"command": "java",
+			"args": [
+				"-cp",
+				"target/classes;%USERPROFILE%\\.m2\\repository\\org\\springframework\\boot\\spring-boot\\3.5.7\\spring-boot-3.5.7.jar;%USERPROFILE%\\.m2\\repository\\org\\springframework\\boot\\spring-boot-autoconfigure\\3.5.7\\spring-boot-autoconfigure-3.5.7.jar;%USERPROFILE%\\.m2\\repository\\org\\springframework\\spring-core\\6.2.0\\spring-core-6.2.0.jar;%USERPROFILE%\\.m2\\repository\\org\\springframework\\spring-context\\6.2.0\\spring-context-6.2.0.jar;%USERPROFILE%\\.m2\\repository\\org\\springframework\\spring-web\\6.2.0\\spring-web-6.2.0.jar;%USERPROFILE%\\.m2\\repository\\org\\springframework\\spring-webmvc\\6.2.0\\spring-webmvc-6.2.0.jar",
+				"com.reservaDeVehiculos.ProyectoReservaDeVehiculos.ProyectoReservaDeVehiculosApplication"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
 }

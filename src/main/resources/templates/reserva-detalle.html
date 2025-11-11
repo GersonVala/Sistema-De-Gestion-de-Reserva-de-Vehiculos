@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Detalle de Reserva - TGSMAX CARS</title>
+    <style>
+        :root{--red:#e74c3c;--blue:#0b5ed7;--muted:#6c757d;--white:#ffffff;--success:#198754;--warning:#ffc107;--danger:#dc3545;--info:#0dcaf0}
+        
+        .detalle-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .detalle-header {
+            background: linear-gradient(135deg, var(--blue) 0%, #0a58ca 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(11, 94, 215, 0.2);
+        }
+
+        .detalle-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: white;
+        }
+
+        .reserva-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .reserva-card-header {
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .reserva-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--muted);
+        }
+
+        .reserva-card-header.confirmada::before { background: var(--success); }
+        .reserva-card-header.pendiente::before { background: var(--warning); }
+        .reserva-card-header.cancelada::before { background: var(--danger); }
+        .reserva-card-header.completada::before { background: var(--info); }
+
+        .reserva-title {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .reserva-id {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .estado-badge {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .estado-confirmada { background: rgba(25, 135, 84, 0.1); color: var(--success); }
+        .estado-pendiente { background: rgba(255, 193, 7, 0.1); color: var(--warning); }
+        .estado-cancelada { background: rgba(220, 53, 69, 0.1); color: var(--danger); }
+        .estado-completada { background: rgba(13, 202, 240, 0.1); color: var(--info); }
+
+        .reserva-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .summary-label {
+            color: var(--muted);
+        }
+
+        .summary-value {
+            font-weight: 500;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .detail-item .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 20px;
+        }
+
+        .detail-item .title {
+            font-size: 0.9rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .detail-item .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--muted);
+            border: 3px solid white;
+        }
+
+        .timeline-item.active::before {
+            background: var(--success);
+        }
+
+        .timeline-item.current::before {
+            background: var(--warning);
+        }
+
+        .timeline-content {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .actions-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .detalle-container {
+                padding: 15px;
+            }
+            
+            .detalle-header {
+                padding: 20px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .reserva-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-action {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <div class="detalle-container">
+        <div class="container">
+            <!-- Header con breadcrumb -->
+            <div class="detalle-header">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/dashboard"><i class="fa-solid fa-dashboard me-1"></i>Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/reservas"><i class="fa-solid fa-calendar-check me-1"></i>Mis Reservas</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Detalle de Reserva</li>
+                    </ol>
+                </nav>
+                <h1><i class="fa-solid fa-file-alt me-3"></i>Detalle de Reserva</h1>
+                <p>Información completa de tu reserva</p>
+            </div>
+
+            <div class="row">
+                <!-- Información Principal -->
+                <div class="col-lg-8">
+                    <!-- Cabecera de la Reserva -->
+                    <div class="reserva-card">
+                        <div class="reserva-card-header" th:classappend="${#strings.toLowerCase(reserva.estado.name())}">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="reserva-id">
+                                    <i class="fa-solid fa-hashtag me-2"></i>
+                                    Reserva #<span th:text="${reserva.id_reserva}">001</span>
+                                </div>
+                                <span class="estado-badge" 
+                                      th:classappend="'estado-' + ${#strings.toLowerCase(reserva.estado.name())}"
+                                      th:text="${reserva.estado.name()}">CONFIRMADA</span>
+                            </div>
+                            
+                            <div class="reserva-summary">
+                                <div class="summary-item">
+                                    <span class="summary-label">Cliente:</span>
+                                    <span class="summary-value" th:text="${reserva.nombreCompletoUsuario}">Juan Pérez</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Email:</span>
+                                    <span class="summary-value" th:text="${reserva.emailUsuario}">juan@email.com</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Duración:</span>
+                                    <span class="summary-value">
+                                        <span th:text="${#temporals.format(reserva.fecha_inicio, 'dd/MM/yyyy')}">01/12/2024</span>
+                                        -
+                                        <span th:text="${#temporals.format(reserva.fecha_fin, 'dd/MM/yyyy')}">05/12/2024</span>
+                                    </span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Total:</span>
+                                    <span class="summary-value" style="color: var(--success); font-size: 1.2rem;">
+                                        $<span th:text="${#numbers.formatDecimal(reserva.precio_reserva, 0, 2)}">150.00</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalles de Fechas -->
+                    <div class="detail-section">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-calendar-alt"></i>
+                            Información de Fechas
+                        </h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="icon" style="background: var(--success);">
+                                    <i class="fa-solid fa-calendar-start"></i>
+                                </div>
+                                <div class="title">Fecha de Inicio</div>
+                                <div class="value" th:text="${#temporals.format(reserva.fecha_inicio, 'dd/MM/yyyy')}">01/12/2024</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="icon" style="background: var(--danger);">
+                                    <i class="fa-solid fa-calendar-end"></i>
+                                </div>
+                                <div class="title">Fecha de Fin</div>
+                                <div class="value" th:text="${#temporals.format(reserva.fecha_fin, 'dd/MM/yyyy')}">05/12/2024</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="icon" style="background: var(--info);">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div class="title">Duración</div>
+                                <div class="value" th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(reserva.fecha_inicio, reserva.fecha_fin)} + ' días'">4 días</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="icon" style="background: var(--warning);">
+                                    <i class="fa-solid fa-dollar-sign"></i>
+                                </div>
+                                <div class="title">Precio Total</div>
+                                <div class="value">$<span th:text="${#numbers.formatDecimal(reserva.precio_reserva, 0, 2)}">150.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la Sucursal -->
+                    <div class="detail-section">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-building"></i>
+                            Información de la Sucursal
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="icon" style="background: var(--blue);">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+                                    <div class="title">Teléfono</div>
+                                    <div class="value" th:text="${reserva.telefonoSucursal}">+54 11 1234-5678</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <div class="icon" style="background: var(--red);">
+                                        <i class="fa-solid fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="title">Ubicación</div>
+                                    <div class="value">Sucursal Principal</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Estado de la Reserva -->
+                    <div class="detail-section">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-tasks"></i>
+                            Estado de la Reserva
+                        </h3>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item" th:classappend="${reserva.estado.name() != 'CANCELADA'} ? 'active' : ''">
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Reserva Creada</div>
+                                    <div class="timeline-time">Reserva registrada en el sistema</div>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item" th:classappend="${reserva.estado.name() == 'CONFIRMADA' or reserva.estado.name() == 'COMPLETADA'} ? 'active' : (${reserva.estado.name() == 'PENDIENTE'} ? 'current' : '')">
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Confirmada</div>
+                                    <div class="timeline-time">Reserva confirmada y procesada</div>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item" th:classappend="${reserva.estado.name() == 'COMPLETADA'} ? 'active' : ''">
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Completada</div>
+                                    <div class="timeline-time">Servicio finalizado exitosamente</div>
+                                </div>
+                            </div>
+                            
+                            <div th:if="${reserva.estado.name() == 'CANCELADA'}" class="timeline-item current">
+                                <div class="timeline-content">
+                                    <div class="timeline-title" style="color: var(--danger);">Cancelada</div>
+                                    <div class="timeline-time">Reserva cancelada</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="actions-card">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-cogs"></i>
+                            Acciones Disponibles
+                        </h3>
+                        
+                        <div class="action-buttons">
+                            <a href="/reservas" class="btn btn-outline-primary btn-action">
+                                <i class="fa-solid fa-arrow-left me-2"></i>
+                                Volver a Reservas
+                            </a>
+                            
+                            <button th:if="${reserva.estado.name() == 'PENDIENTE'}" 
+                                    class="btn btn-outline-danger btn-action"
+                                    onclick="cancelarReserva()">
+                                <i class="fa-solid fa-times me-2"></i>
+                                Cancelar Reserva
+                            </button>
+                            
+                            <a href="/" class="btn btn-primary btn-action">
+                                <i class="fa-solid fa-plus me-2"></i>
+                                Nueva Reserva
+                            </a>
+                            
+                            <button class="btn btn-outline-info btn-action" onclick="imprimirReserva()">
+                                <i class="fa-solid fa-print me-2"></i>
+                                Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+    
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación de entrada
+            const sections = document.querySelectorAll('.detail-section, .reserva-card, .actions-card');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'all 0.5s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+        
+        function cancelarReserva() {
+            if (confirm('¿Está seguro que desea cancelar esta reserva? Esta acción no se puede deshacer.')) {
+                const reservaId = document.querySelector('[th\\:text*="reserva.id_reserva"]').textContent;
+                
+                fetch(`/api/reservas/${reservaId}/cancelar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error al cancelar la reserva. Por favor, intente nuevamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cancelar la reserva. Por favor, intente nuevamente.');
+                });
+            }
+        }
+        
+        function imprimirReserva() {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>
