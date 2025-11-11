@@ -22,3 +22,4 @@ public class UsuarioResponse {
     private DireccionResponse direccion;
     private List<String> roles;
 }
+

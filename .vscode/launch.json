@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch ProyectoReservaDeVehiculosApplication",
+            "request": "launch",
+            "mainClass": "com.reservaDeVehiculos.ProyectoReservaDeVehiculos.ProyectoReservaDeVehiculosApplication",
+            "projectName": "ProyectoReservaDeVehiculos",
+            "console": "integratedTerminal",
+            "args": "",
+            "vmArgs": "",
+            "env": {}
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProyectoReservaDeVehiculosApplication",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.reservaDeVehiculos.ProyectoReservaDeVehiculos.ProyectoReservaDeVehiculosApplication",
+            "projectName": "ProyectoReservaDeVehiculos",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50031 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=ProyectoReservaDeVehiculos"
+        }
+    ]
+}

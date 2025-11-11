@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Mi Perfil - TGSMAX CARS</title>
+    <style>
+        :root{--red:#e74c3c;--blue:#0b5ed7;--muted:#6c757d;--white:#ffffff;--success:#198754;--warning:#ffc107;--danger:#dc3545}
+        
+        .profile-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--blue) 0%, #0b5ed7 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(11, 94, 215, 0.2);
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-header .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-header .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .profile-header .breadcrumb-item.active {
+            color: white;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .profile-card-header {
+            background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .profile-card-header h3 {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-card-body {
+            padding: 30px;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--red) 0%, #c0392b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 3rem;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .avatar-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .avatar-email {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f8f9fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(11, 94, 215, 0.1);
+        }
+
+        .form-control.is-valid {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .invalid-feedback, .valid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .invalid-feedback {
+            color: var(--danger);
+        }
+
+        .valid-feedback {
+            color: var(--success);
+        }
+
+        .btn-update {
+            background: linear-gradient(90deg, var(--blue) 0%, #0a58ca 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(11, 94, 215, 0.2);
+            color: white;
+        }
+
+        .btn-update:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card .icon {
+            color: var(--blue);
+            margin-right: 10px;
+        }
+
+        .security-note {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .security-note .icon {
+            color: var(--warning);
+            margin-right: 10px;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: rgba(25, 135, 84, 0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 15px;
+            }
+            
+            .profile-header {
+                padding: 20px;
+            }
+            
+            .profile-card-body {
+                padding: 20px;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <div class="profile-container">
+        <div class="container">
+            <!-- Header con breadcrumb -->
+            <div class="profile-header">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/dashboard"><i class="fa-solid fa-dashboard me-1"></i>Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+                    </ol>
+                </nav>
+                <h1><i class="fa-solid fa-user me-3"></i>Mi Perfil</h1>
+                <p>Gestiona tu información personal y mantén tu cuenta actualizada</p>
+            </div>
+
+            <!-- Mostrar mensajes -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}">Error message</span>
+            </div>
+            
+            <div th:if="${mensaje}" class="alert alert-success" role="alert">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span th:text="${mensaje}">Success message</span>
+            </div>
+
+            <div class="row">
+                <!-- Información del perfil -->
+                <div class="col-lg-4">
+                    <div class="profile-card">
+                        <div class="profile-card-header">
+                            <h3><i class="fa-solid fa-id-card"></i> Información Personal</h3>
+                        </div>
+                        <div class="profile-card-body">
+                            <div class="avatar-section">
+                                <div class="avatar">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="avatar-name" th:text="${usuario.nombre_usuario} + ' ' + ${usuario.apellido_usuario}">Nombre Usuario</div>
+                                <div class="avatar-email" th:text="${usuario.email_usuario}">usuario@email.com</div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-id-card icon"></i>
+                                    <div>
+                                        <strong>DNI:</strong> <span th:text="${usuario.dni_usuario}">12345678</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-phone icon"></i>
+                                    <div>
+                                        <strong>Teléfono:</strong> <span th:text="${usuario.telefono_usuario}">+54 11 1234-5678</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div th:if="${usuario.direccion}" class="info-card">
+                                <div class="d-flex align-items-start">
+                                    <i class="fa-solid fa-map-marker-alt icon"></i>
+                                    <div>
+                                        <strong>Dirección:</strong><br>
+                                        <span th:text="${usuario.direccion.calle} + ' ' + ${usuario.direccion.numero_calle}">Dirección completa</span><br>
+                                        <small class="text-muted" th:text="${usuario.direccion.ciudad_nombre}">Ciudad</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de edición -->
+                <div class="col-lg-8">
+                    <div class="profile-card">
+                        <div class="profile-card-header">
+                            <h3><i class="fa-solid fa-edit"></i> Editar Información</h3>
+                        </div>
+                        <div class="profile-card-body">
+                            <form th:action="@{/profile/update}" method="post" th:object="${updateRequest}" id="profileForm">
+                                <!-- Información Personal -->
+                                <div class="form-section">
+                                    <h4 class="form-section-title">
+                                        <i class="fa-solid fa-user"></i>
+                                        Datos Personales
+                                    </h4>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="nombre_usuario" class="form-label">
+                                                    <i class="fa-solid fa-user me-1"></i> Nombre
+                                                </label>
+                                                <input type="text" 
+                                                       id="nombre_usuario" 
+                                                       th:field="*{nombre_usuario}" 
+                                                       class="form-control" 
+                                                       placeholder="Tu nombre" 
+                                                       required
+                                                       maxlength="30"
+                                                       th:classappend="${#fields.hasErrors('nombre_usuario')} ? 'is-invalid' : ''">
+                                                <div th:if="${#fields.hasErrors('nombre_usuario')}" class="invalid-feedback">
+                                                    <span th:errors="*{nombre_usuario}">Error en nombre</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="apellido_usuario" class="form-label">
+                                                    <i class="fa-solid fa-user me-1"></i> Apellido
+                                                </label>
+                                                <input type="text" 
+                                                       id="apellido_usuario" 
+                                                       th:field="*{apellido_usuario}" 
+                                                       class="form-control" 
+                                                       placeholder="Tu apellido" 
+                                                       required
+                                                       maxlength="30"
+                                                       th:classappend="${#fields.hasErrors('apellido_usuario')} ? 'is-invalid' : ''">
+                                                <div th:if="${#fields.hasErrors('apellido_usuario')}" class="invalid-feedback">
+                                                    <span th:errors="*{apellido_usuario}">Error en apellido</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Información de Contacto -->
+                                <div class="form-section">
+                                    <h4 class="form-section-title">
+                                        <i class="fa-solid fa-address-book"></i>
+                                        Información de Contacto
+                                    </h4>
+                                    
+                                    <div class="form-group">
+                                        <label for="email_usuario" class="form-label">
+                                            <i class="fa-solid fa-envelope me-1"></i> Email
+                                        </label>
+                                        <input type="email" 
+                                               id="email_usuario" 
+                                               th:field="*{email_usuario}" 
+                                               class="form-control" 
+                                               placeholder="tu@email.com" 
+                                               required
+                                               maxlength="100"
+                                               th:classappend="${#fields.hasErrors('email_usuario')} ? 'is-invalid' : ''">
+                                        <div th:if="${#fields.hasErrors('email_usuario')}" class="invalid-feedback">
+                                            <span th:errors="*{email_usuario}">Error en email</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="telefono_usuario" class="form-label">
+                                            <i class="fa-solid fa-phone me-1"></i> Teléfono
+                                        </label>
+                                        <input type="tel" 
+                                               id="telefono_usuario" 
+                                               th:field="*{telefono_usuario}" 
+                                               class="form-control" 
+                                               placeholder="11 1234-5678" 
+                                               required
+                                               maxlength="20"
+                                               th:classappend="${#fields.hasErrors('telefono_usuario')} ? 'is-invalid' : ''">
+                                        <div th:if="${#fields.hasErrors('telefono_usuario')}" class="invalid-feedback">
+                                            <span th:errors="*{telefono_usuario}">Error en teléfono</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="security-note">
+                                    <i class="fa-solid fa-shield-alt icon"></i>
+                                    <strong>Nota de Seguridad:</strong> Tu DNI no se puede modificar por razones de seguridad. 
+                                    Si necesitas actualizar este dato, contacta con soporte.
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="/dashboard" class="btn btn-outline-secondary">
+                                        <i class="fa-solid fa-arrow-left me-2"></i>Volver al Dashboard
+                                    </a>
+                                    
+                                    <button type="submit" class="btn-update" id="updateBtn">
+                                        <span id="updateBtnText">
+                                            <i class="fa-solid fa-save me-2"></i>Guardar Cambios
+                                        </span>
+                                        <span id="updateBtnLoading" style="display: none;">
+                                            <i class="fa-solid fa-spinner fa-spin me-2"></i>Guardando...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+    
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileForm = document.getElementById('profileForm');
+            const updateBtn = document.getElementById('updateBtn');
+            const updateBtnText = document.getElementById('updateBtnText');
+            const updateBtnLoading = document.getElementById('updateBtnLoading');
+            
+            // Elementos del formulario
+            const nombreInput = document.getElementById('nombre_usuario');
+            const apellidoInput = document.getElementById('apellido_usuario');
+            const emailInput = document.getElementById('email_usuario');
+            const telefonoInput = document.getElementById('telefono_usuario');
+            
+            // Función para mostrar/ocultar estado de carga
+            function setLoadingState(loading) {
+                if (loading) {
+                    updateBtnText.style.display = 'none';
+                    updateBtnLoading.style.display = 'inline';
+                    updateBtn.disabled = true;
+                } else {
+                    updateBtnText.style.display = 'inline';
+                    updateBtnLoading.style.display = 'none';
+                    updateBtn.disabled = false;
+                }
+            }
+            
+            // Validaciones en tiempo real
+            [nombreInput, apellidoInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    if (value.length >= 2 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+                        setValidState(this);
+                    } else if (value) {
+                        setInvalidState(this);
+                    } else {
+                        clearValidationState(this);
+                    }
+                });
+            });
+            
+            emailInput.addEventListener('input', function() {
+                const email = this.value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (email && emailRegex.test(email)) {
+                    setValidState(this);
+                } else if (email) {
+                    setInvalidState(this);
+                } else {
+                    clearValidationState(this);
+                }
+            });
+            
+            telefonoInput.addEventListener('input', function() {
+                const value = this.value.trim();
+                const phoneRegex = /^[+]?[\d\s\-()]+$/;
+                
+                if (value.length >= 8 && phoneRegex.test(value)) {
+                    setValidState(this);
+                } else if (value) {
+                    setInvalidState(this);
+                } else {
+                    clearValidationState(this);
+                }
+            });
+            
+            // Funciones auxiliares para validación visual
+            function setValidState(element) {
+                element.classList.remove('is-invalid');
+                element.classList.add('is-valid');
+            }
+            
+            function setInvalidState(element) {
+                element.classList.remove('is-valid');
+                element.classList.add('is-invalid');
+            }
+            
+            function clearValidationState(element) {
+                element.classList.remove('is-valid', 'is-invalid');
+            }
+            
+            // Manejo del submit del formulario
+            profileForm.addEventListener('submit', function(e) {
+                const formData = {
+                    nombre: nombreInput.value.trim(),
+                    apellido: apellidoInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    telefono: telefonoInput.value.trim()
+                };
+                
+                // Validaciones básicas
+                if (!formData.nombre || !formData.apellido || !formData.email || !formData.telefono) {
+                    e.preventDefault();
+                    alert('Por favor, complete todos los campos.');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    e.preventDefault();
+                    alert('Por favor, ingrese un email válido.');
+                    return;
+                }
+                
+                // Todo OK, mostrar estado de carga
+                setLoadingState(true);
+            });
+            
+            // Ocultar alertas automáticamente después de 5 segundos
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+            
+            // Animación de entrada
+            const profileCards = document.querySelectorAll('.profile-card');
+            profileCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+
+</html>
