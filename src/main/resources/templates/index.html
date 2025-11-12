@@ -26,66 +26,15 @@
                             Alquiler de autos en Argentina
                         </p>
                         
-                        <!-- SEARCH FORM -->
-                        <div class="search-form-wrapper">
-                            <form th:action="@{/reservas}" method="get" class="search-form">
-                                <div class="row g-3">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Seleccioná una Oficina de alquiler</label>
-                                            <select name="pickupOffice" class="form-select form-select-lg" style="border-radius: 8px; border: 2px solid #ddd;">
-                                                <option value="">-- Seleccionar oficina --</option>
-                                                <option th:each="sucursal : ${sucursales}" 
-                                                        th:value="${sucursal.id_sucursal}" 
-                                                        th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}">
-                                                    Sucursal
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Fecha de retiro</label>
-                                            <input type="date" name="pickupDate" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Hora de retiro</label>
-                                            <input type="time" name="pickupTime" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="devolverMisma" name="devolverMisma" checked>
-                                            <label class="form-check-label" for="devolverMisma" style="color: #333; font-weight: 500;">Devolver en la misma oficina</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Fecha de devolución</label>
-                                            <input type="date" name="dropoffDate" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="form-label text-start d-block mb-2" style="color: #333; font-weight: 600;">Hora de devolución</label>
-                                            <input type="time" name="dropoffTime" class="form-control form-control-lg" style="border-radius: 8px; border: 2px solid #ddd;">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12">
-                                        <button type="submit" class="btn btn-pink btn-lg w-100 fw-bold" style="border-radius: 8px; padding: 14px 24px; font-size: 18px;">
-                                            BUSCAR MI AUTO
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+                        <!-- CALL TO ACTION BUTTON -->
+                        <div class="search-form-wrapper text-center">
+                            <p style="font-size: 20px; color: #333; margin-bottom: 30px; line-height: 1.6;">
+                                Reservá tu vehículo ideal en simples pasos.<br>
+                                Tenemos una amplia variedad de autos para que elijas el que más se adapte a tus necesidades.
+                            </p>
+                            <a th:href="@{/reservas}" class="btn btn-pink btn-lg fw-bold" style="border-radius: 8px; padding: 18px 48px; font-size: 22px; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);">
+                                <i class="fa-solid fa-car me-2"></i>BUSCAR MI AUTO
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -253,7 +202,7 @@
                     <!-- Buenos Aires -->
                     <div class="col-lg-3 col-md-6">
                         <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden;">
-                            <img th:src="@{/img/sucursal-buenos-aires.jpg}" alt="Buenos Aires" style="height: 200px; object-fit: cover;">
+                            <img th:src="@{/img/office-buenos-aires.jpg}" alt="Buenos Aires" style="height: 200px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title fw-bold" style="color: #1a1a2e;"><i class="fa-solid fa-location-dot me-2" style="color:var(--red);"></i>Buenos Aires</h5>
                                 <p class="card-text text-muted small">Capital federal y centro del país</p>
@@ -347,43 +296,6 @@
                 </div>
             </div>
         </section>
-        <!-- LOGIN MODAL (flotante) -->
-        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden;">
-                    <div class="modal-header border-0" style="background: var(--white);">
-                        <h5 class="modal-title fw-bold" id="loginModalLabel">Iniciar sesión</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="username" name="username" placeholder="tu@correo.com" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="rememberMe">
-                                    <label class="form-check-label small" for="rememberMe">Recordarme</label>
-                                </div>
-                                <a href="#" class="small">¿Olvidaste tu contraseña?</a>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-pink btn-lg">Iniciar sesión</button>
-                            </div>
-                        </form>
-                        <div class="text-center mt-3">
-                            <small>¿Eres nuevo? <a href="/register" class="fw-bold" style="color: var(--red);">Regístrate</a></small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </main>
     
     <footer th:replace="~{fragments/footer :: main-footer}"></footer>

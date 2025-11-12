@@ -28,7 +28,7 @@ public class UsuariosEntity {
     @Column(name = "email_usuario", length = 100, nullable = false)
     private String email_usuario;
 
-    @Column(name = "contraseña", length = 30, nullable = false)
+    @Column(name = "contraseña", length = 60, nullable = false)
     private String contrasena;
 
     @Column(name = "dni_usuario", length = 30, nullable = false)
@@ -40,6 +40,11 @@ public class UsuariosEntity {
     @OneToOne
     @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
     private DireccionesEntity direccion;
+
+    // 🔗 Relación MUCHOS a UNO con sucursales (para vendedores asignados a sucursal)
+    @ManyToOne
+    @JoinColumn(name = "id_sucursal", referencedColumnName = "id_sucursal")
+    private SucursalesEntity sucursal;
 
     // 🔗 Relación UNO a MUCHOS con usuario_roles
     @OneToMany(mappedBy = "usuario")

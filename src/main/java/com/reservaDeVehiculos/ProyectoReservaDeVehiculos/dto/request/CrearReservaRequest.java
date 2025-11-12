@@ -33,7 +33,10 @@ public class CrearReservaRequest {
     @NotNull(message = "El ID del usuario es obligatorio")
     private Integer id_usuario;
 
-    @NotNull(message = "El ID de la sucursal es obligatorio")
+    @NotNull(message = "El ID de la sucursal de retiro es obligatorio")
     private Integer id_sucursal;
+
+    @NotNull(message = "El ID de la sucursal de devolución es obligatorio")
+    private Integer id_sucursal_devolucion;
 }
 

@@ -13,114 +13,63 @@
             --dark-gray: #1a1a2e;
         }
 
-        /* BARRA DE PASOS */
-        .steps-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 50px;
-            position: relative;
+        body {
+            background-color: var(--light-gray);
+        }
+
+        .reservation-container {
+            max-width: 900px;
+            margin: 40px auto;
             padding: 0 20px;
         }
 
-        .steps-container::before {
-            content: '';
-            position: absolute;
-            top: 25px;
-            left: 60px;
-            right: 60px;
-            height: 2px;
-            background-color: #e0e0e0;
-            z-index: 0;
-        }
-
-        .step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            background-color: #f0f0f0;
-            border: 2px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            color: #999;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-number {
-            background-color: var(--primary-orange);
-            border-color: var(--primary-orange);
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, #e66d00 100%);
             color: white;
-            box-shadow: 0 0 15px rgba(255, 122, 0, 0.3);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.2);
         }
 
-        .step.completed .step-number {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
-            color: white;
-        }
-
-        .step-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .step.active .step-label {
-            color: var(--primary-orange);
+        .page-header h1 {
+            margin: 0;
             font-weight: 700;
+            font-size: 32px;
         }
 
-        .step.completed .step-label {
-            color: var(--primary-blue);
+        .page-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.95;
+            font-size: 16px;
         }
 
-        /* CONTENEDOR DE PASOS */
-        .step-content {
-            display: none;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        .step-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* ESTILOS DE FORMULARIOS */
         .form-section {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .form-section h3 {
             color: var(--dark-gray);
             font-weight: 700;
-            margin-bottom: 30px;
-            font-size: 24px;
+            margin-bottom: 25px;
+            font-size: 22px;
+            border-bottom: 3px solid var(--primary-orange);
+            padding-bottom: 10px;
         }
 
-        .form-group label {
+        .form-section h3 i {
+            color: var(--primary-orange);
+            margin-right: 10px;
+        }
+
+        .form-label {
             font-weight: 600;
             color: var(--dark-gray);
-            margin-bottom: 10px;
-            display: block;
+            margin-bottom: 8px;
         }
 
         .form-control, .form-select {
@@ -136,35 +85,32 @@
             box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.15);
         }
 
-        /* VEHÍCULOS DISPONIBLES */
-        .vehicle-card {
+        .vehicle-select-card {
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .vehicle-card:hover {
-            border-color: var(--primary-orange);
-            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.2);
-        }
-
-        .vehicle-card.selected {
-            border-color: var(--primary-orange);
-            background-color: rgba(255, 122, 0, 0.05);
-            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
-        }
-
-        .vehicle-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .vehicle-info {
             padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .vehicle-select-card:hover {
+            border-color: var(--primary-orange);
+            background-color: rgba(255, 122, 0, 0.02);
+        }
+
+        .vehicle-select-card input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-orange);
+            cursor: pointer;
+        }
+
+        .vehicle-info-inline {
+            flex: 1;
         }
 
         .vehicle-name {
@@ -175,154 +121,72 @@
         }
 
         .vehicle-details {
-            font-size: 13px;
-            color: #999;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
         }
 
         .vehicle-price {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary-orange);
+            white-space: nowrap;
         }
 
-        /* ADICIONALES */
-        .additional-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .additional-item:hover {
-            border-color: var(--primary-orange);
-            background-color: rgba(255, 122, 0, 0.02);
-        }
-
-        .additional-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--primary-orange);
-            margin-right: 15px;
-        }
-
-        .additional-info {
-            flex: 1;
-        }
-
-        .additional-name {
-            font-weight: 600;
-            color: var(--dark-gray);
-            margin-bottom: 3px;
-        }
-
-        .additional-description {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .additional-price {
-            font-weight: 700;
-            color: var(--primary-orange);
-            font-size: 16px;
-        }
-
-        /* BOTONES */
-        .btn-group-nav {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        .btn-prev, .btn-next, .btn-finish {
-            padding: 12px 40px;
-            font-size: 16px;
+        .btn-submit {
+            background-color: var(--primary-orange);
+            color: white;
+            padding: 15px 50px;
+            font-size: 18px;
             font-weight: 600;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
         }
 
-        .btn-prev {
-            background-color: #f0f0f0;
-            color: var(--dark-gray);
-            border: 2px solid #e0e0e0;
-        }
-
-        .btn-prev:hover {
-            background-color: #e8e8e8;
-            border-color: #d0d0d0;
-        }
-
-        .btn-next, .btn-finish {
-            background-color: var(--primary-orange);
-            color: white;
-        }
-
-        .btn-next:hover, .btn-finish:hover {
+        .btn-submit:hover {
             background-color: #e66d00;
-            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(255, 122, 0, 0.3);
+            transform: translateY(-2px);
         }
 
-        .btn-prev:disabled {
-            opacity: 0.5;
+        .btn-submit:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
-        /* RESUMEN */
-        .summary-box {
-            background-color: var(--light-gray);
-            border-left: 4px solid var(--primary-orange);
-            padding: 20px;
+        .alert {
             border-radius: 8px;
-            margin-bottom: 30px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: var(--dark-gray);
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
         }
 
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--primary-orange);
-            border-top: 2px solid #e0e0e0;
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .steps-container {
-                flex-wrap: wrap;
+            .reservation-container {
+                padding: 0 15px;
             }
 
             .form-section {
                 padding: 20px;
             }
 
-            .step-label {
-                font-size: 12px;
+            .page-header h1 {
+                font-size: 24px;
             }
 
-            .btn-group-nav {
+            .vehicle-select-card {
                 flex-direction: column;
-            }
-
-            .btn-prev, .btn-next, .btn-finish {
-                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -331,422 +195,234 @@
 <body>
     <header th:replace="~{fragments/header :: main-header}"></header>
 
-    <main style="background-color: #f7f7f9; padding: 40px 0;">
-        <div class="container" style="max-width: 900px;">
-            <!-- INDICADOR DE PASOS -->
-            <div class="steps-container">
-                <div class="step active" data-step="1">
-                    <div class="step-number">1</div>
-                    <div class="step-label">Reservá un auto</div>
-                </div>
-                <div class="step" data-step="2">
-                    <div class="step-number">2</div>
-                    <div class="step-label">Selecciona un auto</div>
-                </div>
-                <div class="step" data-step="3">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Adicionales</div>
-                </div>
-                <div class="step" data-step="4">
-                    <div class="step-number">4</div>
-                    <div class="step-label">Tu información</div>
-                </div>
+    <main>
+        <div class="reservation-container">
+            <!-- ENCABEZADO -->
+            <div class="page-header">
+                <h1><i class="fa-solid fa-car"></i> Reserva tu Vehículo</h1>
+                <p>Completa el formulario para realizar tu reserva. Todos los campos son obligatorios.</p>
             </div>
 
-            <!-- PASO 1: RESERVA UN AUTO -->
-            <div class="step-content active" id="step-1">
-                <div class="form-section">
-                    <h3><i class="fa-solid fa-calendar me-2" style="color: var(--primary-orange);"></i>Detalles de la Reserva</h3>
-                    
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Oficina de Retiro</label>
-                                <select class="form-select" id="pickupOffice">
-                                    <option value="">-- Seleccionar oficina --</option>
-                                    <option th:each="sucursal : ${sucursales}" 
-                                            th:value="${sucursal.id_sucursal}" 
-                                            th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}">
-                                        Sucursal
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Fecha de Retiro</label>
-                                <input type="date" class="form-control" id="pickupDate">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Hora de Retiro</label>
-                                <input type="time" class="form-control" id="pickupTime" value="10:00">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="additional-item" style="border: none; padding: 0; margin-bottom: 20px;">
-                        <input type="checkbox" id="sameOffice" checked>
-                        <label for="sameOffice" style="margin: 0; font-weight: 600; color: var(--dark-gray); cursor: pointer;">Devolver en la misma oficina</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Fecha de Devolución</label>
-                                <input type="date" class="form-control" id="dropoffDate">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Hora de Devolución</label>
-                                <input type="time" class="form-control" id="dropoffTime" value="10:00">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-group-nav">
-                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
-                </div>
+            <!-- MENSAJES DE ERROR/ÉXITO -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i>
+                <span th:text="${error}">Error</span>
             </div>
 
-            <!-- PASO 2: SELECCIONA UN AUTO -->
-            <div class="step-content" id="step-2">
+            <div th:if="${mensaje}" class="alert alert-success" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i>
+                <span th:text="${mensaje}">Mensaje</span>
+            </div>
+
+            <!-- FORMULARIO PRINCIPAL -->
+            <form th:action="@{/reservas/crear}" method="post" th:object="${reservaRequest}">
+                
+                <!-- SECCIÓN 1: FECHAS Y SUCURSAL -->
                 <div class="form-section">
-                    <h3><i class="fa-solid fa-car me-2" style="color: var(--primary-orange);"></i>Selecciona tu Vehículo</h3>
+                    <h3><i class="fa-solid fa-calendar-days"></i>Fechas y Ubicación</h3>
                     
-                    <div class="row g-4 mb-4">
-                        <!-- Lista dinámica de vehículos desde el backend -->
-                        <div class="col-lg-6" th:each="vehiculo : ${vehiculos}">
-                            <div class="vehicle-card" 
-                                 th:onclick="'selectVehicle(this, \'' + ${vehiculo.id_vehiculo} + '\', \'' + ${vehiculo.marca + ' ' + vehiculo.modelo} + '\')'"
-                                 th:data-vehiculo-id="${vehiculo.id_vehiculo}"
-                                 th:data-vehiculo-nombre="${vehiculo.marca + ' ' + vehiculo.modelo}"
-                                 th:data-vehiculo-estado="${vehiculo.estado}">
-                                
-                                <!-- Imagen dinámica según tipo de vehículo -->
-                                <img th:src="@{/img/img_cat_auto.jpg}" 
-                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('auto')}" 
-                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
-                                <img th:src="@{/img/img_cat_camioneta.jpg}" 
-                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('camioneta')}" 
-                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
-                                <img th:src="@{/img/img_cat_moto.jpg}" 
-                                     th:if="${vehiculo.nombreTipoVehiculo != null and vehiculo.nombreTipoVehiculo.toLowerCase().contains('moto')}" 
-                                     th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}">
-                                
-                                <div class="vehicle-info">
-                                    <div class="vehicle-name" th:text="${vehiculo.marca + ' ' + vehiculo.modelo}">Vehículo</div>
-                                    <div class="vehicle-details">
-                                        <span th:if="${vehiculo.cant_puertas != null}">
-                                            <i class="fa-solid fa-door-closed me-2"></i>
-                                            <span th:text="${vehiculo.cant_puertas + ' puertas'}"></span>
-                                        </span>
-                                        <span class="ms-3" th:if="${vehiculo.tipoCombustible != null}">
-                                            <i class="fa-solid fa-droplet me-2"></i>
-                                            <span th:text="${vehiculo.tipoCombustible}"></span>
-                                        </span>
-                                    </div>
-                                    <div class="vehicle-details mt-2">
-                                        <span th:if="${vehiculo.tipoMotor != null}">
-                                            <i class="fa-solid fa-gears me-2"></i>
-                                            <span th:text="${vehiculo.tipoMotor}"></span>
-                                        </span>
-                                        <span class="ms-3" th:if="${vehiculo.color != null}">
-                                            <i class="fa-solid fa-palette me-2"></i>
-                                            <span th:text="${vehiculo.color}"></span>
-                                        </span>
-                                    </div>
-                                    <div class="vehicle-price">
-                                        <span class="badge" 
-                                              th:classappend="${vehiculo.estado.toString() == 'DISPONIBLE'} ? 'bg-success' : 'bg-danger'"
-                                              th:text="${vehiculo.estado}">
-                                        </span>
-                                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="fecha_inicio" class="form-label">Fecha de Retiro *</label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="fecha_inicio" 
+                                   th:field="*{fecha_inicio}" 
+                                   th:value="${pickupDate}"
+                                   required>
+                            <p class="info-text">Selecciona cuándo recogerás el vehículo</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fecha_fin" class="form-label">Fecha de Devolución *</label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="fecha_fin" 
+                                   th:field="*{fecha_fin}" 
+                                   th:value="${dropoffDate}"
+                                   required>
+                            <p class="info-text">Selecciona cuándo devolverás el vehículo</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_sucursal" class="form-label">Oficina de Alquiler (Retiro) *</label>
+                            <select class="form-select" 
+                                    id="id_sucursal" 
+                                    th:field="*{id_sucursal}" 
+                                    required>
+                                <option value="">-- Selecciona una sucursal --</option>
+                                <option th:each="sucursal : ${sucursales}" 
+                                        th:value="${sucursal.id_sucursal}"
+                                        th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}"
+                                        th:selected="${pickupOffice != null and pickupOffice == sucursal.id_sucursal.toString()}">
+                                    Sucursal
+                                </option>
+                            </select>
+                            <p class="info-text">Selecciona dónde recogerás el vehículo</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_sucursal_devolucion" class="form-label">Oficina de Devolución *</label>
+                            <select class="form-select" 
+                                    id="id_sucursal_devolucion" 
+                                    name="id_sucursal_devolucion" 
+                                    required>
+                                <option value="">-- Selecciona una sucursal --</option>
+                                <option th:each="sucursal : ${sucursales}" 
+                                        th:value="${sucursal.id_sucursal}"
+                                        th:text="${'Sucursal #' + sucursal.id_sucursal + ' - Tel: ' + sucursal.telefono_sucursal}"
+                                        th:selected="${dropoffOffice != null and dropoffOffice == sucursal.id_sucursal.toString()}">
+                                    Sucursal
+                                </option>
+                            </select>
+                            <p class="info-text">Selecciona dónde devolverás el vehículo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: SELECCIÓN DE VEHÍCULO -->
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-car-side"></i>Selecciona tu Vehículo</h3>
+                    
+                    <div th:if="${vehiculos == null or vehiculos.isEmpty()}" class="alert alert-warning">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        No hay vehículos disponibles en este momento.
+                    </div>
+
+                    <div th:if="${vehiculos != null and !vehiculos.isEmpty()}">
+                        <div th:each="vehiculo : ${vehiculos}" class="vehicle-select-card">
+                            <input type="radio" 
+                                   name="id_vehiculo" 
+                                   th:id="'vehiculo_' + ${vehiculo.id_vehiculo}"
+                                   th:value="${vehiculo.id_vehiculo}" 
+                                   required>
+                            <label th:for="'vehiculo_' + ${vehiculo.id_vehiculo}" class="vehicle-info-inline" style="cursor: pointer; margin: 0;">
+                                <div class="vehicle-name" th:text="${vehiculo.marca + ' ' + vehiculo.modelo}">Toyota Corolla</div>
+                                <div class="vehicle-details">
+                                    <span th:text="${vehiculo.nombreTipoVehiculo}">Tipo</span> • 
+                                    <span th:text="${vehiculo.color}">Color</span> • 
+                                    <span th:text="${vehiculo.patente}">Patente</span> •
+                                    <span th:text="${vehiculo.cant_puertas + ' puertas'}">4 puertas</span>
                                 </div>
-                            </div>
+                            </label>
+                            <div class="vehicle-price">$5.000/día</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="btn-group-nav">
-                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
-                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
-                </div>
-            </div>
-
-            <!-- PASO 3: ADICIONALES -->
-            <div class="step-content" id="step-3">
+                <!-- SECCIÓN 3: INFORMACIÓN DEL CLIENTE -->
                 <div class="form-section">
-                    <h3><i class="fa-solid fa-plus me-2" style="color: var(--primary-orange);"></i>Adicionales y Servicios</h3>
+                    <h3><i class="fa-solid fa-user"></i>Tu Información</h3>
                     
-                    <label class="additional-item">
-                        <input type="checkbox" class="additional-checkbox" data-price="8000">
-                        <div class="additional-info">
-                            <div class="additional-name"><i class="fa-solid fa-shield me-2"></i>Seguro Completo</div>
-                            <div class="additional-description">Cobertura integral + 0 franquicia</div>
-                        </div>
-                        <div class="additional-price">$8.000</div>
-                    </label>
+                    <div class="alert alert-info">
+                        <i class="fa-solid fa-circle-info me-2"></i>
+                        <strong>Nota:</strong> Debes estar registrado e iniciar sesión para completar la reserva.
+                        Si no tienes cuenta, <a th:href="@{/register}" class="alert-link">regístrate aquí</a>.
+                    </div>
 
-                    <label class="additional-item">
-                        <input type="checkbox" class="additional-checkbox" data-price="5000">
-                        <div class="additional-info">
-                            <div class="additional-name"><i class="fa-solid fa-car me-2"></i>GPS Incluido</div>
-                            <div class="additional-description">Navegador GPS + actualizaciones gratis</div>
-                        </div>
-                        <div class="additional-price">$5.000</div>
-                    </label>
-
-                    <label class="additional-item">
-                        <input type="checkbox" class="additional-checkbox" data-price="3000">
-                        <div class="additional-info">
-                            <div class="additional-name"><i class="fa-solid fa-car-child me-2"></i>Asiento Infantil</div>
-                            <div class="additional-description">Asiento de seguridad para niños</div>
-                        </div>
-                        <div class="additional-price">$3.000</div>
-                    </label>
-
-                    <label class="additional-item">
-                        <input type="checkbox" class="additional-checkbox" data-price="2000">
-                        <div class="additional-info">
-                            <div class="additional-name"><i class="fa-solid fa-gas-pump me-2"></i>Tanque Lleno</div>
-                            <div class="additional-description">Retira con tanque completo</div>
-                        </div>
-                        <div class="additional-price">$2.000</div>
-                    </label>
-
-                    <label class="additional-item">
-                        <input type="checkbox" class="additional-checkbox" data-price="1500">
-                        <div class="additional-info">
-                            <div class="additional-name"><i class="fa-solid fa-phone me-2"></i>Conductor Extra</div>
-                            <div class="additional-description">Hasta 2 conductores autorizados</div>
-                        </div>
-                        <div class="additional-price">$1.500</div>
-                    </label>
-                </div>
-
-                <div class="btn-group-nav">
-                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
-                    <button class="btn-next" onclick="nextStep()">Siguiente <i class="fa-solid fa-arrow-right ms-2"></i></button>
-                </div>
-            </div>
-
-            <!-- PASO 4: TU INFORMACIÓN -->
-            <div class="step-content" id="step-4">
-                <div class="form-section">
-                    <h3><i class="fa-solid fa-user me-2" style="color: var(--primary-orange);"></i>Tus Datos Personales</h3>
+                    <!-- Campo oculto para ID de usuario (se llenará después del login) -->
+                    <input type="hidden" th:field="*{id_usuario}">
                     
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Nombre Completo</label>
-                                <input type="text" class="form-control" placeholder="Ej: Juan García">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Apellido</label>
-                                <input type="text" class="form-control" placeholder="Ej: Pérez">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Correo Electrónico</label>
-                                <input type="email" class="form-control" placeholder="Ej: juan@example.com">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Teléfono</label>
-                                <input type="tel" class="form-control" placeholder="Ej: +54 9 11 1234-5678">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Número de Documento</label>
-                                <input type="text" class="form-control" placeholder="Ej: 12.345.678">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label>Número de Licencia</label>
-                                <input type="text" class="form-control" placeholder="Ej: ABCD-1234567">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group mb-4">
-                        <label>Dirección</label>
-                        <input type="text" class="form-control" placeholder="Ej: Calle Principal 123">
-                    </div>
-
-                    <div class="form-group mb-4">
-                        <label class="d-flex align-items-center">
-                            <input type="checkbox" class="form-check-input me-3" checked>
-                            Acepto los términos y condiciones de alquiler
-                        </label>
-                    </div>
-
-                    <!-- RESUMEN FINAL -->
-                    <div class="summary-box">
-                        <div class="summary-item">
-                            <span>Vehículo Seleccionado:</span>
-                            <span id="selected-vehicle">No seleccionado</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Fechas:</span>
-                            <span id="selected-dates">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span>Adicionales:</span>
-                            <span id="selected-additionals">Ninguno</span>
-                        </div>
-                        <div class="summary-total">
-                            <span>Total a Pagar:</span>
-                            <span id="total-price">$0</span>
-                        </div>
-                    </div>
+                    <p class="info-text">
+                        <i class="fa-solid fa-check-circle text-success me-1"></i>
+                        Los datos de contacto se tomarán de tu perfil de usuario registrado.
+                    </p>
                 </div>
 
-                <div class="btn-group-nav">
-                    <button class="btn-prev" onclick="prevStep()"><i class="fa-solid fa-arrow-left me-2"></i>Anterior</button>
-                    <button class="btn-finish" onclick="submitReservation()"><i class="fa-solid fa-check me-2"></i>Confirmar Reserva</button>
+                <!-- BOTÓN DE ENVÍO -->
+                <div th:if="${session.usuario != null}">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-check-circle me-2"></i>
+                        Confirmar Reserva
+                    </button>
                 </div>
-            </div>
+                
+                <div th:if="${session.usuario == null}">
+                    <button type="button" class="btn-submit" onclick="mostrarMensajeLogin()" style="background: #6c757d;">
+                        <i class="fa-solid fa-lock me-2"></i>
+                        Confirmar Reserva (Requiere Login)
+                    </button>
+                    <p class="text-center mt-3" style="color: #dc3545; font-weight: 600;">
+                        <i class="fa-solid fa-exclamation-circle me-2"></i>
+                        Para realizar una reserva debes <a th:href="@{/login}" class="text-danger" style="text-decoration: underline;">iniciar sesión</a> 
+                        o <a th:href="@{/register}" class="text-danger" style="text-decoration: underline;">registrarte</a>.
+                    </p>
+                </div>
+            </form>
         </div>
     </main>
 
     <footer th:replace="~{fragments/footer :: main-footer}"></footer>
-
+    
     <script>
-        let currentStep = 1;
-        let selectedVehicle = null;
-        let selectedVehiclePrice = 0;
-        let additionalsCost = 0;
-
-        function showStep(step) {
-            // Ocultar todos los pasos
-            document.querySelectorAll('.step-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            // Mostrar paso actual
-            document.getElementById(`step-${step}`).classList.add('active');
-
-            // Actualizar indicadores
-            document.querySelectorAll('.step').forEach((stepEl, index) => {
-                stepEl.classList.remove('active', 'completed');
-                if (index + 1 === step) {
-                    stepEl.classList.add('active');
-                } else if (index + 1 < step) {
-                    stepEl.classList.add('completed');
-                }
-            });
-
-            currentStep = step;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function nextStep() {
-            if (currentStep < 4) {
-                showStep(currentStep + 1);
-            }
-        }
-
-        function prevStep() {
-            if (currentStep > 1) {
-                showStep(currentStep - 1);
-            }
-        }
-
-        function selectVehicle(element, vehicleId, vehicleName) {
-            // Remover selección anterior
-            document.querySelectorAll('.vehicle-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-
-            // Seleccionar nuevo vehículo
-            element.classList.add('selected');
-            selectedVehicle = vehicleName;
-
-            // Extraer precio del elemento
-            const priceText = element.querySelector('.vehicle-price').textContent;
-            selectedVehiclePrice = parseInt(priceText.replace(/\D/g, ''));
-
-            updateSummary();
-        }
-
-        document.querySelectorAll('.additional-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                updateAdditionalsCost();
-                updateSummary();
-            });
-        });
-
-        function updateAdditionalsCost() {
-            additionalsCost = 0;
-            let selectedAdditionals = [];
-
-            document.querySelectorAll('.additional-checkbox:checked').forEach(checkbox => {
-                const price = parseInt(checkbox.getAttribute('data-price'));
-                additionalsCost += price;
-                selectedAdditionals.push(checkbox.closest('.additional-item').querySelector('.additional-name').textContent.trim());
-            });
-
-            document.getElementById('selected-additionals').textContent = 
-                selectedAdditionals.length > 0 ? selectedAdditionals.join(', ') : 'Ninguno';
-        }
-
-        function updateSummary() {
-            // Actualizar vehículo
-            document.getElementById('selected-vehicle').textContent = selectedVehicle || 'No seleccionado';
-
-            // Actualizar fechas
-            const pickupDate = document.getElementById('pickupDate').value;
-            const dropoffDate = document.getElementById('dropoffDate').value;
-            if (pickupDate && dropoffDate) {
-                document.getElementById('selected-dates').textContent = `${pickupDate} - ${dropoffDate}`;
-            }
-
-            // Calcular total
-            const totalPrice = selectedVehiclePrice + additionalsCost;
-            document.getElementById('total-price').textContent = `$${totalPrice.toLocaleString('es-AR')}`;
-        }
-
-        // Vincular cambios de fechas al resumen
-        document.getElementById('pickupDate').addEventListener('change', updateSummary);
-        document.getElementById('dropoffDate').addEventListener('change', updateSummary);
-
-        // Inicializar
-        document.getElementById('dropoffDate').addEventListener('change', function() {
-            if (!this.value && document.getElementById('sameOffice').checked) {
-                this.value = document.getElementById('pickupDate').value;
+        // Configurar fecha mínima (hoy) para el campo de fecha de retiro
+        const today = new Date().toISOString().split('T')[0];
+        const fechaInicio = document.getElementById('fecha_inicio');
+        const fechaFin = document.getElementById('fecha_fin');
+        
+        // Establecer fecha mínima de retiro como hoy
+        fechaInicio.setAttribute('min', today);
+        
+        // Cuando cambia la fecha de retiro, actualizar la fecha mínima de devolución
+        fechaInicio.addEventListener('change', function() {
+            const startDate = new Date(this.value);
+            // La fecha de devolución debe ser al menos 1 día después
+            const minEndDate = new Date(startDate);
+            minEndDate.setDate(minEndDate.getDate() + 1);
+            
+            const minEndDateStr = minEndDate.toISOString().split('T')[0];
+            fechaFin.setAttribute('min', minEndDateStr);
+            
+            // Si la fecha de devolución actual es inválida, limpiarla
+            if (fechaFin.value && fechaFin.value <= this.value) {
+                fechaFin.value = '';
             }
         });
-
-        document.getElementById('sameOffice').addEventListener('change', function() {
-            if (this.checked) {
-                document.getElementById('dropoffDate').value = document.getElementById('pickupDate').value;
+        
+        // Ejecutar la validación al cargar si ya hay fechas pre-llenadas
+        if (fechaInicio.value) {
+            const startDate = new Date(fechaInicio.value);
+            const minEndDate = new Date(startDate);
+            minEndDate.setDate(minEndDate.getDate() + 1);
+            fechaFin.setAttribute('min', minEndDate.toISOString().split('T')[0]);
+        }
+        
+        // Sincronizar sucursal de retiro con sucursal de devolución por defecto
+        const sucursalRetiro = document.getElementById('id_sucursal');
+        const sucursalDevolucion = document.getElementById('id_sucursal_devolucion');
+        
+        // Al cambiar la sucursal de retiro, copiar a devolución si está vacía
+        sucursalRetiro.addEventListener('change', function() {
+            if (!sucursalDevolucion.value || sucursalDevolucion.value === '') {
+                sucursalDevolucion.value = this.value;
             }
         });
-
-        function submitReservation() {
-            alert('¡Reserva confirmada! Serás redirigido al pago.');
-            // Aquí se conectaría con el backend para procesar la reserva
+        
+        // Si hay valor pre-seleccionado en retiro y devolución está vacía, copiar
+        if (sucursalRetiro.value && !sucursalDevolucion.value) {
+            sucursalDevolucion.value = sucursalRetiro.value;
         }
+        
+        // Función para mostrar mensaje cuando no está logueado
+        function mostrarMensajeLogin() {
+            alert('⚠️ Para realizar una reserva necesitas estar registrado.\n\n' +
+                  '👉 Si ya tienes cuenta, inicia sesión.\n' +
+                  '👉 Si no tienes cuenta, regístrate en segundos.\n\n' +
+                  'Serás redirigido a la página de inicio de sesión.');
+            window.location.href = '/login';
+        }
+        
+        // Validación adicional al enviar el formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const startDate = new Date(fechaInicio.value);
+            const endDate = new Date(fechaFin.value);
+            
+            if (endDate <= startDate) {
+                e.preventDefault();
+                alert('La fecha de devolución debe ser al menos 1 día después de la fecha de retiro.');
+                return false;
+            }
+        });
     </script>
 </body>
-
 </html>

@@ -24,7 +24,7 @@ public class DireccionesEntity {
     @Column(name = "numero_calle", nullable = false)
     private Integer numero_calle;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_ciudad", referencedColumnName = "id_ciudad")
     private CiudadesEntity ciudades;
 

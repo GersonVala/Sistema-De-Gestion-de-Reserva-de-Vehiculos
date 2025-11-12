@@ -18,10 +18,59 @@
                     <li class="nav-item"><a class="nav-link" href="#oficinas">Oficinas</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
                 </ul>
-                <div class="d-flex ms-3">
-                    <!-- Trigger modal -->
-                    <button type="button" class="btn btn-outline-pink me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</button>
-                    <a href="/reservas" class="btn btn-primary-brand" style="color: white; border: none;">Reservar</a>
+                
+                <!-- Botones cuando NO está logueado -->
+                <div class="d-flex ms-3" th:if="${session.usuario == null}">
+                    <a href="/login" class="btn btn-outline-pink me-2">
+                        <i class="fas fa-sign-in-alt me-1"></i>Iniciar sesión
+                    </a>
+                    <a href="/register" class="btn btn-primary-brand" style="color: white; border: none;">
+                        <i class="fas fa-user-plus me-1"></i>Registrarse
+                    </a>
+                </div>
+                
+                <!-- Botones cuando SÍ está logueado -->
+                <div class="d-flex ms-3 align-items-center" th:if="${session.usuario != null}">
+                    <!-- Nombre del usuario -->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-pink dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span th:text="${session.userName}">Usuario</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                            <!-- MENÚ ADMINISTRADOR -->
+                            <th:block th:if="${session.userRoles != null and #lists.contains(session.userRoles, 'ADMINISTRADOR')}">
+                                <li><a class="dropdown-item" href="/admin/dashboard"><i class="fas fa-crown me-2 text-warning"></i>Panel Admin</a></li>
+                                <li><a class="dropdown-item" href="/admin/vendedores/crear"><i class="fas fa-user-plus me-2"></i>Crear Vendedor</a></li>
+                                <li><a class="dropdown-item" href="/admin/usuarios"><i class="fas fa-users me-2"></i>Gestionar Usuarios</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            </th:block>
+                            
+                            <!-- MENÚ VENDEDOR -->
+                            <th:block th:if="${session.userRoles != null and #lists.contains(session.userRoles, 'VENDEDOR')}">
+                                <li><a class="dropdown-item" href="/vendedor/dashboard"><i class="fas fa-briefcase me-2 text-info"></i>Dashboard Vendedor</a></li>
+                                <li><a class="dropdown-item" href="/vendedor/reservas/pendientes"><i class="fas fa-clock me-2"></i>Reservas Pendientes</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            </th:block>
+                            
+                            <!-- MENÚ CLIENTE (común para todos) -->
+                            <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-edit me-2"></i>Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="/reservas"><i class="fas fa-calendar-check me-2"></i>Mis Reservas</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="/logout" method="post" style="margin: 0;">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Botón Reservar -->
+                    <a href="/reservas" class="btn btn-primary-brand" style="color: white; border: none;">
+                        <i class="fas fa-calendar-plus me-1"></i>Reservar
+                    </a>
                 </div>
             </div>
         </div>

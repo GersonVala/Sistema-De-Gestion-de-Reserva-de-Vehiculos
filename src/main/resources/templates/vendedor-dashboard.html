@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/head :: head-links}"></th:block>
+    <title>Dashboard Vendedor - TGSMAX CARS</title>
+</head>
+<body>
+    <header th:replace="~{fragments/header :: main-header}"></header>
+
+    <!-- Hero Header Vendedor -->
+    <section class="hero-section" style="min-height: 250px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="container position-relative" style="z-index: 10;">
+            <div class="row align-items-center" style="min-height: 250px;">
+                <div class="col-12 text-center text-white">
+                    <h1 class="display-4 fw-bold mb-3" style="font-size: 48px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
+                        <i class="fas fa-briefcase me-3"></i>DASHBOARD VENDEDOR
+                    </h1>
+                    <p class="lead fs-5" style="color: #ff7a00; text-shadow: 1px 1px 4px rgba(0,0,0,0.3);">
+                        Bienvenido/a, <span th:text="${vendedorNombre}" class="fw-bold">Vendedor</span> | Sucursal #<span th:text="${sucursalId}">1</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div class="container py-5">
+            <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid #28a745;">
+                <i class="fas fa-check-circle me-2"></i><span th:text="${mensaje}">Mensaje</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid #dc3545;">
+                <i class="fas fa-exclamation-circle me-2"></i><span th:text="${error}">Error</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Métricas -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; background: white; transition: transform 0.3s;">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clock fa-3x" style="color: #ffc107;"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #ffc107; font-size: 42px;" th:text="${metricaPendientes}">0</h2>
+                            <p class="text-muted text-uppercase fw-bold small mb-0" style="letter-spacing: 1px;">Pendientes</p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; background: white; transition: transform 0.3s;">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-check-circle fa-3x" style="color: #17a2b8;"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #17a2b8; font-size: 42px;" th:text="${metricaConfirmadas}">0</h2>
+                            <p class="text-muted text-uppercase fw-bold small mb-0" style="letter-spacing: 1px;">Confirmadas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; background: white; transition: transform 0.3s;">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-car fa-3x" style="color: #28a745;"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #28a745; font-size: 42px;" th:text="${metricaEnAlquiler}">0</h2>
+                            <p class="text-muted text-uppercase fw-bold small mb-0" style="letter-spacing: 1px;">En Alquiler</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 shadow-sm text-center" style="border: none; border-radius: 12px; background: white; transition: transform 0.3s;">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-flag-checkered fa-3x" style="color: #6c757d;"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2" style="color: #6c757d; font-size: 42px;" th:text="${metricaCompletadas}">0</h2>
+                            <p class="text-muted text-uppercase fw-bold small mb-0" style="letter-spacing: 1px;">Completadas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservas Pendientes -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1a1a2e; font-size: 36px;">
+                    <i class="fas fa-clock me-2" style="color: #ff7a00;"></i>Reservas Pendientes de Aprobación
+                </h2>
+            </div>
+            <div th:if="${#lists.isEmpty(reservasPendientes)}" class="text-center py-5" style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <i class="fas fa-inbox fa-4x mb-3" style="color: #ccc;"></i>
+                <p class="text-muted fs-5">No hay reservas pendientes en este momento</p>
+            </div>
+            <div th:if="${!#lists.isEmpty(reservasPendientes)}" class="table-responsive" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <table class="table table-hover mb-0">
+                <thead style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white;">
+                    <tr>
+                        <th class="py-3">ID</th>
+                        <th>Cliente</th>
+                        <th>Vehículo</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reserva : ${reservasPendientes}">
+                        <td th:text="${reserva.id_reserva}">#001</td>
+                        <td>
+                            <strong th:text="${reserva.nombreCliente}">Juan Pérez</strong><br>
+                            <small class="text-muted" th:text="${reserva.emailCliente}">juan@email.com</small>
+                        </td>
+                        <td>
+                            <strong th:text="${reserva.marcaVehiculo + ' ' + reserva.modeloVehiculo}">Toyota Corolla</strong><br>
+                            <small class="text-muted" th:text="${reserva.patenteVehiculo}">ABC-123</small>
+                        </td>
+                        <td th:text="${#temporals.format(reserva.fecha_inicio, 'dd/MM/yyyy')}">15/11/2024</td>
+                        <td th:text="${#temporals.format(reserva.fecha_fin, 'dd/MM/yyyy')}">20/11/2024</td>
+                        <td><strong th:text="'$' + ${#numbers.formatDecimal(reserva.monto_total, 0, 'COMMA', 2, 'POINT')}">$150.00</strong></td>
+                        <td><span class="badge badge-pendiente">PENDIENTE</span></td>
+                        <td class="text-center">
+                            <form th:action="@{/vendedor/reservas/{id}/aprobar(id=${reserva.id_reserva})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-success fw-bold" title="Aprobar reserva" style="border-radius: 8px;">
+                                    <i class="fas fa-check me-1"></i>Aprobar
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-sm btn-danger fw-bold" data-bs-toggle="modal" th:data-bs-target="'#modalRechazar' + ${reserva.id_reserva}" title="Rechazar reserva" style="border-radius: 8px;">
+                                <i class="fas fa-times me-1"></i>Rechazar
+                            </button>
+                            <!-- Modal Rechazar -->
+                            <div class="modal fade" th:id="'modalRechazar' + ${reserva.id_reserva}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Rechazar Reserva #<span th:text="${reserva.id_reserva}">001</span></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form th:action="@{/vendedor/reservas/{id}/rechazar(id=${reserva.id_reserva})}" method="post">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Motivo del rechazo:</label>
+                                                    <textarea name="motivo" class="form-control" rows="3" placeholder="Ej: Vehículo no disponible..." required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-danger"><i class="fas fa-times me-1"></i>Confirmar Rechazo</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+            <!-- Reservas Asignadas -->
+            <div class="text-center mb-4 mt-5">
+                <h2 class="fw-bold" style="color: #1a1a2e; font-size: 36px;">
+                    <i class="fas fa-clipboard-list me-2" style="color: #ff7a00;"></i>Mis Reservas Asignadas
+                </h2>
+            </div>
+            <div th:if="${#lists.isEmpty(reservasAsignadas)}" class="text-center py-5" style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <i class="fas fa-inbox fa-4x mb-3" style="color: #ccc;"></i>
+                <p class="text-muted fs-5">No tienes reservas asignadas</p>
+            </div>
+            <div th:if="${!#lists.isEmpty(reservasAsignadas)}" class="table-responsive" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <table class="table table-hover mb-0">
+                    <thead style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white;">
+                        <tr>
+                            <th class="py-3">ID</th>
+                            <th>Cliente</th>
+                            <th>Vehículo</th>
+                            <th>Fechas</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr th:each="reserva : ${reservasAsignadas}">
+                        <td th:text="${reserva.id_reserva}">#002</td>
+                        <td>
+                            <strong th:text="${reserva.nombreCliente}">María García</strong><br>
+                            <small class="text-muted" th:text="${reserva.emailCliente}">maria@email.com</small>
+                        </td>
+                        <td>
+                            <strong th:text="${reserva.marcaVehiculo + ' ' + reserva.modeloVehiculo}">Honda Civic</strong><br>
+                            <small class="text-muted" th:text="${reserva.patenteVehiculo}">XYZ-789</small>
+                        </td>
+                        <td>
+                            <small>
+                                <strong>Inicio:</strong> <span th:text="${#temporals.format(reserva.fecha_inicio, 'dd/MM/yyyy')}">16/11/2024</span><br>
+                                <strong>Fin:</strong> <span th:text="${#temporals.format(reserva.fecha_fin, 'dd/MM/yyyy')}">18/11/2024</span>
+                            </small>
+                        </td>
+                        <td><strong th:text="'$' + ${#numbers.formatDecimal(reserva.monto_total, 0, 'COMMA', 2, 'POINT')}">$200.00</strong></td>
+                        <td><span th:class="'badge badge-' + ${#strings.toLowerCase(reserva.estado)}" th:text="${reserva.estado}">CONFIRMADA</span></td>
+                        <td class="text-center">
+                            <!-- Iniciar - solo CONFIRMADA -->
+                            <form th:if="${reserva.estado.name() == 'CONFIRMADA'}" th:action="@{/vendedor/reservas/{id}/iniciar(id=${reserva.id_reserva})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-info fw-bold" title="Registrar retiro" style="border-radius: 8px;">
+                                    <i class="fas fa-play me-1"></i>Iniciar
+                                </button>
+                            </form>
+                            <!-- Completar - solo ALQUILADO -->
+                            <form th:if="${reserva.estado.name() == 'ALQUILADO'}" th:action="@{/vendedor/reservas/{id}/completar(id=${reserva.id_reserva})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-secondary fw-bold" title="Registrar devolución" style="border-radius: 8px;">
+                                    <i class="fas fa-flag-checkered me-1"></i>Completar
+                                </button>
+                            </form>
+                            <!-- Finalizada -->
+                            <span th:if="${reserva.estado.name() == 'COMPLETADA' or reserva.estado.name() == 'CANCELADA' or reserva.estado.name() == 'RECHAZADA'}" class="text-muted fw-bold">
+                                <i class="fas fa-check"></i> Finalizada
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <div class="text-center my-5">
+                <a th:href="@{/}" class="btn btn-pink fw-bold px-5 py-3" style="border-radius: 8px; font-size: 18px;">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: main-footer}"></footer>
+</body>
+</html>

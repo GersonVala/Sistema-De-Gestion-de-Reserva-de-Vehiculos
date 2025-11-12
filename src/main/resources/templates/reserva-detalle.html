@@ -483,22 +483,20 @@
                                 Volver a Reservas
                             </a>
                             
-                            <button th:if="${reserva.estado.name() == 'PENDIENTE'}" 
-                                    class="btn btn-outline-danger btn-action"
-                                    onclick="cancelarReserva()">
-                                <i class="fa-solid fa-times me-2"></i>
-                                Cancelar Reserva
-                            </button>
+                            <form th:if="${reserva.estado.name() == 'PENDIENTE'}" 
+                                  th:action="@{/mis-reservas/{id}/cancelar(id=${reserva.id_reserva})}" 
+                                  method="post" 
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-action">
+                                    <i class="fa-solid fa-times me-2"></i>
+                                    Cancelar Reserva
+                                </button>
+                            </form>
                             
-                            <a href="/" class="btn btn-primary btn-action">
+                            <a th:href="@{/reservas}" class="btn btn-primary btn-action">
                                 <i class="fa-solid fa-plus me-2"></i>
                                 Nueva Reserva
                             </a>
-                            
-                            <button class="btn btn-outline-info btn-action" onclick="imprimirReserva()">
-                                <i class="fa-solid fa-print me-2"></i>
-                                Imprimir
-                            </button>
                         </div>
                     </div>
                 </div>

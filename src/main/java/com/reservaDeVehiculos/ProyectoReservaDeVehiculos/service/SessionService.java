@@ -27,27 +27,38 @@ public class SessionService {
      */
     public void createUserSession(HttpSession session, LoginResponse loginResponse) {
         try {
-            // Invalidar sesión anterior si existe
-            session.invalidate();
+            // Limpiar atributos de sesión anterior (sin invalidar la sesión actual)
+            // Esto evita problemas con Thymeleaf y el objeto session
+            session.removeAttribute(SESSION_USER);
+            session.removeAttribute(SESSION_USER_ID);
+            session.removeAttribute("usuarioId"); // Para compatibilidad
+            session.removeAttribute(SESSION_USER_NAME);
+            session.removeAttribute(SESSION_USER_EMAIL);
+            session.removeAttribute(SESSION_USER_ROLES);
+            session.removeAttribute(SESSION_LOGIN_TIME);
+            session.removeAttribute(SESSION_LAST_ACTIVITY);
             
-            // Crear nueva sesión
+            // Establecer nuevos atributos de sesión
             session.setAttribute(SESSION_USER, loginResponse);
             session.setAttribute(SESSION_USER_ID, loginResponse.getId_usuario());
+            session.setAttribute("usuarioId", loginResponse.getId_usuario()); // Para compatibilidad con WebViewController
             session.setAttribute(SESSION_USER_NAME, loginResponse.getNombre_completo());
             session.setAttribute(SESSION_USER_EMAIL, loginResponse.getEmail_usuario());
+            session.setAttribute(SESSION_USER_ROLES, loginResponse.getRoles()); // Guardar roles en sesión
             session.setAttribute(SESSION_LOGIN_TIME, LocalDateTime.now());
             session.setAttribute(SESSION_LAST_ACTIVITY, LocalDateTime.now());
             
             // Configurar timeout de sesión (30 minutos)
             session.setMaxInactiveInterval(30 * 60);
             
-            log.info("Sesión creada para usuario: {} [ID: {}]", 
+            log.info("✅ Sesión creada exitosamente para usuario: {} [ID: {}]", 
                     loginResponse.getEmail_usuario(), 
                     loginResponse.getId_usuario());
                     
         } catch (Exception e) {
-            log.error("Error al crear sesión para usuario {}: {}", 
+            log.error("❌ Error al crear sesión para usuario {}: {}", 
                     loginResponse.getEmail_usuario(), e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("Error al crear sesión de usuario");
         }
     }

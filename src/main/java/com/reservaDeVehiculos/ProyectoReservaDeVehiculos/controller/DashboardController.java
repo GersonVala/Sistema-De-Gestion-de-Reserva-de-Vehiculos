@@ -166,7 +166,7 @@ public class DashboardController {
     /**
      * Mis reservas
      */
-    @GetMapping("/reservas")
+    @GetMapping("/mis-reservas")
     public String misReservas(@RequestParam(value = "estado", required = false) String estado,
                             Model model, 
                             HttpSession session) {
@@ -267,5 +267,27 @@ public class DashboardController {
         stats.put("gastoTotal", gastoTotal);
         
         return stats;
+    }
+
+    /**
+     * Cancelar una reserva (POST)
+     */
+    @PostMapping("/mis-reservas/{id}/cancelar")
+    public String cancelarReserva(@PathVariable Integer id,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        if (!sessionService.isUserLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        try {
+            // Cancelar la reserva
+            reservaService.cancelar(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Reserva cancelada exitosamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al cancelar la reserva: " + e.getMessage());
+        }
+
+        return "redirect:/mis-reservas";
     }
 }

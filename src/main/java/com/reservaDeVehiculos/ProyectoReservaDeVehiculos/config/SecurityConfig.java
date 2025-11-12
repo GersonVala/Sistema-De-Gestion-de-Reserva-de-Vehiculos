@@ -8,10 +8,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuración de Spring Security
+ * 
+ * IMPORTANTE: Esta clase solo proporciona BCryptPasswordEncoder para encriptación.
+ * La autenticación y autorización se manejan con el sistema personalizado:
+ * - AuthController: Maneja login/logout/register
+ * - SessionService: Gestión de sesiones HTTP
+ * - AuthInterceptor: Control de acceso a URLs protegidas
+ * 
+ * Spring Security está configurado en modo "permisivo" para no interferir.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Bean de BCryptPasswordEncoder para encriptar contraseñas
+     * Este es el ÚNICO componente de Spring Security que usamos activamente
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -22,29 +37,16 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // Permitir acceso público a recursos estáticos
-                .requestMatchers("/css/**", "/js/**", "/img/**", "/vendor/**", "/favicon.ico").permitAll()
-                // Permitir acceso público a las vistas principales (home y reservas)
-                .requestMatchers("/", "/reservas", "/oficinas").permitAll()
-                // Permitir acceso a la consola H2 (solo para desarrollo)
-                .requestMatchers("/h2-console/**").permitAll()
-                // Permitir acceso público a la API REST
-                .requestMatchers("/api/**").permitAll()
-                // Permitir acceso público al login y registro
-                .requestMatchers("/login", "/register", "/logout").permitAll()
-                // Todas las demás rutas requieren autenticación (dashboard, admin, etc.)
-                .anyRequest().authenticated()
+                // Permitir TODO el acceso - La autenticación la maneja AuthInterceptor
+                .anyRequest().permitAll()
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .permitAll()
-            )
+            // DESHABILITAR formLogin de Spring Security completamente
+            // La autenticación la maneja AuthController + SessionService + AuthInterceptor
+            .formLogin(form -> form.disable())
+            // DESHABILITAR httpBasic también
+            .httpBasic(basic -> basic.disable())
+            // DESHABILITAR logout de Spring Security
+            .logout(logout -> logout.disable())
             // Deshabilitar frame options para permitir H2 Console
             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 

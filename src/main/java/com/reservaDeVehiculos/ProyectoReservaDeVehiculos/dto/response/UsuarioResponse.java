@@ -21,5 +21,9 @@ public class UsuarioResponse {
     private String telefono_usuario;
     private DireccionResponse direccion;
     private List<String> roles;
+    
+    // Sucursal asignada (solo para vendedores)
+    private Integer idSucursal;
+    private String nombreSucursal;
 }
 

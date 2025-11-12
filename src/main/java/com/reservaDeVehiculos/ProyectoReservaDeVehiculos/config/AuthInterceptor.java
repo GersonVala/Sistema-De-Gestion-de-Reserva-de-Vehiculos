@@ -18,12 +18,14 @@ import java.util.List;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final SessionService sessionService;
+    private final com.reservaDeVehiculos.ProyectoReservaDeVehiculos.service.AuthorizationService authService;
 
     // URLs que requieren autenticación
     private static final List<String> PROTECTED_URLS = Arrays.asList(
         "/dashboard",
         "/profile",
         "/reservas",
+        "/vendedor",
         "/admin"
     );
 
@@ -39,7 +41,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         "/css",
         "/js",
         "/img",
-        "/vendor"
+        "/vendor",
+        "/error"
     );
 
     @Override
@@ -48,24 +51,30 @@ public class AuthInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         HttpSession session = request.getSession(false);
 
-        log.debug("Interceptando petición: {} {}", method, requestURI);
+        log.info("🔍 Interceptor - {} {} | Sesión existe: {}", method, requestURI, session != null);
 
         // Permitir recursos estáticos
         if (isStaticResource(requestURI)) {
+            log.debug("✅ Recurso estático permitido: {}", requestURI);
             return true;
         }
 
         // Permitir URLs públicas
         if (isPublicUrl(requestURI)) {
+            log.debug("✅ URL pública permitida: {}", requestURI);
             return true;
         }
 
         // Verificar si la URL requiere autenticación
         if (requiresAuthentication(requestURI)) {
+            log.info("🔐 URL requiere autenticación: {}", requestURI);
             
             // Verificar si el usuario está logueado
-            if (!sessionService.isUserLoggedIn(session)) {
-                log.warn("Acceso denegado a URL protegida '{}' - Usuario no autenticado", requestURI);
+            boolean isLoggedIn = sessionService.isUserLoggedIn(session);
+            log.info("📋 Usuario logueado: {}", isLoggedIn);
+            
+            if (!isLoggedIn) {
+                log.warn("❌ Acceso denegado a '{}' - Usuario no autenticado", requestURI);
                 
                 // Guardar URL de destino para redirección post-login
                 if (session != null) {
@@ -82,15 +91,45 @@ public class AuthInterceptor implements HandlerInterceptor {
             
             // Verificar si la sesión ha expirado
             if (sessionService.isSessionExpired(session)) {
-                log.warn("Sesión expirada para usuario: {}", sessionService.getCurrentUserEmail(session));
+                log.warn("⏰ Sesión expirada para usuario: {}", sessionService.getCurrentUserEmail(session));
                 sessionService.destroyUserSession(session);
                 
                 response.sendRedirect("/login?error=Su sesión ha expirado. Por favor, inicie sesión nuevamente");
                 return false;
             }
 
-            log.debug("Acceso autorizado a '{}' para usuario: {}", 
+            // Validar permisos por rol para rutas protegidas
+            if (!checkRoleAccess(requestURI, session, response)) {
+                return false;
+            }
+
+            log.info("✅ Acceso autorizado a '{}' para usuario: {}", 
                      requestURI, sessionService.getCurrentUserEmail(session));
+        }
+
+        return true;
+    }
+
+    /**
+     * Verificar acceso basado en roles para rutas específicas
+     */
+    private boolean checkRoleAccess(String requestURI, HttpSession session, HttpServletResponse response) throws Exception {
+        // Rutas de vendedor - solo VENDEDOR o ADMIN
+        if (requestURI.startsWith("/vendedor")) {
+            if (!authService.isVendedor(session) && !authService.isAdministrador(session)) {
+                log.warn("❌ Acceso denegado a '{}' - Usuario no es VENDEDOR ni ADMIN", requestURI);
+                response.sendRedirect("/error/403?message=No tienes permisos para acceder a esta sección");
+                return false;
+            }
+        }
+
+        // Rutas de administrador - solo ADMIN
+        if (requestURI.startsWith("/admin")) {
+            if (!authService.isAdministrador(session)) {
+                log.warn("❌ Acceso denegado a '{}' - Usuario no es ADMINISTRADOR", requestURI);
+                response.sendRedirect("/error/403?message=Solo administradores pueden acceder a esta sección");
+                return false;
+            }
         }
 
         return true;

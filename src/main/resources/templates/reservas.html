@@ -305,19 +305,19 @@
             <div class="filters-card">
                 <h5 class="mb-3"><i class="fa-solid fa-filter me-2"></i>Filtrar por Estado</h5>
                 <div class="filter-group">
-                    <a href="/reservas" class="filter-btn" th:classappend="${estadoFiltro == null or estadoFiltro == ''} ? 'active' : ''">
+                    <a href="/mis-reservas" class="filter-btn" th:classappend="${estadoFiltro == null or estadoFiltro == ''} ? 'active' : ''">
                         <i class="fa-solid fa-list me-1"></i> Todas
                     </a>
-                    <a href="/reservas?estado=confirmada" class="filter-btn" th:classappend="${estadoFiltro == 'confirmada'} ? 'active' : ''">
+                    <a href="/mis-reservas?estado=confirmada" class="filter-btn" th:classappend="${estadoFiltro == 'confirmada'} ? 'active' : ''">
                         <i class="fa-solid fa-check-circle me-1"></i> Confirmadas
                     </a>
-                    <a href="/reservas?estado=pendiente" class="filter-btn" th:classappend="${estadoFiltro == 'pendiente'} ? 'active' : ''">
+                    <a href="/mis-reservas?estado=pendiente" class="filter-btn" th:classappend="${estadoFiltro == 'pendiente'} ? 'active' : ''">
                         <i class="fa-solid fa-clock me-1"></i> Pendientes
                     </a>
-                    <a href="/reservas?estado=completada" class="filter-btn" th:classappend="${estadoFiltro == 'completada'} ? 'active' : ''">
+                    <a href="/mis-reservas?estado=completada" class="filter-btn" th:classappend="${estadoFiltro == 'completada'} ? 'active' : ''">
                         <i class="fa-solid fa-flag-checkered me-1"></i> Completadas
                     </a>
-                    <a href="/reservas?estado=cancelada" class="filter-btn" th:classappend="${estadoFiltro == 'cancelada'} ? 'active' : ''">
+                    <a href="/mis-reservas?estado=cancelada" class="filter-btn" th:classappend="${estadoFiltro == 'cancelada'} ? 'active' : ''">
                         <i class="fa-solid fa-times-circle me-1"></i> Canceladas
                     </a>
                 </div>
@@ -435,18 +435,20 @@
                         </div>
 
                         <div class="reserva-actions">
-                            <a th:href="@{/reservas/{id}(id=${reserva.id_reserva})}" 
+                            <a th:href="@{/mis-reservas/{id}(id=${reserva.id_reserva})}" 
                                class="btn btn-outline-primary btn-sm">
                                 <i class="fa-solid fa-eye me-1"></i>Ver Detalles
                             </a>
                             
                             <!-- Mostrar acciones según el estado -->
-                            <button th:if="${reserva.estado.name() == 'PENDIENTE'}" 
-                                    class="btn btn-outline-danger btn-sm"
-                                    onclick="cancelarReserva(this.getAttribute('data-id'))"
-                                    th:attr="data-id=${reserva.id_reserva}">
-                                <i class="fa-solid fa-times me-1"></i>Cancelar
-                            </button>
+                            <form th:if="${reserva.estado.name() == 'PENDIENTE'}" 
+                                  th:action="@{/mis-reservas/{id}/cancelar(id=${reserva.id_reserva})}" 
+                                  method="post" 
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Cancelar reserva">
+                                    <i class="fa-solid fa-times me-1"></i>Cancelar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

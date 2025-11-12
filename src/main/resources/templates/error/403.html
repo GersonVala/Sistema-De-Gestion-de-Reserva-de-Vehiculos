@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Denegado - 403</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+        .error-container {
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: #dc3545;
+            margin: 0;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 28px;
+            color: #333;
+            margin: 1rem 0;
+        }
+        .error-message {
+            font-size: 16px;
+            color: #666;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+        }
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .btn-home:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="icon">🚫</div>
+        <h1 class="error-code">403</h1>
+        <h2 class="error-title">Acceso Denegado</h2>
+        <p class="error-message" th:text="${param.message != null ? param.message[0] : 'No tienes permisos para acceder a esta sección.'}">
+            No tienes permisos para acceder a esta sección.
+        </p>
+        <p class="error-message">
+            Si crees que esto es un error, contacta al administrador del sistema.
+        </p>
+        <a href="/" class="btn-home">Volver al Inicio</a>
+    </div>
+</body>
+</html>

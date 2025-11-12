@@ -35,5 +35,17 @@ public interface ReservaRepository extends JpaRepository<ReservasEntity, Integer
     // Buscar reservas por usuario y estado
     @Query("SELECT r FROM ReservasEntity r WHERE r.usuario.id_usuario = :idUsuario AND r.estado = :estado")
     List<ReservasEntity> findByUsuarioIdAndEstado(@Param("idUsuario") Integer idUsuario, @Param("estado") EstadoReservaEnum estado);
+
+    // Buscar reservas por vendedor
+    @Query("SELECT r FROM ReservasEntity r WHERE r.vendedor.id_usuario = :idVendedor")
+    List<ReservasEntity> findByVendedorId(@Param("idVendedor") Integer idVendedor);
+
+    // Buscar reservas por vendedor y estado
+    @Query("SELECT r FROM ReservasEntity r WHERE r.vendedor.id_usuario = :idVendedor AND r.estado = :estado")
+    List<ReservasEntity> findByVendedorIdAndEstado(@Param("idVendedor") Integer idVendedor, @Param("estado") EstadoReservaEnum estado);
+
+    // Buscar reservas pendientes de una sucursal (sin vendedor asignado aún)
+    @Query("SELECT r FROM ReservasEntity r WHERE r.sucursal.id_sucursal = :idSucursal AND r.estado = :estado AND r.vendedor IS NULL")
+    List<ReservasEntity> findPendientesBySucursalId(@Param("idSucursal") Integer idSucursal, @Param("estado") EstadoReservaEnum estado);
 }
 

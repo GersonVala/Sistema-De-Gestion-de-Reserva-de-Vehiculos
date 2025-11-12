@@ -30,9 +30,13 @@ public class ReservaService {
         UsuariosEntity usuario = usuarioRepository.findById(request.getId_usuario())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
-        // Validar sucursal
+        // Validar sucursal de retiro
         SucursalesEntity sucursal = sucursalRepository.findById(request.getId_sucursal())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal de retiro no encontrada"));
+
+        // Validar sucursal de devolución
+        SucursalesEntity sucursalDevolucion = sucursalRepository.findById(request.getId_sucursal_devolucion())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal de devolución no encontrada"));
 
         // Validar fechas
         if (request.getFecha_fin().isBefore(request.getFecha_inicio())) {
@@ -47,6 +51,7 @@ public class ReservaService {
         reserva.setPrecio_reserva(request.getPrecio_reserva());
         reserva.setUsuario(usuario);
         reserva.setSucursal(sucursal);
+        reserva.setSucursalDevolucion(sucursalDevolucion);
 
         ReservasEntity reservaGuardada = reservaRepository.save(reserva);
         return convertirAResponse(reservaGuardada);
@@ -76,6 +81,24 @@ public class ReservaService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservaResponse> obtenerPorVendedor(Integer idVendedor) {
+        return reservaRepository.findByVendedorId(idVendedor).stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReservaResponse> obtenerPorVendedorYEstado(Integer idVendedor, EstadoReservaEnum estado) {
+        return reservaRepository.findByVendedorIdAndEstado(idVendedor, estado).stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReservaResponse> obtenerPendientesPorSucursal(Integer idSucursal) {
+        return reservaRepository.findPendientesBySucursalId(idSucursal, EstadoReservaEnum.PENDIENTE).stream()
+                .map(this::convertirAResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public ReservaResponse actualizar(Integer id, ActualizarReservaRequest request) {
         ReservasEntity reserva = reservaRepository.findById(id)
@@ -95,23 +118,152 @@ public class ReservaService {
         }
         if (request.getId_sucursal() != null) {
             SucursalesEntity sucursal = sucursalRepository.findById(request.getId_sucursal())
-                    .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal no encontrada"));
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal de retiro no encontrada"));
             reserva.setSucursal(sucursal);
+        }
+        if (request.getId_sucursal_devolucion() != null) {
+            SucursalesEntity sucursalDevolucion = sucursalRepository.findById(request.getId_sucursal_devolucion())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Sucursal de devolución no encontrada"));
+            reserva.setSucursalDevolucion(sucursalDevolucion);
         }
 
         ReservasEntity reservaActualizada = reservaRepository.save(reserva);
         return convertirAResponse(reservaActualizada);
     }
 
+    /**
+     * Cliente cancela su propia reserva (solo si está PENDIENTE)
+     */
     @Transactional
-    public void cancelar(Integer id) {
+    public ReservaResponse cancelarPorCliente(Integer id, Integer idCliente) {
         ReservasEntity reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
 
+        // Validar que la reserva pertenece al cliente
+        if (!reserva.getUsuario().getId_usuario().equals(idCliente)) {
+            throw new IllegalStateException("No puedes cancelar una reserva que no te pertenece");
+        }
+
+        // Solo se puede cancelar si está PENDIENTE
+        if (reserva.getEstado() != EstadoReservaEnum.PENDIENTE) {
+            throw new IllegalStateException("Solo puedes cancelar reservas pendientes");
+        }
+
         reserva.setEstado(EstadoReservaEnum.CANCELADA);
-        reservaRepository.save(reserva);
+        ReservasEntity reservaActualizada = reservaRepository.save(reserva);
+        return convertirAResponse(reservaActualizada);
     }
 
+    /**
+     * Vendedor aprueba una reserva PENDIENTE → CONFIRMADA
+     */
+    @Transactional
+    public ReservaResponse aprobarReserva(Integer id, Integer idVendedor) {
+        ReservasEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
+
+        // Validar que esté PENDIENTE
+        if (reserva.getEstado() != EstadoReservaEnum.PENDIENTE) {
+            throw new IllegalStateException("Solo se pueden aprobar reservas pendientes");
+        }
+
+        // Obtener vendedor
+        UsuariosEntity vendedor = usuarioRepository.findById(idVendedor)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Vendedor no encontrado"));
+
+        // Asignar vendedor y cambiar estado
+        reserva.setVendedor(vendedor);
+        reserva.setEstado(EstadoReservaEnum.CONFIRMADA);
+
+        // TODO: Actualizar estado del vehículo a RESERVADO
+
+        ReservasEntity reservaActualizada = reservaRepository.save(reserva);
+        return convertirAResponse(reservaActualizada);
+    }
+
+    /**
+     * Vendedor rechaza una reserva PENDIENTE → RECHAZADA
+     */
+    @Transactional
+    public ReservaResponse rechazarReserva(Integer id, Integer idVendedor, String motivo) {
+        ReservasEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
+
+        // Validar que esté PENDIENTE
+        if (reserva.getEstado() != EstadoReservaEnum.PENDIENTE) {
+            throw new IllegalStateException("Solo se pueden rechazar reservas pendientes");
+        }
+
+        // Obtener vendedor
+        UsuariosEntity vendedor = usuarioRepository.findById(idVendedor)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Vendedor no encontrado"));
+
+        // Asignar vendedor y cambiar estado
+        reserva.setVendedor(vendedor);
+        reserva.setEstado(EstadoReservaEnum.RECHAZADA);
+
+        // TODO: Guardar motivo del rechazo (requiere nuevo campo en BD)
+
+        ReservasEntity reservaActualizada = reservaRepository.save(reserva);
+        return convertirAResponse(reservaActualizada);
+    }
+
+    /**
+     * Vendedor registra el retiro del vehículo CONFIRMADA → ALQUILADO
+     */
+    @Transactional
+    public ReservaResponse iniciarAlquiler(Integer id, Integer idVendedor) {
+        ReservasEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
+
+        // Validar que esté CONFIRMADA
+        if (reserva.getEstado() != EstadoReservaEnum.CONFIRMADA) {
+            throw new IllegalStateException("Solo se pueden iniciar reservas confirmadas");
+        }
+
+        // Validar que el vendedor sea el asignado
+        if (reserva.getVendedor() == null || !reserva.getVendedor().getId_usuario().equals(idVendedor)) {
+            throw new IllegalStateException("Solo el vendedor asignado puede iniciar el alquiler");
+        }
+
+        reserva.setEstado(EstadoReservaEnum.ALQUILADO);
+
+        // TODO: Actualizar estado del vehículo a ALQUILADO
+
+        ReservasEntity reservaActualizada = reservaRepository.save(reserva);
+        return convertirAResponse(reservaActualizada);
+    }
+
+    /**
+     * Vendedor registra la devolución del vehículo ALQUILADO → COMPLETADA
+     */
+    @Transactional
+    public ReservaResponse completarAlquiler(Integer id, Integer idVendedor) {
+        ReservasEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
+
+        // Validar que esté ALQUILADO
+        if (reserva.getEstado() != EstadoReservaEnum.ALQUILADO) {
+            throw new IllegalStateException("Solo se pueden completar reservas en alquiler");
+        }
+
+        // Validar que el vendedor sea el asignado
+        if (reserva.getVendedor() == null || !reserva.getVendedor().getId_usuario().equals(idVendedor)) {
+            throw new IllegalStateException("Solo el vendedor asignado puede completar el alquiler");
+        }
+
+        reserva.setEstado(EstadoReservaEnum.COMPLETADA);
+
+        // TODO: Actualizar estado del vehículo a DISPONIBLE
+
+        ReservasEntity reservaActualizada = reservaRepository.save(reserva);
+        return convertirAResponse(reservaActualizada);
+    }
+
+    /**
+     * @deprecated Usar aprobarReserva() en su lugar
+     */
+    @Deprecated
     @Transactional
     public void confirmar(Integer id) {
         ReservasEntity reserva = reservaRepository.findById(id)
@@ -121,6 +273,23 @@ public class ReservaService {
         reservaRepository.save(reserva);
     }
 
+    /**
+     * @deprecated Usar cancelarPorCliente() en su lugar
+     */
+    @Deprecated
+    @Transactional
+    public void cancelar(Integer id) {
+        ReservasEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + id));
+
+        reserva.setEstado(EstadoReservaEnum.CANCELADA);
+        reservaRepository.save(reserva);
+    }
+
+    /**
+     * @deprecated Usar completarAlquiler() en su lugar
+     */
+    @Deprecated
     @Transactional
     public void completar(Integer id) {
         ReservasEntity reserva = reservaRepository.findById(id)
@@ -142,6 +311,18 @@ public class ReservaService {
         String nombreCompleto = reserva.getUsuario().getNombre_usuario() + " " +
                                 reserva.getUsuario().getApellido_usuario();
 
+        // Información del vendedor (puede ser null si aún no se asignó)
+        Integer idVendedor = null;
+        String nombreVendedor = null;
+        String emailVendedor = null;
+        
+        if (reserva.getVendedor() != null) {
+            idVendedor = reserva.getVendedor().getId_usuario();
+            nombreVendedor = reserva.getVendedor().getNombre_usuario() + " " + 
+                           reserva.getVendedor().getApellido_usuario();
+            emailVendedor = reserva.getVendedor().getEmail_usuario();
+        }
+
         return new ReservaResponse(
                 reserva.getId_reserva(),
                 reserva.getFecha_inicio(),
@@ -150,7 +331,13 @@ public class ReservaService {
                 reserva.getPrecio_reserva(),
                 nombreCompleto,
                 reserva.getUsuario().getEmail_usuario(),
-                reserva.getSucursal().getTelefono_sucursal()
+                reserva.getSucursal().getTelefono_sucursal(),
+                reserva.getSucursal().getId_sucursal(),
+                reserva.getSucursalDevolucion().getId_sucursal(),
+                reserva.getSucursalDevolucion().getTelefono_sucursal(),
+                idVendedor,
+                nombreVendedor,
+                emailVendedor
         );
     }
 }

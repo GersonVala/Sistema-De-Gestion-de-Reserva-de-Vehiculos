@@ -23,6 +23,7 @@ public class AuthController {
 
     private final UsuarioService usuarioService;
     private final SessionService sessionService;
+    private final com.reservaDeVehiculos.ProyectoReservaDeVehiculos.service.AuthorizationService authService;
 
     /**
      * Mostrar página de login
@@ -48,20 +49,33 @@ public class AuthController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
         
+        log.info("🔵 Procesando login para email: {}", loginRequest.getEmail_usuario());
+        
         // Si hay errores de validación, volver al formulario
         if (bindingResult.hasErrors()) {
+            log.warn("⚠️ Errores de validación en formulario de login");
             model.addAttribute("error", "Por favor, complete todos los campos correctamente.");
             return "login";
         }
 
         try {
+            log.info("🔍 Llamando a usuarioService.login()...");
             // Llamar al servicio para autenticar
             LoginResponse loginResponse = usuarioService.login(loginRequest);
+            log.info("✅ Login exitoso, creando sesión...");
             
             // Crear sesión usando SessionService
             sessionService.createUserSession(session, loginResponse);
+            log.info("✅ Sesión creada, preparando redirección...");
             
-            log.info("Usuario autenticado exitosamente: {}", loginResponse.getEmail_usuario());
+            // Verificar que la sesión se creó correctamente
+            Object sessionUser = session.getAttribute("usuario");
+            if (sessionUser == null) {
+                log.error("❌ ERROR: La sesión no se guardó correctamente");
+                throw new RuntimeException("Error al crear sesión");
+            }
+            
+            log.info("✅ Usuario autenticado exitosamente: {}", loginResponse.getEmail_usuario());
             
             // Verificar si hay una URL de redirección guardada
             String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
@@ -69,16 +83,30 @@ public class AuthController {
                 session.removeAttribute("redirectAfterLogin");
                 redirectAttributes.addFlashAttribute("mensaje", 
                     "¡Bienvenido/a " + loginResponse.getNombre_completo() + "!");
+                log.info("🔀 Redirigiendo a URL guardada: {}", redirectUrl);
                 return "redirect:" + redirectUrl;
             }
             
-            // Redirigir al dashboard con mensaje de éxito
+            // Redirigir según el rol del usuario
+            String destinoRedireccion;
+            if (authService.isAdministrador(session)) {
+                destinoRedireccion = "/admin/dashboard";
+                log.info("🔀 Usuario es ADMINISTRADOR, redirigiendo a {}", destinoRedireccion);
+            } else if (authService.isVendedor(session)) {
+                destinoRedireccion = "/vendedor/dashboard";
+                log.info("🔀 Usuario es VENDEDOR, redirigiendo a {}", destinoRedireccion);
+            } else {
+                // Por defecto (CLIENTE o sin rol específico)
+                destinoRedireccion = "/dashboard";
+                log.info("🔀 Usuario es CLIENTE, redirigiendo a {}", destinoRedireccion);
+            }
+            
             redirectAttributes.addFlashAttribute("mensaje", 
                 "¡Bienvenido/a " + loginResponse.getNombre_completo() + "!");
-            return "redirect:/dashboard";
+            return "redirect:" + destinoRedireccion;
             
         } catch (Exception e) {
-            log.error("Error en login: {}", e.getMessage());
+            log.error("❌ Error en login: {}", e.getMessage(), e);
             model.addAttribute("error", "Email o contraseña incorrectos. Por favor, intente nuevamente.");
             model.addAttribute("loginRequest", loginRequest);
             return "login";

@@ -4,6 +4,7 @@ import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.entity.*;
 import com.reservaDeVehiculos.ProyectoReservaDeVehiculos.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,13 @@ public class DataInitializer implements CommandLineRunner {
     private final CiudadRepository ciudadRepository;
     private final DireccionRepository direccionRepository;
     private final UsuarioRepository usuarioRepository;
+    private final RolRepository rolRepository;
+    private final UsuarioRolRepository usuarioRolRepository;
     private final SucursalRepository sucursalRepository;
     private final TipoVehiculoRepository tipoVehiculoRepository;
     private final MotorRepository motorRepository;
     private final VehiculoRepository vehiculoRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) {
@@ -43,6 +47,25 @@ public class DataInitializer implements CommandLineRunner {
     private void inicializarDatos() {
 
         // ============================================
+        // 0. CREAR ROLES (PRIMERO)
+        // ============================================
+        System.out.println("📋 Creando roles...");
+        RolesEntity rolAdmin = crearRol(RolEnum.ADMINISTRADOR.name(), "Administrador del sistema");
+        System.out.println("   ✅ Rol ADMINISTRADOR creado - ID: " + rolAdmin.getId_rol());
+        
+        RolesEntity rolCliente = crearRol(RolEnum.CLIENTE.name(), "Cliente del sistema");
+        System.out.println("   ✅ Rol CLIENTE creado - ID: " + rolCliente.getId_rol());
+        
+        RolesEntity rolVendedor = crearRol(RolEnum.VENDEDOR.name(), "Vendedor de sucursal");
+        System.out.println("   ✅ Rol VENDEDOR creado - ID: " + rolVendedor.getId_rol());
+        
+        System.out.println("✅ Roles creados: 3");
+        
+        // Verificar que los roles estén en BD
+        long totalRoles = rolRepository.count();
+        System.out.println("📊 Total de roles en BD: " + totalRoles);
+
+        // ============================================
         // 1. CREAR CIUDADES
         // ============================================
         CiudadesEntity buenosAires = crearCiudad("Buenos Aires", "Buenos Aires");
@@ -56,43 +79,79 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("✅ Ciudades creadas: 6");
 
         // ============================================
-        // 2. CREAR DIRECCIONES
+        // 2. CREAR DIRECCIONES (una por cada usuario + direcciones para sucursales)
         // ============================================
-        DireccionesEntity dirBA = crearDireccion("Av. Corrientes", 1234, buenosAires);
-        DireccionesEntity dirCba = crearDireccion("Av. Colón", 567, cordoba);
-        DireccionesEntity dirMdz = crearDireccion("Av. San Martín", 890, mendoza);
-        DireccionesEntity dirChaco = crearDireccion("Av. 25 de Mayo", 345, chaco);
-        DireccionesEntity dirChubut = crearDireccion("Av. Roca", 678, chubut);
-        DireccionesEntity dirCorrientes = crearDireccion("Av. 3 de Abril", 456, corrientes);
+        // Direcciones para usuarios
+        DireccionesEntity dirAdmin = crearDireccion("Av. Corrientes", 1234, buenosAires);
+        DireccionesEntity dirVendedor1 = crearDireccion("Av. Callao", 2000, buenosAires);
+        DireccionesEntity dirVendedor2 = crearDireccion("Av. Colón", 567, cordoba);
+        DireccionesEntity dirVendedor3 = crearDireccion("Av. San Martín", 890, mendoza);
+        DireccionesEntity dirCliente1 = crearDireccion("Av. Roca", 678, chubut);
+        DireccionesEntity dirCliente2 = crearDireccion("Av. 3 de Abril", 456, corrientes);
+        DireccionesEntity dirCliente3 = crearDireccion("Av. Rivadavia", 5000, buenosAires);
+        
+        // Direcciones para sucursales
+        DireccionesEntity dirSucBA = crearDireccion("Av. 9 de Julio", 100, buenosAires);
+        DireccionesEntity dirSucCba = crearDireccion("Av. Hipólito Yrigoyen", 200, cordoba);
+        DireccionesEntity dirSucMdz = crearDireccion("Av. Las Heras", 300, mendoza);
 
-        direccionRepository.saveAll(List.of(dirBA, dirCba, dirMdz, dirChaco, dirChubut, dirCorrientes));
-        System.out.println("✅ Direcciones creadas: 6");
-
-        // ============================================
-        // 3. CREAR USUARIOS VENDEDORES
-        // ============================================
-        UsuariosEntity vendedor1 = crearVendedor("Juan", "Pérez", "juan@tgsmax.com", "12345678", "1122334455", dirBA);
-        UsuariosEntity vendedor2 = crearVendedor("María", "González", "maria@tgsmax.com", "23456789", "3511223344", dirCba);
-        UsuariosEntity vendedor3 = crearVendedor("Carlos", "López", "carlos@tgsmax.com", "34567890", "2614455667", dirMdz);
-        UsuariosEntity vendedor4 = crearVendedor("Ana", "Martínez", "ana@tgsmax.com", "45678901", "3624556677", dirChaco);
-        UsuariosEntity vendedor5 = crearVendedor("Pedro", "Ramírez", "pedro@tgsmax.com", "56789012", "2804667788", dirChubut);
-        UsuariosEntity vendedor6 = crearVendedor("Laura", "Fernández", "laura@tgsmax.com", "67890123", "3794778899", dirCorrientes);
-
-        usuarioRepository.saveAll(List.of(vendedor1, vendedor2, vendedor3, vendedor4, vendedor5, vendedor6));
-        System.out.println("✅ Usuarios vendedores creados: 6");
+        List<DireccionesEntity> direccionesGuardadas = direccionRepository.saveAll(List.of(
+            dirAdmin, dirVendedor1, dirVendedor2, dirVendedor3, 
+            dirCliente1, dirCliente2, dirCliente3,
+            dirSucBA, dirSucCba, dirSucMdz
+        ));
+        System.out.println("✅ Direcciones creadas: " + direccionesGuardadas.size() + " (7 usuarios + 3 sucursales)");
 
         // ============================================
-        // 4. CREAR SUCURSALES
+        // 3. CREAR ADMINISTRADOR
         // ============================================
-        SucursalesEntity sucBA = crearSucursal("011-5555-1001", dirBA, vendedor1);
-        SucursalesEntity sucCba = crearSucursal("0351-5555-2002", dirCba, vendedor2);
-        SucursalesEntity sucMdz = crearSucursal("0261-5555-3003", dirMdz, vendedor3);
-        SucursalesEntity sucChaco = crearSucursal("0362-5555-4004", dirChaco, vendedor4);
-        SucursalesEntity sucChubut = crearSucursal("0280-5555-5005", dirChubut, vendedor5);
-        SucursalesEntity sucCorrientes = crearSucursal("0379-5555-6006", dirCorrientes, vendedor6);
+        String passwordEncriptada = passwordEncoder.encode("password");
+        UsuariosEntity admin = crearUsuario("Admin", "Sistema", "admin@tgsmax.com", passwordEncriptada, "00000000", "1111111111", dirAdmin);
+        asignarRol(admin, rolAdmin);
+        System.out.println("✅ Administrador creado: admin@tgsmax.com / password");
 
-        sucursalRepository.saveAll(List.of(sucBA, sucCba, sucMdz, sucChaco, sucChubut, sucCorrientes));
-        System.out.println("✅ Sucursales creadas: 6");
+        // ============================================
+        // 4. CREAR USUARIOS VENDEDORES
+        // ============================================
+        UsuariosEntity vendedor1 = crearUsuario("Juan", "Pérez", "juan@tgsmax.com", passwordEncriptada, "12345678", "1122334455", dirVendedor1);
+        UsuariosEntity vendedor2 = crearUsuario("María", "González", "maria@tgsmax.com", passwordEncriptada, "23456789", "3511223344", dirVendedor2);
+        UsuariosEntity vendedor3 = crearUsuario("Carlos", "López", "carlos@tgsmax.com", passwordEncriptada, "34567890", "2614455667", dirVendedor3);
+
+        System.out.println("✅ Usuarios vendedores creados: 3");
+
+        // ============================================
+        // 5. CREAR CLIENTES
+        // ============================================
+        UsuariosEntity cliente1 = crearUsuario("Pedro", "Ramírez", "pedro@email.com", passwordEncriptada, "56789012", "2804667788", dirCliente1);
+        UsuariosEntity cliente2 = crearUsuario("Laura", "Fernández", "laura@email.com", passwordEncriptada, "67890123", "3794778899", dirCliente2);
+        UsuariosEntity cliente3 = crearUsuario("Roberto", "Silva", "roberto@email.com", passwordEncriptada, "78901234", "1155443322", dirCliente3);
+
+        asignarRol(cliente1, rolCliente);
+        asignarRol(cliente2, rolCliente);
+        asignarRol(cliente3, rolCliente);
+        System.out.println("✅ Clientes creados: 3 (pedro@email.com, laura@email.com, roberto@email.com) / password");
+
+        // ============================================
+        // 6. CREAR SUCURSALES
+        // ============================================
+        SucursalesEntity sucBA = crearSucursal("011-5555-1001", dirSucBA, vendedor1);
+        SucursalesEntity sucCba = crearSucursal("0351-5555-2002", dirSucCba, vendedor2);
+        SucursalesEntity sucMdz = crearSucursal("0261-5555-3003", dirSucMdz, vendedor3);
+
+        sucursalRepository.saveAll(List.of(sucBA, sucCba, sucMdz));
+        System.out.println("✅ Sucursales creadas: 3");
+
+        // Asignar sucursales a vendedores
+        vendedor1.setSucursal(sucBA);
+        vendedor2.setSucursal(sucCba);
+        vendedor3.setSucursal(sucMdz);
+        usuarioRepository.saveAll(List.of(vendedor1, vendedor2, vendedor3));
+
+        // Asignar rol VENDEDOR
+        asignarRol(vendedor1, rolVendedor);
+        asignarRol(vendedor2, rolVendedor);
+        asignarRol(vendedor3, rolVendedor);
+        System.out.println("✅ Vendedores asignados a sucursales y roles configurados");
 
         // ============================================
         // 5. CREAR TIPOS DE VEHÍCULOS
@@ -127,20 +186,22 @@ public class DataInitializer implements CommandLineRunner {
         // Camionetas
         VehiculosEntity camioneta1 = crearVehiculo("Ford", "Ranger", "DD456EE", "Azul", 4, motor3, tipoCamioneta, sucBA);
         VehiculosEntity camioneta2 = crearVehiculo("Toyota", "Hilux", "EE567FF", "Rojo", 4, motor3, tipoCamioneta, sucCba);
-        VehiculosEntity camioneta3 = crearVehiculo("Chevrolet", "S10", "FF678GG", "Blanco", 4, motor3, tipoCamioneta, sucChaco);
+        VehiculosEntity camioneta3 = crearVehiculo("Chevrolet", "S10", "FF678GG", "Blanco", 4, motor3, tipoCamioneta, sucMdz);
         
         // Motos
-        VehiculosEntity moto1 = crearVehiculo("Honda", "Wave", "GG789HH", "Roja", 0, motor4, tipoMoto, sucMdz);
-        VehiculosEntity moto2 = crearVehiculo("Yamaha", "FZ", "HH890II", "Negra", 0, motor4, tipoMoto, sucChubut);
-        VehiculosEntity moto3 = crearVehiculo("Zanella", "RX150", "II901JJ", "Azul", 0, motor4, tipoMoto, sucCorrientes);
+        VehiculosEntity moto1 = crearVehiculo("Honda", "Wave", "GG789HH", "Roja", 0, motor4, tipoMoto, sucBA);
+        VehiculosEntity moto2 = crearVehiculo("Yamaha", "FZ", "HH890II", "Negra", 0, motor4, tipoMoto, sucCba);
+        VehiculosEntity moto3 = crearVehiculo("Zanella", "RX150", "II901JJ", "Azul", 0, motor4, tipoMoto, sucMdz);
 
         vehiculoRepository.saveAll(List.of(auto1, auto2, auto3, camioneta1, camioneta2, camioneta3, moto1, moto2, moto3));
         System.out.println("✅ Vehículos creados: 9");
 
         System.out.println("🎉 ¡Datos de prueba cargados exitosamente!");
         System.out.println("📊 Resumen:");
+        System.out.println("   - Usuarios: 7 (1 admin, 3 vendedores, 3 clientes)");
+        System.out.println("   - Direcciones: 10 (7 para usuarios, 3 para sucursales)");
         System.out.println("   - Ciudades: 6");
-        System.out.println("   - Sucursales: 6 (Buenos Aires, Córdoba, Mendoza, Chaco, Chubut, Corrientes)");
+        System.out.println("   - Sucursales: 3 (Buenos Aires, Córdoba, Mendoza)");
         System.out.println("   - Tipos de Vehículos: 3");
         System.out.println("   - Vehículos disponibles: 9");
     } // Fin de inicializarDatos()
@@ -164,17 +225,24 @@ public class DataInitializer implements CommandLineRunner {
         return direccion;
     }
 
-    private UsuariosEntity crearVendedor(String nombre, String apellido, String email, 
-                                         String dni, String telefono, DireccionesEntity direccion) {
+    private UsuariosEntity crearUsuario(String nombre, String apellido, String email, 
+                                        String password, String dni, String telefono, DireccionesEntity direccion) {
         UsuariosEntity usuario = new UsuariosEntity();
         usuario.setNombre_usuario(nombre);
         usuario.setApellido_usuario(apellido);
         usuario.setEmail_usuario(email);
-        usuario.setContrasena("password123"); // En producción usar BCrypt
+        usuario.setContrasena(password); // Ya viene encriptado desde el método que llama
         usuario.setDni_usuario(dni);
         usuario.setTelefono_usuario(telefono);
         usuario.setDireccion(direccion);
-        return usuario;
+        return usuarioRepository.save(usuario);
+    }
+
+    private void asignarRol(UsuariosEntity usuario, RolesEntity rol) {
+        Usuario_rolesEntity usuarioRol = new Usuario_rolesEntity();
+        usuarioRol.setUsuario(usuario);
+        usuarioRol.setRol(rol);
+        usuarioRolRepository.save(usuarioRol);
     }
 
     private SucursalesEntity crearSucursal(String telefono, DireccionesEntity direccion, UsuariosEntity vendedor) {
@@ -214,5 +282,12 @@ public class DataInitializer implements CommandLineRunner {
         vehiculo.setTipoDeVehiculo(tipo);
         vehiculo.setSucursal(sucursal);
         return vehiculo;
+    }
+
+    private RolesEntity crearRol(String nombreRol, String descripcion) {
+        RolesEntity rol = new RolesEntity();
+        rol.setNombre_rol(nombreRol);
+        rol.setDescripcion_rol(descripcion);
+        return rolRepository.save(rol);
     }
 }

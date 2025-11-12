@@ -39,10 +39,20 @@ public class ReservasEntity {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     private UsuariosEntity usuario;
 
-    // 🔗 FK: id_sucursal → sucursales(id_sucursal)
+    // 🔗 FK: id_sucursal → sucursales(id_sucursal) - Sucursal de RETIRO
     @ManyToOne
     @JoinColumn(name = "id_sucursal", referencedColumnName = "id_sucursal", nullable = false)
     private SucursalesEntity sucursal;
+
+    // 🔗 FK: id_sucursal_devolucion → sucursales(id_sucursal) - Sucursal de DEVOLUCIÓN
+    @ManyToOne
+    @JoinColumn(name = "id_sucursal_devolucion", referencedColumnName = "id_sucursal", nullable = false)
+    private SucursalesEntity sucursalDevolucion;
+
+    // 🔗 FK: id_vendedor → usuarios(id_usuario) - Vendedor que gestiona/aprueba la reserva
+    @ManyToOne
+    @JoinColumn(name = "id_vendedor", referencedColumnName = "id_usuario")
+    private UsuariosEntity vendedor;
 
     // 🔗 Relación UNO a MUCHOS con detalle_reserva
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)

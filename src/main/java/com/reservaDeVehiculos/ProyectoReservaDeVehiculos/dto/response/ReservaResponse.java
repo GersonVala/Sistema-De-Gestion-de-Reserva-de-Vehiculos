@@ -22,6 +22,14 @@ public class ReservaResponse {
     private BigDecimal precio_reserva;
     private String nombreCompletoUsuario;
     private String emailUsuario;
-    private String telefonoSucursal;
+    private String telefonoSucursal; // Sucursal de retiro
+    private Integer idSucursalRetiro;
+    private Integer idSucursalDevolucion;
+    private String telefonoSucursalDevolucion;
+    
+    // Información del vendedor que gestionó la reserva
+    private Integer idVendedor;
+    private String nombreVendedor;
+    private String emailVendedor;
 }
 

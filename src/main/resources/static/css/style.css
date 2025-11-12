@@ -171,3 +171,47 @@ a{color:inherit;text-decoration:none}
 @media (max-width:576px){
     .card img{height:120px}
 }
+
+/* Header User Dropdown */
+.dropdown-menu {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 8px;
+    min-width: 200px;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: var(--red);
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #fee;
+    color: #dc3545 !important;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-top: 1px solid #e9ecef;
+}
+
+/* User button in header */
+.btn-outline-pink {
+    border: 2px solid var(--red);
+    color: var(--red);
+    background: transparent;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-pink:hover {
+    background: var(--red);
+    color: white;
+    transform: translateY(-2px);
+}

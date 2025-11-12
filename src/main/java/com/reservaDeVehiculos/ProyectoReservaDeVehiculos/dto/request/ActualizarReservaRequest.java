@@ -18,5 +18,6 @@ public class ActualizarReservaRequest {
     private EstadoReservaEnum estado;
     private BigDecimal precio_reserva;
     private Integer id_sucursal;
+    private Integer id_sucursal_devolucion;
 }
 

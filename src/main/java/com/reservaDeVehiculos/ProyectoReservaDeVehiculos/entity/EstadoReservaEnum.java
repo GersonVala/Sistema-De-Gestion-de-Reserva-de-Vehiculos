@@ -7,10 +7,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum EstadoReservaEnum {
 
-    PENDIENTE("Pendiente"),
-    CONFIRMADA("Confirmada"),
-    CANCELADA("Cancelada"),
-    COMPLETADA("Completada");
+    PENDIENTE("Pendiente de aprobación"),      // Cliente solicitó, esperando vendedor
+    CONFIRMADA("Confirmada"),                  // Vendedor aprobó, esperando retiro
+    RECHAZADA("Rechazada"),                    // Vendedor rechazó la solicitud
+    ALQUILADO("En alquiler"),                  // Cliente retiró el vehículo
+    COMPLETADA("Completada"),                  // Cliente devolvió el vehículo
+    CANCELADA("Cancelada");                    // Cliente canceló antes de confirmar
 
     private final String descripcion;
 }
