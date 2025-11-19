@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Motores - Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+        .badge-motor {
+            background: #34d399;
+            color: #065f46;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        .badge-combustible {
+            background: #fbbf24;
+            color: #78350f;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-action {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-main">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Motores</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h4 class="mb-0">
+                            <i class="bi bi-gear-fill me-2"></i>
+                            Gestión de Motores
+                        </h4>
+                        <small>Administración de especificaciones de motores</small>
+                    </div>
+                    <div class="d-flex gap-2 mt-2 mt-md-0">
+                        <a th:href="@{/admin/motores/nuevo}" class="btn btn-light btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Nuevo Motor
+                        </a>
+                        <a th:href="@{/admin/dashboard}" class="btn btn-light btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <!-- Mensajes flash -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span th:text="${success}">Operación exitosa</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Contador de motores -->
+                <div class="alert alert-info mb-4" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Total de motores registrados: <strong th:text="${#lists.size(motores)}">0</strong>
+                </div>
+
+                <!-- Tabla de motores -->
+                <div class="table-responsive" th:if="${!#lists.isEmpty(motores)}">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Tipo Motor</th>
+                                <th scope="col">Combustible</th>
+                                <th scope="col">Cilindrada</th>
+                                <th scope="col">Caballos de Fuerza</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="motor : ${motores}">
+                                <td th:text="${motor.idMotor}">1</td>
+                                <td>
+                                    <span class="badge-motor" th:text="${motor.tipoMotor.name()}">MANUAL</span>
+                                </td>
+                                <td>
+                                    <span class="badge-combustible" th:text="${motor.tipoCombustible.name()}">NAFTA</span>
+                                </td>
+                                <td>
+                                    <span th:text="${motor.cilindrada}">2.0</span> L
+                                </td>
+                                <td>
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    <span th:text="${motor.caballosDeFuerza}">150</span> HP
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-buttons justify-content-center">
+                                        <a th:href="@{/admin/motores/{id}/editar(id=${motor.idMotor})}"
+                                           class="btn btn-primary btn-action">
+                                            <i class="bi bi-pencil me-1"></i>
+                                            Editar
+                                        </a>
+                                        <form th:action="@{/admin/motores/{id}/eliminar(id=${motor.idMotor})}"
+                                              method="post"
+                                              style="display: inline;">
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-action"
+                                                    onclick="return confirm('¿Está seguro de eliminar este motor?\nEsta acción no se puede deshacer y puede afectar vehículos asociados.')">
+                                                <i class="bi bi-trash me-1"></i>
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mensaje si no hay motores -->
+                <div th:if="${#lists.isEmpty(motores)}" class="text-center py-5">
+                    <i class="bi bi-gear" style="font-size: 4rem; color: #cbd5e1;"></i>
+                    <h5 class="mt-3 text-muted">No hay motores registrados</h5>
+                    <p class="text-muted">Aún no hay motores en el sistema. Agregue el primer motor para comenzar.</p>
+                    <a th:href="@{/admin/motores/nuevo}" class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Agregar Primer Motor
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-muted small">
+            <i class="bi bi-info-circle me-1"></i>
+            Gestión de especificaciones técnicas de motores
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

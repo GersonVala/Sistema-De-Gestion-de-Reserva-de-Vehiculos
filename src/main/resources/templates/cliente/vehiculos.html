@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Vehículos - Cliente</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .search-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(13, 18, 43, 0.05);
+            margin-bottom: 2rem;
+        }
+        .vehicle-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            background: white;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(13, 18, 43, 0.15);
+        }
+        .vehicle-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .vehicle-image-placeholder {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 4rem;
+        }
+        .vehicle-body {
+            padding: 1.25rem;
+        }
+        .vehicle-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        .vehicle-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2b6ef6;
+            margin-bottom: 1rem;
+        }
+        .vehicle-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .spec-badge {
+            background: #f0f5ff;
+            color: #2b6ef6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        .badge-disponible {
+            background: #34d399;
+            color: #065f46;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            padding: 0.625rem 1rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2b6ef6;
+            box-shadow: 0 0 0 0.2rem rgba(43, 110, 246, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.625rem 1.5rem;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(43, 110, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-main">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/cliente/dashboard}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Buscar Vehículos</li>
+            </ol>
+        </nav>
+
+        <!-- Header Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h4 class="mb-0">
+                            <i class="bi bi-car-front-fill me-2"></i>
+                            Buscar Vehículos Disponibles
+                        </h4>
+                        <small>Selecciona fechas y sucursal para ver vehículos disponibles</small>
+                    </div>
+                    <div class="d-flex gap-2 mt-2 mt-md-0">
+                        <a th:href="@{/cliente/mis-reservas}" class="btn btn-light btn-sm">
+                            <i class="bi bi-calendar-check me-1"></i>
+                            Mis Reservas
+                        </a>
+                        <a th:href="@{/cliente/dashboard}" class="btn btn-light btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensajes flash -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${success}">Operación exitosa</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Error</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search-card">
+            <h5 class="mb-4">
+                <i class="bi bi-search me-2"></i>
+                Filtros de Búsqueda
+            </h5>
+            <form th:action="@{/cliente/vehiculos}" method="get">
+                <div class="row g-3">
+                    <!-- Fecha Inicio -->
+                    <div class="col-md-4">
+                        <label for="fechaInicio" class="form-label fw-semibold">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            Fecha de Inicio
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="fechaInicio"
+                               name="fechaInicio"
+                               th:value="${fechaInicio}"
+                               required
+                               th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div class="col-md-4">
+                        <label for="fechaFin" class="form-label fw-semibold">
+                            <i class="bi bi-calendar-check me-1"></i>
+                            Fecha de Fin
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="fechaFin"
+                               name="fechaFin"
+                               th:value="${fechaFin}"
+                               required
+                               th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+
+                    <!-- Sucursal de Retiro -->
+                    <div class="col-md-4">
+                        <label for="sucursalId" class="form-label fw-semibold">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            Sucursal de Retiro
+                        </label>
+                        <select class="form-select"
+                                id="sucursalId"
+                                name="sucursalId"
+                                required>
+                            <option value="">Seleccionar sucursal...</option>
+                            <option th:each="sucursal : ${sucursales}"
+                                    th:value="${sucursal.idSucursal}"
+                                    th:text="${sucursal.nombre + ' - ' + sucursal.direccion}"
+                                    th:selected="${sucursalId != null && sucursalId == sucursal.idSucursal}">
+                                Sucursal
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search me-2"></i>
+                        Buscar Vehículos
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div th:if="${vehiculos != null}">
+            <!-- Results Counter -->
+            <div class="alert alert-info mb-4" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                Se encontraron <strong th:text="${#lists.size(vehiculos)}">0</strong> vehículo(s) disponible(s)
+                <span th:if="${fechaInicio != null && fechaFin != null}">
+                    del <strong th:text="${#temporals.format(fechaInicio, 'dd/MM/yyyy')}">-</strong>
+                    al <strong th:text="${#temporals.format(fechaFin, 'dd/MM/yyyy')}">-</strong>
+                </span>
+            </div>
+
+            <!-- Vehicle Gallery -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${!#lists.isEmpty(vehiculos)}">
+                <div class="col" th:each="vehiculo : ${vehiculos}">
+                    <div class="vehicle-card">
+                        <!-- Imagen del vehículo -->
+                        <div th:if="${vehiculo.imagenUrl != null && !#strings.isEmpty(vehiculo.imagenUrl)}">
+                            <img th:src="${vehiculo.imagenUrl}"
+                                 th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}"
+                                 class="vehicle-image"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="vehicle-image-placeholder" style="display: none;">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+                        </div>
+                        <div th:if="${vehiculo.imagenUrl == null || #strings.isEmpty(vehiculo.imagenUrl)}"
+                             class="vehicle-image-placeholder">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+
+                        <div class="vehicle-body d-flex flex-column">
+                            <!-- Título y patente -->
+                            <div class="vehicle-title" th:text="${vehiculo.marca + ' ' + vehiculo.modelo}">
+                                Toyota Corolla
+                            </div>
+                            <div class="text-muted small mb-2">
+                                <i class="bi bi-credit-card-2-front me-1"></i>
+                                <span th:text="${vehiculo.patente}">ABC123</span>
+                            </div>
+
+                            <!-- Precio -->
+                            <div class="vehicle-price">
+                                $<span th:text="${#numbers.formatDecimal(vehiculo.precioDiario, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                                <small class="text-muted" style="font-size: 0.875rem; font-weight: 400;">/día</small>
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="mb-3">
+                                <span class="badge badge-disponible">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    DISPONIBLE
+                                </span>
+                            </div>
+
+                            <!-- Especificaciones -->
+                            <div class="vehicle-specs">
+                                <span class="spec-badge">
+                                    <i class="bi bi-gear me-1"></i>
+                                    <span th:text="${vehiculo.tipoMotor}">Manual</span>
+                                </span>
+                                <span class="spec-badge">
+                                    <i class="bi bi-fuel-pump me-1"></i>
+                                    <span th:text="${vehiculo.tipoCombustible}">Nafta</span>
+                                </span>
+                                <span class="spec-badge">
+                                    <i class="bi bi-door-closed me-1"></i>
+                                    <span th:text="${vehiculo.cantPuertas}">4</span> puertas
+                                </span>
+                                <span class="spec-badge">
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    <span th:text="${vehiculo.caballosDeFuerza}">150</span> HP
+                                </span>
+                            </div>
+
+                            <!-- Tipo y Sucursal -->
+                            <div class="small text-muted mb-3">
+                                <div><i class="bi bi-tag me-1"></i> <span th:text="${vehiculo.tipoVehiculo}">Sedan</span></div>
+                                <div><i class="bi bi-geo-alt me-1"></i> <span th:text="${vehiculo.sucursalNombre}">Sucursal Centro</span></div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <p class="text-muted small mb-3" th:text="${vehiculo.descripcion}">
+                                Descripción del vehículo...
+                            </p>
+
+                            <!-- Botón Reservar -->
+                            <form th:action="@{/cliente/reservas}" method="post" class="mt-auto">
+                                <input type="hidden" name="vehiculoId" th:value="${vehiculo.idVehiculo}">
+                                <input type="hidden" name="sucursalRetiroId" th:value="${sucursalId}">
+                                <input type="hidden" name="fechaInicio" th:value="${fechaInicio}">
+                                <input type="hidden" name="fechaFin" th:value="${fechaFin}">
+
+                                <!-- Sucursal de Devolución -->
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>
+                                        Devolver en:
+                                    </label>
+                                    <select class="form-select form-select-sm" name="sucursalDevolucionId" required>
+                                        <option th:each="sucursal : ${sucursales}"
+                                                th:value="${sucursal.idSucursal}"
+                                                th:text="${sucursal.nombre}"
+                                                th:selected="${sucursalId == sucursal.idSucursal}">
+                                            Sucursal
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Método de Pago -->
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">
+                                        <i class="bi bi-credit-card me-1"></i>
+                                        Método de Pago:
+                                    </label>
+                                    <select class="form-select form-select-sm" name="metodoPago" required>
+                                        <option value="TRANSFERENCIA" selected>Transferencia</option>
+                                        <option value="TARJETA">Tarjeta</option>
+                                        <option value="EFECTIVO">Efectivo</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-calendar-plus me-1"></i>
+                                    Reservar Ahora
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje si no hay vehículos -->
+            <div th:if="${#lists.isEmpty(vehiculos)}" class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #cbd5e1;"></i>
+                <h5 class="mt-3 text-muted">No hay vehículos disponibles</h5>
+                <p class="text-muted">
+                    No se encontraron vehículos disponibles para las fechas y sucursal seleccionadas.
+                    Intenta con otras fechas o sucursal.
+                </p>
+                <a th:href="@{/cliente/vehiculos}" class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Nueva Búsqueda
+                </a>
+            </div>
+        </div>
+
+        <!-- Instrucciones iniciales (cuando no hay búsqueda) -->
+        <div th:if="${vehiculos == null}" class="text-center py-5">
+            <i class="bi bi-search" style="font-size: 4rem; color: #cbd5e1;"></i>
+            <h5 class="mt-3 text-muted">Comienza tu búsqueda</h5>
+            <p class="text-muted">
+                Selecciona las fechas de inicio y fin, y la sucursal de retiro para ver los vehículos disponibles.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-muted small mt-4">
+            <i class="bi bi-info-circle me-1"></i>
+            Todos los precios son por día. Las reservas quedarán en estado PENDIENTE hasta ser confirmadas por el vendedor.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Validación de fechas en cliente -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fechaInicio = document.getElementById('fechaInicio');
+            const fechaFin = document.getElementById('fechaFin');
+
+            // Validar que fecha fin sea mayor a fecha inicio
+            fechaFin.addEventListener('change', function() {
+                if (fechaInicio.value && fechaFin.value) {
+                    if (new Date(fechaFin.value) <= new Date(fechaInicio.value)) {
+                        alert('La fecha de fin debe ser posterior a la fecha de inicio');
+                        fechaFin.value = '';
+                    }
+                }
+            });
+
+            // Actualizar min de fecha fin cuando cambia fecha inicio
+            fechaInicio.addEventListener('change', function() {
+                if (fechaInicio.value) {
+                    const nextDay = new Date(fechaInicio.value);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    fechaFin.min = nextDay.toISOString().split('T')[0];
+                }
+            });
+        });
+    </script>
+</body>
+</html>

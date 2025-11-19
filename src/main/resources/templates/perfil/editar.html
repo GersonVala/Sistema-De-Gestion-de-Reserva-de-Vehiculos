@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #2456d1 0%, #6839bd 100%);
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6ef6;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #2b6ef6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <!-- Breadcrumb dinámico según rol -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a th:href="@{${dashboardUrl}}">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Editar Perfil</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-circle me-2"></i>
+                    Editar Mi Perfil
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Mensaje de error general -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Información importante -->
+                <div class="info-box">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <strong>Nota:</strong> El email no se puede modificar ya que es tu identificador único en el sistema.
+                    Si necesitas cambiar tu email, contacta con un administrador.
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="@{/perfil/editar}" th:object="${perfilDTO}" method="post">
+
+                    <!-- SECCIÓN: Email (Solo lectura) -->
+                    <div class="section-title">
+                        <i class="bi bi-envelope me-2"></i>Identificación
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               th:value="${emailReadOnly}"
+                               readonly
+                               aria-readonly="true"
+                               style="background-color: #f3f4f6; cursor: not-allowed;">
+                        <div class="form-text">Este campo no se puede modificar</div>
+                    </div>
+
+                    <!-- SECCIÓN: Información Personal -->
+                    <div class="section-title">
+                        <i class="bi bi-person me-2"></i>Información Personal
+                    </div>
+
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-md-6 mb-3">
+                            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="nombre"
+                                   th:field="*{nombre}"
+                                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                                   maxlength="50"
+                                   required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                                Error en nombre
+                            </div>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div class="col-md-6 mb-3">
+                            <label for="apellido" class="form-label">Apellido <span class="text-danger">*</span></label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="apellido"
+                                   th:field="*{apellido}"
+                                   th:classappend="${#fields.hasErrors('apellido')} ? 'is-invalid' : ''"
+                                   maxlength="50"
+                                   required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}">
+                                Error en apellido
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DNI -->
+                    <div class="mb-3">
+                        <label for="dni" class="form-label">DNI <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="dni"
+                               th:field="*{dni}"
+                               th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid' : ''"
+                               pattern="[0-9]{7,8}"
+                               maxlength="8"
+                               placeholder="12345678"
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}">
+                            Error en DNI
+                        </div>
+                        <div class="form-text">DNI sin puntos ni espacios (7 u 8 dígitos)</div>
+                    </div>
+
+                    <!-- SECCIÓN: Contacto -->
+                    <div class="section-title">
+                        <i class="bi bi-telephone me-2"></i>Información de Contacto
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                        <input type="tel"
+                               class="form-control"
+                               id="telefono"
+                               th:field="*{telefono}"
+                               th:classappend="${#fields.hasErrors('telefono')} ? 'is-invalid' : ''"
+                               maxlength="50"
+                               placeholder="Ej: +54 11 1234-5678"
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">
+                            Error en teléfono
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-4">
+                        <label for="direccion" class="form-label">Dirección <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="direccion"
+                               th:field="*{direccion}"
+                               th:classappend="${#fields.hasErrors('direccion')} ? 'is-invalid' : ''"
+                               maxlength="50"
+                               placeholder="Calle, Número, Ciudad"
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}">
+                            Error en dirección
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Cambio de Contraseña (Opcional) -->
+                    <div class="section-title">
+                        <i class="bi bi-key me-2"></i>Cambiar Contraseña (Opcional)
+                    </div>
+
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Deja estos campos vacíos si no deseas cambiar tu contraseña
+                    </div>
+
+                    <div class="row">
+                        <!-- Nueva Contraseña -->
+                        <div class="col-md-6 mb-3">
+                            <label for="nuevaContra" class="form-label">Nueva Contraseña</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="nuevaContra"
+                                   th:field="*{nuevaContra}"
+                                   th:classappend="${#fields.hasErrors('nuevaContra')} ? 'is-invalid' : ''"
+                                   minlength="6"
+                                   placeholder="Mínimo 6 caracteres">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nuevaContra')}" th:errors="*{nuevaContra}">
+                                Error en contraseña
+                            </div>
+                        </div>
+
+                        <!-- Confirmar Contraseña -->
+                        <div class="col-md-6 mb-3">
+                            <label for="confirmarContra" class="form-label">Confirmar Contraseña</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="confirmarContra"
+                                   th:field="*{confirmarContra}"
+                                   minlength="6"
+                                   placeholder="Repetir nueva contraseña">
+                            <div class="form-text">Debe coincidir con la nueva contraseña</div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a th:href="@{${dashboardUrl}}"
+                           class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-3 text-center text-muted small">
+            <i class="bi bi-shield-check me-1"></i>
+            Tus datos están protegidos y solo tú puedes modificarlos
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Validar que las contraseñas coincidan
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const nuevaContra = document.getElementById('nuevaContra').value;
+            const confirmarContra = document.getElementById('confirmarContra').value;
+
+            if (nuevaContra && nuevaContra !== confirmarContra) {
+                e.preventDefault();
+                alert('Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente.');
+                document.getElementById('confirmarContra').classList.add('is-invalid');
+            }
+        });
+
+        // Validar DNI solo números
+        document.getElementById('dni').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+</body>
+</html>

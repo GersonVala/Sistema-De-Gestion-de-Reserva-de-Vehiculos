@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(dir /B srcmainjava 2)",
+      "Bash(nul)",
+      "Bash(dir /B 2)",
+      "Bash(mvn spring-boot:run:*)",
+      "Bash(mvn test:*)",
+      "Bash(rd /s /q \"c:\\Users\\gerso\\Desktop\\ClaudeFinal\\RentaDeAutos\\src\\test\")",
+      "Bash(mvn clean compile:*)",
+      "Bash(dir:*)",
+      "Edit(*)",
+      "Write(*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

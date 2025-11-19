@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tipoVehiculo.idTipoVehiculo != null ? 'Editar Tipo de Vehículo' : 'Nuevo Tipo de Vehículo'}">Tipo de Vehículo</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #2456d1 0%, #6839bd 100%);
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6ef6;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .example-types {
+            background: #f0f5ff;
+            border-left: 4px solid #2b6ef6;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/tipos-vehiculo}">Tipos de Vehículos</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${tipoVehiculo.idTipoVehiculo != null ? 'Editar' : 'Nuevo'}">Nuevo</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-tag-fill me-2"></i>
+                    <span th:text="${tipoVehiculo.idTipoVehiculo != null ? 'Editar Tipo de Vehículo' : 'Nuevo Tipo de Vehículo'}">Nuevo Tipo de Vehículo</span>
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Mensaje de error general -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="${tipoVehiculo.idTipoVehiculo != null ? '/admin/tipos-vehiculo/' + tipoVehiculo.idTipoVehiculo : '/admin/tipos-vehiculo'}"
+                      th:object="${tipoVehiculo}"
+                      method="post">
+
+                    <!-- SECCIÓN: Información del Tipo -->
+                    <div class="section-title">
+                        <i class="bi bi-tag me-2"></i>Información del Tipo
+                    </div>
+
+                    <!-- Tipo -->
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo de Vehículo <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="tipo"
+                               th:field="*{tipo}"
+                               th:classappend="${#fields.hasErrors('tipo')} ? 'is-invalid' : ''"
+                               maxlength="50"
+                               placeholder="Ej: Sedan, SUV, Van, Moto, Pickup, etc."
+                               required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}">
+                            Error en tipo
+                        </div>
+                        <div class="form-text">Nombre de la categoría del vehículo (máximo 50 caracteres)</div>
+                    </div>
+
+                    <!-- Características -->
+                    <div class="mb-3">
+                        <label for="caracteristicas" class="form-label">Características <span class="text-danger">*</span></label>
+                        <textarea class="form-control"
+                                  id="caracteristicas"
+                                  th:field="*{caracteristicas}"
+                                  th:classappend="${#fields.hasErrors('caracteristicas')} ? 'is-invalid' : ''"
+                                  maxlength="150"
+                                  rows="4"
+                                  placeholder="Ej: Vehículo ideal para familias, con amplio espacio interior y maletero espacioso."
+                                  required></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('caracteristicas')}" th:errors="*{caracteristicas}">
+                            Error en características
+                        </div>
+                        <div class="form-text">
+                            Descripción breve de las características principales (máximo 150 caracteres)
+                            <span class="float-end" id="charCount">0 / 150</span>
+                        </div>
+                    </div>
+
+                    <!-- Ejemplos de tipos comunes -->
+                    <div class="example-types mb-4">
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-lightbulb me-2"></i>Ejemplos de Tipos Comunes
+                        </h6>
+                        <div class="small">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <strong>Sedan:</strong> Vehículo familiar con 4 puertas y confort en ciudad.
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <strong>SUV:</strong> Todoterreno espacioso ideal para viajes y aventuras.
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <strong>Van:</strong> Capacidad para grupos grandes, ideal para familias.
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <strong>Moto:</strong> Vehículo ágil de dos ruedas para ciudad.
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <strong>Pickup:</strong> Vehículo de carga con cabina y caja trasera.
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <strong>Deportivo:</strong> Alto rendimiento y diseño aerodinámico.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen informativo -->
+                    <div class="alert alert-light border" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle me-2"></i>Información Importante
+                        </h6>
+                        <p class="mb-0 small text-muted">
+                            Este tipo de vehículo se podrá asignar a múltiples vehículos del sistema. Las características ayudan a los clientes a identificar el tipo de vehículo que mejor se ajusta a sus necesidades.
+                        </p>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a th:href="@{/admin/tipos-vehiculo}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            <span th:text="${tipoVehiculo.idTipoVehiculo != null ? 'Actualizar Tipo' : 'Crear Tipo'}">Crear Tipo</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-3 text-center text-muted small">
+            <i class="bi bi-info-circle me-1"></i>
+            Los campos marcados con <span class="text-danger">*</span> son obligatorios
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Contador de caracteres para características
+        const caracteristicasTextarea = document.getElementById('caracteristicas');
+        const charCountSpan = document.getElementById('charCount');
+
+        function updateCharCount() {
+            const count = caracteristicasTextarea.value.length;
+            charCountSpan.textContent = count + ' / 150';
+
+            if (count > 150) {
+                charCountSpan.classList.add('text-danger');
+            } else {
+                charCountSpan.classList.remove('text-danger');
+            }
+        }
+
+        caracteristicasTextarea.addEventListener('input', updateCharCount);
+
+        // Actualizar contador al cargar si hay texto previo
+        updateCharCount();
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${motor.idMotor != null ? 'Editar Motor' : 'Nuevo Motor'}">Motor</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #2456d1 0%, #6839bd 100%);
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6ef6;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/motores}">Motores</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${motor.idMotor != null ? 'Editar' : 'Nuevo'}">Nuevo</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-gear-fill me-2"></i>
+                    <span th:text="${motor.idMotor != null ? 'Editar Motor' : 'Nuevo Motor'}">Nuevo Motor</span>
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Mensaje de error general -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="${motor.idMotor != null ? '/admin/motores/' + motor.idMotor : '/admin/motores'}"
+                      th:object="${motor}"
+                      method="post">
+
+                    <!-- SECCIÓN: Tipo de Motor y Combustible -->
+                    <div class="section-title">
+                        <i class="bi bi-gear me-2"></i>Tipo de Motor y Combustible
+                    </div>
+
+                    <div class="row">
+                        <!-- Tipo de Motor -->
+                        <div class="col-md-6 mb-3">
+                            <label for="tipoMotor" class="form-label">Tipo de Motor <span class="text-danger">*</span></label>
+                            <select class="form-select"
+                                    id="tipoMotor"
+                                    th:field="*{tipoMotor}"
+                                    th:classappend="${#fields.hasErrors('tipoMotor')} ? 'is-invalid' : ''"
+                                    required>
+                                <option value="">-- Seleccionar Tipo de Motor --</option>
+                                <option value="MANUAL">MANUAL</option>
+                                <option value="AUTOMATICO">AUTOMATICO</option>
+                                <option value="HIBRIDO">HIBRIDO</option>
+                                <option value="ELECTRICO">ELECTRICO</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoMotor')}" th:errors="*{tipoMotor}">
+                                Error en tipo de motor
+                            </div>
+                            <div class="form-text">Tipo de transmisión y sistema de propulsión</div>
+                        </div>
+
+                        <!-- Tipo de Combustible -->
+                        <div class="col-md-6 mb-3">
+                            <label for="tipoCombustible" class="form-label">Tipo de Combustible <span class="text-danger">*</span></label>
+                            <select class="form-select"
+                                    id="tipoCombustible"
+                                    th:field="*{tipoCombustible}"
+                                    th:classappend="${#fields.hasErrors('tipoCombustible')} ? 'is-invalid' : ''"
+                                    required>
+                                <option value="">-- Seleccionar Combustible --</option>
+                                <option value="NAFTA">NAFTA</option>
+                                <option value="DIESEL">DIESEL</option>
+                                <option value="GNC">GNC</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoCombustible')}" th:errors="*{tipoCombustible}">
+                                Error en tipo de combustible
+                            </div>
+                            <div class="form-text">Tipo de combustible que utiliza el motor</div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN: Especificaciones Técnicas -->
+                    <div class="section-title">
+                        <i class="bi bi-speedometer2 me-2"></i>Especificaciones Técnicas
+                    </div>
+
+                    <div class="row">
+                        <!-- Cilindrada -->
+                        <div class="col-md-6 mb-3">
+                            <label for="cilindrada" class="form-label">Cilindrada (Litros) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number"
+                                       class="form-control"
+                                       id="cilindrada"
+                                       th:field="*{cilindrada}"
+                                       th:classappend="${#fields.hasErrors('cilindrada')} ? 'is-invalid' : ''"
+                                       step="0.1"
+                                       min="0.1"
+                                       max="9.9"
+                                       placeholder="2.0"
+                                       required>
+                                <span class="input-group-text">L</span>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('cilindrada')}" th:errors="*{cilindrada}">
+                                    Error en cilindrada
+                                </div>
+                            </div>
+                            <div class="form-text">Cilindrada del motor en litros (ej: 1.6, 2.0, 3.5)</div>
+                        </div>
+
+                        <!-- Caballos de Fuerza -->
+                        <div class="col-md-6 mb-3">
+                            <label for="caballosDeFuerza" class="form-label">Caballos de Fuerza <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number"
+                                       class="form-control"
+                                       id="caballosDeFuerza"
+                                       th:field="*{caballosDeFuerza}"
+                                       th:classappend="${#fields.hasErrors('caballosDeFuerza')} ? 'is-invalid' : ''"
+                                       min="1"
+                                       max="2000"
+                                       placeholder="150"
+                                       required>
+                                <span class="input-group-text">HP</span>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('caballosDeFuerza')}" th:errors="*{caballosDeFuerza}">
+                                    Error en caballos de fuerza
+                                </div>
+                            </div>
+                            <div class="form-text">Potencia del motor en caballos de fuerza</div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen informativo -->
+                    <div class="alert alert-light border mt-3" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle me-2"></i>Información del Motor
+                        </h6>
+                        <p class="mb-0 small text-muted">
+                            Esta configuración de motor se podrá asignar a múltiples vehículos. Asegúrese de ingresar datos correctos antes de guardar.
+                        </p>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a th:href="@{/admin/motores}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i>
+                            <span th:text="${motor.idMotor != null ? 'Actualizar Motor' : 'Crear Motor'}">Crear Motor</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-3 text-center text-muted small">
+            <i class="bi bi-info-circle me-1"></i>
+            Los campos marcados con <span class="text-danger">*</span> son obligatorios
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

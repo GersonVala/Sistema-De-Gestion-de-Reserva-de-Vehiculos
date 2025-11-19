@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Empleado</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+            background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2b6ef6 0%, #7b4de2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #2456d1 0%, #6839bd 100%);
+        }
+        .info-box {
+            background: #f0f5ff;
+            border-left: 4px solid #2b6ef6;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/admin/empleados}">Empleados</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Asignar</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Asignar Empleado a Sucursal
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Mensaje de error general -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Información -->
+                <div class="info-box">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Nota:</strong> Solo puedes asignar usuarios con rol VENDEDOR que no estén ya asignados a otra sucursal.
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="@{/admin/empleados}" method="post">
+
+                    <!-- Seleccionar Vendedor -->
+                    <div class="mb-3">
+                        <label for="usuarioId" class="form-label">Vendedor <span class="text-danger">*</span></label>
+                        <select class="form-select" id="usuarioId" name="usuarioId" required>
+                            <option value="">-- Seleccionar Vendedor --</option>
+                            <option th:each="vendedor : ${vendedores}"
+                                    th:value="${vendedor.idUsuario}"
+                                    th:text="${vendedor.nombre + ' ' + vendedor.apellido + ' (' + vendedor.email + ')'}">
+                                Vendedor
+                            </option>
+                        </select>
+                        <div class="form-text">
+                            Selecciona el usuario vendedor que deseas asignar a una sucursal
+                        </div>
+                    </div>
+
+                    <!-- Seleccionar Sucursal -->
+                    <div class="mb-4">
+                        <label for="sucursalId" class="form-label">Sucursal <span class="text-danger">*</span></label>
+                        <select class="form-select" id="sucursalId" name="sucursalId" required>
+                            <option value="">-- Seleccionar Sucursal --</option>
+                            <option th:each="sucursal : ${sucursales}"
+                                    th:value="${sucursal.idSucursal}"
+                                    th:text="${sucursal.nombre + ' - ' + sucursal.direccion}">
+                                Sucursal
+                            </option>
+                        </select>
+                        <div class="form-text">
+                            El vendedor será asignado a esta sucursal y podrá gestionar sus reservas
+                        </div>
+                    </div>
+
+                    <!-- Advertencia si no hay vendedores -->
+                    <div th:if="${#lists.isEmpty(vendedores)}" class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <strong>No hay vendedores disponibles.</strong>
+                        <p class="mb-0 mt-2">
+                            Asegúrate de tener usuarios con rol VENDEDOR registrados en el sistema.
+                        </p>
+                    </div>
+
+                    <!-- Advertencia si no hay sucursales -->
+                    <div th:if="${#lists.isEmpty(sucursales)}" class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <strong>No hay sucursales activas.</strong>
+                        <p class="mb-0 mt-2">
+                            Debes crear al menos una sucursal activa antes de asignar empleados.
+                        </p>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a th:href="@{/admin/dashboard}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit"
+                                class="btn btn-primary"
+                                th:disabled="${#lists.isEmpty(vendedores) || #lists.isEmpty(sucursales)}">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Asignar Empleado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="mt-3 text-center text-muted small">
+            <i class="bi bi-info-circle me-1"></i>
+            Los campos marcados con <span class="text-danger">*</span> son obligatorios
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

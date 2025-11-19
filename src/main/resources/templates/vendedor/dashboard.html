@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendedor - Panel</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-1: #3b82f6;
+        --primary-2: #6366f1;
+        --muted: #6b7280;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+      body {
+        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+        margin: 0;
+        background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+        padding: 2.5rem;
+      }
+      .container-card {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Header Card */
+      .header-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 24px 28px;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(13, 18, 43, 0.06);
+        margin-bottom: 24px;
+      }
+      .header-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+      }
+      .header-text h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .header-text p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .header-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #f1f6ff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(13, 18, 43, 0.08);
+      }
+      .stat-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        color: #0f172a;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin: 4px 0 0;
+      }
+
+      /* Main Content */
+      .main-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+      .panel {
+        background: #fff;
+        padding: 24px;
+        border-radius: 14px;
+        border: 1px solid #f1f6ff;
+        box-shadow: 0 8px 20px rgba(13, 18, 43, 0.04);
+      }
+      .panel h5 {
+        margin: 0 0 18px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #0f172a;
+      }
+
+      /* Reserva Card */
+      .reserva-item {
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e7eb;
+        transition: background 0.2s ease;
+      }
+      .reserva-item:hover {
+        background: #f3f4f6;
+      }
+      .reserva-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .reserva-cliente {
+        font-weight: 600;
+        color: #0f172a;
+      }
+      .badge-status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .badge-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .badge-aceptada {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .badge-cancelada {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .reserva-details {
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .reserva-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--muted);
+      }
+      .empty-state i {
+        font-size: 48px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+      }
+
+      /* Info Panel */
+      .info-item {
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--primary-1);
+      }
+      .info-item strong {
+        color: #0f172a;
+      }
+      .info-item p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin: 32px 0 16px;
+        color: #9aa7c7;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 576px) {
+        body {
+          padding: 1rem;
+        }
+        .header-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .header-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container container-card">
+      <!-- Header -->
+      <div class="header-card">
+        <div class="header-icon">
+          <i class="bi bi-person-badge-fill"></i>
+        </div>
+        <div class="header-text">
+          <h1>Panel de Vendedor</h1>
+          <p>
+            Gestiona las reservas de tu sucursal:
+            <strong th:text="${sucursalNombre}">Sucursal Principal</strong>
+          </p>
+        </div>
+        <div class="header-actions">
+          <a th:href="@{/vendedor/reservas}" class="btn btn-outline-primary">
+            <i class="bi bi-calendar-check me-1"></i>Ver Reservas
+          </a>
+          <a th:href="@{/}" class="btn btn-outline-secondary">
+            <i class="bi bi-house-door-fill me-1"></i>Inicio
+          </a>
+          <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-link text-danger" style="text-decoration: none;">
+              <i class="bi bi-box-arrow-right me-1"></i>Salir
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon text-warning">
+            <i class="bi bi-clock-fill"></i>
+          </div>
+          <p class="stat-value" th:text="${reservasPendientes}">0</p>
+          <p class="stat-label">Reservas Pendientes</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon text-success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <p class="stat-value" th:text="${reservasAceptadas}">0</p>
+          <p class="stat-label">Reservas Aceptadas</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon text-danger">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <p class="stat-value" th:text="${reservasCanceladas}">0</p>
+          <p class="stat-label">Reservas Canceladas</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon text-primary">
+            <i class="bi bi-calendar3"></i>
+          </div>
+          <p class="stat-value" th:text="${totalReservas}">0</p>
+          <p class="stat-label">Total Reservas</p>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Reservas Pendientes -->
+        <div class="panel">
+          <h5>
+            <i class="bi bi-clock-history me-2"></i>Reservas Pendientes de Acción
+          </h5>
+
+          <!-- Lista de reservas pendientes -->
+          <div th:if="${reservasPendientesList != null && !reservasPendientesList.isEmpty()}">
+            <div
+              class="reserva-item"
+              th:each="reserva : ${reservasPendientesList}"
+            >
+              <div class="reserva-header">
+                <span class="reserva-cliente">
+                  <i class="bi bi-person-circle me-1"></i>
+                  <span th:text="${reserva.usuarioNombre}">Cliente Nombre</span>
+                </span>
+                <span class="badge-status badge-pendiente">PENDIENTE</span>
+              </div>
+              <div class="reserva-details">
+                <p class="mb-1">
+                  <i class="bi bi-car-front-fill me-1"></i>
+                  <strong>Vehículo:</strong>
+                  <span th:text="${reserva.vehiculoMarca} + ' ' + ${reserva.vehiculoModelo} + ' (' + ${reserva.vehiculoPatente} + ')'">Toyota Corolla</span>
+                </p>
+                <p class="mb-1">
+                  <i class="bi bi-calendar-range me-1"></i>
+                  <strong>Fechas:</strong>
+                  <span th:text="${reserva.fechaInicio}">2025-01-15</span>
+                  →
+                  <span th:text="${reserva.fechaFin}">2025-01-20</span>
+                </p>
+                <p class="mb-0">
+                  <i class="bi bi-cash-coin me-1"></i>
+                  <strong>Precio:</strong> $<span th:text="${reserva.precio}">5000</span>
+                  | <strong>Método:</strong>
+                  <span th:text="${reserva.metodoPago}">EFECTIVO</span>
+                </p>
+              </div>
+              <div class="reserva-actions">
+                <form
+                  th:action="@{/vendedor/reservas/{id}/aceptar(id=${reserva.idReserva})}"
+                  method="post"
+                  style="display: inline"
+                >
+                  <button type="submit" class="btn btn-sm btn-success">
+                    <i class="bi bi-check-circle-fill me-1"></i>Aceptar
+                  </button>
+                </form>
+                <form
+                  th:action="@{/vendedor/reservas/{id}/rechazar(id=${reserva.idReserva})}"
+                  method="post"
+                  style="display: inline"
+                >
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="bi bi-x-circle-fill me-1"></i>Rechazar
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div
+            th:if="${reservasPendientesList == null || reservasPendientesList.isEmpty()}"
+            class="empty-state"
+          >
+            <i class="bi bi-inbox"></i>
+            <p>No hay reservas pendientes en este momento.</p>
+          </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="panel">
+          <h5>
+            <i class="bi bi-info-circle-fill me-2"></i>Información de Sucursal
+          </h5>
+
+          <div class="info-item">
+            <strong>
+              <i class="bi bi-building me-1"></i>Sucursal Asignada
+            </strong>
+            <p th:text="${sucursalNombre}">Sucursal Principal</p>
+          </div>
+
+          <div class="info-item">
+            <strong>
+              <i class="bi bi-geo-alt-fill me-1"></i>Dirección
+            </strong>
+            <p th:text="${sucursalDireccion}">Calle Ejemplo 123</p>
+          </div>
+
+          <div class="info-item">
+            <strong>
+              <i class="bi bi-person-fill me-1"></i>Vendedor
+            </strong>
+            <p th:text="${vendedorNombre}">Nombre del Vendedor</p>
+          </div>
+
+          <hr />
+
+          <h6 class="mt-3 mb-2">Acciones Rápidas</h6>
+          <div class="d-flex flex-column gap-2">
+            <a
+              th:href="@{/vendedor/reservas}"
+              class="btn btn-sm btn-outline-primary"
+            >
+              <i class="bi bi-list-ul me-1"></i>Ver Todas las Reservas
+            </a>
+            <a
+              th:href="@{/vendedor/vehiculos}"
+              class="btn btn-sm btn-outline-success"
+            >
+              <i class="bi bi-car-front me-1"></i>Ver Vehículos
+            </a>
+            <a
+              th:href="@{/perfil/editar}"
+              class="btn btn-sm btn-outline-info"
+            >
+              <i class="bi bi-person-gear me-1"></i>Editar Mi Perfil
+            </a>
+            <a
+              th:href="@{/vendedor/dashboard}"
+              class="btn btn-sm btn-outline-secondary"
+            >
+              <i class="bi bi-arrow-clockwise me-1"></i>Refrescar Dashboard
+            </a>
+          </div>
+
+          <hr />
+
+          <div class="alert alert-info mb-0 mt-3" role="alert">
+            <i class="bi bi-lightbulb-fill me-2"></i>
+            <small>
+              <strong>Importante:</strong> Solo puedes gestionar reservas de tu
+              sucursal asignada. Las reservas aceptadas cambiarán el estado del
+              vehículo a ENTREGADO automáticamente.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <i class="bi bi-c-circle"></i> 2025 Sistema de Renta de Vehículos
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

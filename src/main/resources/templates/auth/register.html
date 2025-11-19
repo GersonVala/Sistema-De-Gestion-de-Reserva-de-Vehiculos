@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - Sistema de Renta de Vehículos</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-1: #5563f6;
+        --primary-2: #7b4de2;
+        --muted: #6b7280;
+      }
+      body {
+        background: linear-gradient(180deg, #f4f7ff 0%, #eef2ff 100%);
+        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+        margin: 0;
+        padding: 2.5rem;
+      }
+
+      .register-container {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 18px 40px rgba(13, 18, 43, 0.08);
+        overflow: hidden;
+      }
+
+      .register-header {
+        background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+        color: #fff;
+        padding: 28px 32px;
+        text-align: left;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .register-header i {
+        font-size: 36px;
+        opacity: 0.95;
+      }
+      .register-header h2 {
+        margin: 0;
+        font-size: 1.45rem;
+        font-weight: 700;
+      }
+      .register-header p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+      }
+
+      .register-body {
+        padding: 28px 36px;
+      }
+      .section-title {
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 18px;
+      }
+
+      label.form-label {
+        font-weight: 600;
+        color: #0f172a;
+      }
+
+      .form-control {
+        padding: 12px 14px;
+        border: 1px solid #e6eefc;
+        border-radius: 10px;
+        transition: box-shadow 0.18s ease;
+      }
+      .form-control:focus {
+        box-shadow: 0 6px 18px rgba(85, 99, 246, 0.08);
+        border-color: var(--primary-1);
+      }
+
+      .invalid-feedback {
+        font-size: 0.85rem;
+      }
+
+      .btn-register {
+        background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+        border: none;
+        color: #fff;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+      .btn-back {
+        background: #fff;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        color: var(--primary-1);
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+
+      .alert {
+        border-radius: 10px;
+      }
+
+      .login-link {
+        margin-top: 16px;
+        text-align: center;
+        color: var(--muted);
+        padding-top: 12px;
+        border-top: 1px dashed #eef2ff;
+      }
+      .login-link a {
+        color: var(--primary-1);
+        font-weight: 700;
+      }
+
+      @media (max-width: 768px) {
+        .register-header {
+          padding: 20px;
+          text-align: center;
+          flex-direction: column;
+        }
+        .register-body {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="register-container">
+        <!-- Header -->
+        <div class="register-header">
+          <i class="bi bi-person-plus-fill"></i>
+          <h2>Crear Cuenta Nueva</h2>
+          <p class="mb-0">Completa el formulario para registrarte</p>
+        </div>
+
+        <!-- Body -->
+        <div class="register-body">
+          <!-- Error Message (general) -->
+          <div
+            th:if="${error}"
+            class="alert alert-danger d-flex align-items-center mb-4"
+            role="alert"
+          >
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}"></span>
+          </div>
+
+          <!-- Success Message -->
+          <div
+            th:if="${success}"
+            class="alert alert-success d-flex align-items-center mb-4"
+            role="alert"
+          >
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${success}"></span>
+          </div>
+
+          <!-- Registration Form -->
+          <!--
+                    IMPORTANT: Form binding with Thymeleaf
+                    - th:object="${usuarioDTO}" binds the form to the DTO object
+                    - th:field="*{propertyName}" creates proper name, id, and value attributes
+                    - th:errors displays validation errors for each field
+                    - th:action="@{/auth/register}" resolves to correct URL with CSRF token
+                    - Field names MUST match UsuarioRegistroDTO properties exactly
+                -->
+          <form
+            th:action="@{/auth/register}"
+            th:object="${usuarioDTO}"
+            method="post"
+            novalidate
+          >
+            <!-- Personal Information Section -->
+            <div class="section-title">
+              <i class="bi bi-person-circle me-2"></i>Información Personal
+            </div>
+
+            <div class="row mb-3">
+              <!-- Nombre -->
+              <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">
+                  <i class="bi bi-person-fill me-1"></i>Nombre
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{nombre}"
+                  th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                  id="nombre"
+                  placeholder="Juan"
+                  required
+                  maxlength="50"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('nombre')}"
+                  th:errors="*{nombre}"
+                >
+                  Error de nombre
+                </div>
+              </div>
+
+              <!-- Apellido -->
+              <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label">
+                  <i class="bi bi-person-fill me-1"></i>Apellido
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{apellido}"
+                  th:classappend="${#fields.hasErrors('apellido')} ? 'is-invalid' : ''"
+                  id="apellido"
+                  placeholder="Pérez"
+                  required
+                  maxlength="50"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('apellido')}"
+                  th:errors="*{apellido}"
+                >
+                  Error de apellido
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <!-- DNI -->
+              <div class="col-md-6 mb-3">
+                <label for="dni" class="form-label">
+                  <i class="bi bi-card-text me-1"></i>DNI
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{dni}"
+                  th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid' : ''"
+                  id="dni"
+                  placeholder="12345678"
+                  required
+                  maxlength="50"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('dni')}"
+                  th:errors="*{dni}"
+                >
+                  Error de DNI
+                </div>
+              </div>
+
+              <!-- Teléfono -->
+              <div class="col-md-6 mb-3">
+                <label for="telefono" class="form-label">
+                  <i class="bi bi-telephone-fill me-1"></i>Teléfono
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  th:field="*{telefono}"
+                  th:classappend="${#fields.hasErrors('telefono')} ? 'is-invalid' : ''"
+                  id="telefono"
+                  placeholder="+54 11 1234-5678"
+                  required
+                  maxlength="50"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('telefono')}"
+                  th:errors="*{telefono}"
+                >
+                  Error de teléfono
+                </div>
+              </div>
+            </div>
+
+            <!-- Dirección -->
+            <div class="mb-4">
+              <label for="direccion" class="form-label">
+                <i class="bi bi-geo-alt-fill me-1"></i>Dirección
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                th:field="*{direccion}"
+                th:classappend="${#fields.hasErrors('direccion')} ? 'is-invalid' : ''"
+                id="direccion"
+                placeholder="Calle Ejemplo 123, Ciudad"
+                required
+                maxlength="50"
+              />
+              <div
+                class="invalid-feedback"
+                th:if="${#fields.hasErrors('direccion')}"
+                th:errors="*{direccion}"
+              >
+                Error de dirección
+              </div>
+            </div>
+
+            <!-- Account Information Section -->
+            <div class="section-title">
+              <i class="bi bi-envelope-at me-2"></i>Información de Cuenta
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">
+                <i class="bi bi-envelope-fill me-1"></i>Correo Electrónico
+                <span class="required-mark">*</span>
+              </label>
+              <input
+                type="email"
+                class="form-control"
+                th:field="*{email}"
+                th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                id="email"
+                placeholder="ejemplo@correo.com"
+                required
+                maxlength="50"
+              />
+              <div
+                class="invalid-feedback"
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+              >
+                Error de email
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <!-- Password -->
+              <div class="col-md-6 mb-3">
+                <label for="password" class="form-label">
+                  <i class="bi bi-lock-fill me-1"></i>Contraseña
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="password"
+                  class="form-control"
+                  th:field="*{password}"
+                  th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                  id="password"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  minlength="6"
+                  maxlength="255"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('password')}"
+                  th:errors="*{password}"
+                >
+                  Error de contraseña
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="col-md-6 mb-3">
+                <label for="confirmPassword" class="form-label">
+                  <i class="bi bi-lock-fill me-1"></i>Confirmar Contraseña
+                  <span class="required-mark">*</span>
+                </label>
+                <input
+                  type="password"
+                  class="form-control"
+                  th:field="*{confirmPassword}"
+                  th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                  id="confirmPassword"
+                  placeholder="Repite tu contraseña"
+                  required
+                  minlength="6"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('confirmPassword')}"
+                  th:errors="*{confirmPassword}"
+                >
+                  Error de confirmación
+                </div>
+              </div>
+            </div>
+
+            <!-- Information Note -->
+            <div class="alert alert-info d-flex align-items-start mb-4">
+              <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+              <small>
+                Al registrarte, se creará automáticamente una cuenta de
+                <strong>Cliente</strong>. Podrás buscar vehículos y crear
+                reservas de inmediato.
+              </small>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-register mb-3">
+              <i class="bi bi-person-plus-fill me-2"></i>Crear Cuenta
+            </button>
+
+            <!-- Back to Login Button -->
+            <a th:href="@{/auth/login}" class="btn btn-back">
+              <i class="bi bi-arrow-left me-2"></i>Volver al Login
+            </a>
+
+            <!-- Login Link -->
+            <div class="login-link">
+              <p class="mb-0">
+                ¿Ya tienes una cuenta?
+                <a th:href="@{/auth/login}">
+                  <i class="bi bi-box-arrow-in-right me-1"></i>Inicia sesión
+                  aquí
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center mt-4">
+        <p class="text-white mb-0">
+          <i class="bi bi-c-circle"></i> 2025 Sistema de Renta de Vehículos
+        </p>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Client-side validation script -->
+    <script>
+      // Bootstrap form validation
+      (function () {
+        "use strict";
+        var forms = document.querySelectorAll("form");
+        Array.prototype.slice.call(forms).forEach(function (form) {
+          form.addEventListener(
+            "submit",
+            function (event) {
+              // Check if passwords match
+              const password = document.getElementById("password").value;
+              const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+              if (password !== confirmPassword) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const confirmField = document.getElementById("confirmPassword");
+                confirmField.classList.add("is-invalid");
+
+                // Add custom error message
+                let feedback = confirmField.nextElementSibling;
+                if (
+                  !feedback ||
+                  !feedback.classList.contains("invalid-feedback")
+                ) {
+                  feedback = document.createElement("div");
+                  feedback.className = "invalid-feedback";
+                  confirmField.parentNode.appendChild(feedback);
+                }
+                feedback.textContent = "Las contraseñas no coinciden";
+                feedback.style.display = "block";
+              }
+
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+
+        // Real-time password match validation
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("input", function () {
+            const password = document.getElementById("password").value;
+            const confirmPassword = this.value;
+
+            if (password === confirmPassword) {
+              this.classList.remove("is-invalid");
+              this.classList.add("is-valid");
+            } else if (confirmPassword.length > 0) {
+              this.classList.remove("is-valid");
+              this.classList.add("is-invalid");
+            }
+          });
+      })();
+    </script>
+  </body>
+</html>

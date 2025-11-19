@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente - Panel</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-1: #5563f6;
+        --primary-2: #7b4de2;
+        --muted: #6b7280;
+      }
+      body {
+        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+        margin: 0;
+        background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+        padding: 2.5rem;
+      }
+      .container-card {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .card-hero {
+        background: #fff;
+        border-radius: 14px;
+        padding: 28px 32px;
+        box-shadow: 0 18px 40px rgba(13, 18, 43, 0.06);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 28px;
+      }
+      .hero-text h2 {
+        margin: 0;
+        font-weight: 700;
+      }
+      .hero-text p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 20px;
+      }
+      .action-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 18px;
+        border: 1px solid #f1f6ff;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .action-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(85, 99, 246, 0.06);
+      }
+      .action-card h5 {
+        margin: 0;
+        font-weight: 700;
+      }
+      .action-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .action-btn {
+        margin-top: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .actions {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 576px) {
+        .actions {
+          grid-template-columns: 1fr;
+        }
+        .card-hero {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container container-card">
+      <div class="card-hero">
+        <div
+          class="avatar"
+          th:text="${usuario.nombre.substring(0,1)} + ${usuario.apellido.substring(0,1)}"
+        >
+          US
+        </div>
+        <div class="hero-text">
+          <h2 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}">
+            Usuario Cliente
+          </h2>
+          <p>
+            Bienvenido/a a tu panel. Aquí puedes explorar vehículos, ver tus
+            reservas y gestionar tu cuenta.
+          </p>
+        </div>
+        <div class="ms-auto text-end">
+          <a th:href="@{/}" class="btn btn-outline-secondary"
+            >Volver al inicio</a
+          >
+          <form th:action="@{/auth/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-link text-danger" style="text-decoration: none;">
+              Cerrar sesión
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="action-card">
+          <i
+            class="bi bi-car-front-fill"
+            style="font-size: 28px; color: var(--primary-1)"
+          ></i>
+          <h5>Buscar Vehículos</h5>
+          <p>Explora vehículos disponibles por fecha y sucursal.</p>
+          <a
+            th:href="@{/cliente/vehiculos}"
+            class="btn btn-primary btn-sm action-btn"
+            >Ir a Vehículos</a
+          >
+        </div>
+
+        <div class="action-card">
+          <i
+            class="bi bi-calendar-check-fill"
+            style="font-size: 28px; color: #10b981"
+          ></i>
+          <h5>Mis Reservas</h5>
+          <p>Revisa el estado de tus reservas, cancélalas si es necesario.</p>
+          <a
+            th:href="@{/cliente/mis-reservas}"
+            class="btn btn-outline-primary btn-sm action-btn"
+            >Ver Reservas</a
+          >
+        </div>
+
+        <div class="action-card">
+          <i
+            class="bi bi-info-circle-fill"
+            style="font-size: 28px; color: #f59e0b"
+          ></i>
+          <h5>Información y Ayuda</h5>
+          <p>Ver políticas, contacto y detalles sobre alquiler.</p>
+          <a
+            th:href="@{/cliente/dashboard}"
+            class="btn btn-outline-primary btn-sm action-btn"
+            >Más Info</a
+          >
+        </div>
+      </div>
+
+      <div
+        style="margin-top: 22px"
+        class="card p-3 bg-white border-0 shadow-sm"
+      >
+        <h6 style="margin: 0 0 8px">Acciones Rápidas</h6>
+        <div class="d-flex gap-2 flex-wrap">
+          <a th:href="@{/cliente/vehiculos}" class="btn btn-sm btn-secondary"
+            >Reservar vehículo</a
+          >
+          <a
+            th:href="@{/cliente/mis-reservas}"
+            class="btn btn-sm btn-outline-secondary"
+            >Ver mis reservas</a
+          >
+          <a th:href="@{/perfil/editar}" class="btn btn-sm btn-outline-secondary"
+            ><i class="bi bi-person-gear me-1"></i>Editar perfil</a
+          >
+        </div>
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          margin: 28px 0;
+          color: #9aa7c7;
+          font-size: 0.9rem;
+        "
+      >
+        © 2025 Sistema de Renta de Vehículos
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
