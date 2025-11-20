@@ -260,8 +260,11 @@
                   id="dni"
                   placeholder="12345678"
                   required
-                  maxlength="50"
+                  pattern="[0-9]{1,9}"
+                  maxlength="9"
+                  title="El DNI debe contener solo números y un máximo de 9 dígitos"
                 />
+                <small class="form-text text-muted">Máximo 9 dígitos numéricos</small>
                 <div
                   class="invalid-feedback"
                   th:if="${#fields.hasErrors('dni')}"
@@ -285,8 +288,10 @@
                   id="telefono"
                   placeholder="+54 11 1234-5678"
                   required
-                  maxlength="50"
+                  maxlength="15"
+                  title="El teléfono no puede tener más de 15 caracteres"
                 />
+                <small class="form-text text-muted">Máximo 15 caracteres</small>
                 <div
                   class="invalid-feedback"
                   th:if="${#fields.hasErrors('telefono')}"

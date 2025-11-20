@@ -46,6 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.debug("Usuario encontrado: {} con rol: {}", email, usuario.getRol().getNombre());
 
         // Convertir a UserDetails de Spring Security
+        //Aca se convierten los datos de la bd al formato que usa spring security para validar usuarios
         return User.builder()
             .username(usuario.getEmail())
             .password(usuario.getContra())

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * DTO para actualización de perfil de usuario.
- * El email NO se puede cambiar (es el identificador único).
+ * El email NO se puede cambiar
  */
 @Data
 @NoArgsConstructor

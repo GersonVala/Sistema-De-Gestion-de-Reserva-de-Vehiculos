@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centro de Ayuda - Sistema de Renta de Vehículos</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-1: #5563f6;
+        --primary-2: #7b4de2;
+        --muted: #6b7280;
+        --success: #10b981;
+      }
+
+      body {
+        font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto;
+        background: linear-gradient(180deg, #f7fbff 0%, #f0f5ff 100%);
+        margin: 0;
+        padding: 2.5rem 1rem;
+      }
+
+      .help-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .header-card {
+        background: linear-gradient(90deg, var(--success), #059669);
+        color: #fff;
+        border-radius: 14px;
+        padding: 28px 32px;
+        box-shadow: 0 18px 40px rgba(16, 185, 129, 0.15);
+        margin-bottom: 24px;
+      }
+
+      .header-card h1 {
+        margin: 0 0 8px;
+        font-weight: 700;
+        font-size: 1.8rem;
+      }
+
+      .header-card p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 1rem;
+      }
+
+      .search-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(13, 18, 43, 0.06);
+        margin-bottom: 24px;
+      }
+
+      .search-box input {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--primary-1);
+        box-shadow: 0 0 0 3px rgba(85, 99, 246, 0.1);
+      }
+
+      .content-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 8px 24px rgba(13, 18, 43, 0.06);
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #0f172a;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #eef2ff;
+      }
+
+      .section-title i {
+        font-size: 28px;
+        color: var(--primary-1);
+      }
+
+      .accordion-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px !important;
+        margin-bottom: 12px;
+        overflow: hidden;
+      }
+
+      .accordion-button {
+        font-weight: 600;
+        color: #0f172a;
+        background: #f8fafc;
+        padding: 16px 20px;
+      }
+
+      .accordion-button:not(.collapsed) {
+        background: linear-gradient(90deg, #f0f9ff, #e0f2fe);
+        color: var(--primary-1);
+      }
+
+      .accordion-button:focus {
+        box-shadow: none;
+        border-color: var(--primary-1);
+      }
+
+      .accordion-body {
+        padding: 20px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .quick-link-card {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid #fcd34d;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.2s ease;
+      }
+
+      .quick-link-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .quick-link-card i {
+        font-size: 42px;
+        color: #92400e;
+        margin-bottom: 12px;
+      }
+
+      .quick-link-card h5 {
+        font-weight: 700;
+        color: #92400e;
+        margin-bottom: 8px;
+      }
+
+      .quick-link-card p {
+        color: #78350f;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+      }
+
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        color: var(--primary-1);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .btn-back:hover {
+        background: var(--primary-1);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .header-card h1 {
+          font-size: 1.5rem;
+        }
+
+        .content-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="help-container">
+      <!-- Header -->
+      <div class="header-card">
+        <h1><i class="bi bi-question-circle-fill me-2"></i>Centro de Ayuda</h1>
+        <p>
+          Encuentra respuestas rápidas a las preguntas más frecuentes sobre
+          nuestro servicio de renta de vehículos
+        </p>
+      </div>
+
+      <!-- Search Box -->
+      <div class="search-box">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control border-0"
+            id="searchInput"
+            placeholder="Busca tu pregunta aquí..."
+            onkeyup="filterQuestions()"
+          />
+        </div>
+      </div>
+
+      <!-- Preguntas Frecuentes - Reservas -->
+      <div class="content-card">
+        <div class="section-title">
+          <i class="bi bi-calendar-check-fill"></i>
+          <span>Reservas</span>
+        </div>
+
+        <div class="accordion" id="accordionReservas">
+          <!-- Pregunta 1 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq1"
+              >
+                ¿Cómo puedo hacer una reserva?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#accordionReservas">
+              <div class="accordion-body">
+                Para hacer una reserva, ve a la sección <strong>"Buscar Vehículos"</strong> en tu dashboard.
+                Selecciona la fecha de inicio, fecha de fin y sucursal de retiro. El sistema te mostrará
+                todos los vehículos disponibles para esas fechas. Elige el vehículo que prefieras, completa
+                el formulario con la información de pago y sucursal de devolución, y confirma tu reserva.
+                Recibirás una notificación con el estado de tu reserva.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 2 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq2"
+              >
+                ¿Cuánto tiempo tarda en confirmarse mi reserva?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#accordionReservas">
+              <div class="accordion-body">
+                Una vez que creas una reserva, esta queda en estado <strong>PENDIENTE</strong>. Nuestro
+                equipo de vendedores revisa la reserva en un plazo de 24 horas y la acepta o rechaza según
+                disponibilidad. Recibirás una notificación por email cuando tu reserva cambie de estado.
+                Puedes verificar el estado en tiempo real en la sección <strong>"Mis Reservas"</strong>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 3 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq3"
+              >
+                ¿Puedo modificar o cancelar mi reserva?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#accordionReservas">
+              <div class="accordion-body">
+                Actualmente <strong>no es posible modificar una reserva</strong> existente. Si necesitas
+                cambiar las fechas, el vehículo o cualquier otro dato, debes cancelar la reserva actual
+                y crear una nueva. Para cancelar, ve a <strong>"Mis Reservas"</strong>, busca la reserva
+                que deseas cancelar y haz clic en el botón <strong>"Cancelar Reserva"</strong>. No se
+                aplican cargos por cancelación.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 4 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq4"
+              >
+                ¿Qué significa cada estado de reserva?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#accordionReservas">
+              <div class="accordion-body">
+                <strong>PENDIENTE:</strong> Tu reserva está en revisión. El vehículo está reservado
+                para ti mientras se confirma.<br><br>
+                <strong>ACEPTADA:</strong> ¡Tu reserva fue confirmada! Puedes retirar el vehículo
+                en la fecha y sucursal indicadas. Recuerda llevar tu documentación.<br><br>
+                <strong>CANCELADA:</strong> La reserva fue cancelada por ti o por el vendedor.
+                El vehículo vuelve a estar disponible para otros clientes.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preguntas Frecuentes - Vehículos -->
+      <div class="content-card">
+        <div class="section-title">
+          <i class="bi bi-car-front-fill"></i>
+          <span>Vehículos</span>
+        </div>
+
+        <div class="accordion" id="accordionVehiculos">
+          <!-- Pregunta 5 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq5"
+              >
+                ¿Qué tipos de vehículos están disponibles?
+              </button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#accordionVehiculos">
+              <div class="accordion-body">
+                Contamos con una amplia variedad de vehículos: <strong>Sedanes</strong> (ideales para
+                ciudad), <strong>SUVs</strong> (perfectas para familias), <strong>Hatchbacks</strong>
+                (compactos y económicos), <strong>Camionetas</strong> (para carga y trabajo),
+                <strong>Coupés</strong> (deportivos), y <strong>Convertibles</strong> (para disfrutar
+                del camino). Cada vehículo incluye información detallada sobre motor, combustible,
+                cantidad de puertas y precio diario.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 6 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq6"
+              >
+                ¿Puedo devolver el vehículo en una sucursal diferente?
+              </button>
+            </h2>
+            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#accordionVehiculos">
+              <div class="accordion-body">
+                <strong>¡Sí!</strong> Nuestro sistema permite seleccionar una sucursal de retiro y
+                una sucursal de devolución diferente. Esto es ideal si estás realizando un viaje de
+                un punto a otro. Al crear la reserva, simplemente selecciona la sucursal de retiro
+                y la sucursal de devolución según tu itinerario. No hay cargos adicionales por este
+                servicio.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 7 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq7"
+              >
+                ¿Qué estados puede tener un vehículo?
+              </button>
+            </h2>
+            <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#accordionVehiculos">
+              <div class="accordion-body">
+                Los vehículos pueden tener los siguientes estados:<br><br>
+                <strong>DISPONIBLE:</strong> El vehículo está listo para ser reservado.<br>
+                <strong>RESERVADO:</strong> Hay una reserva pendiente o aceptada para este vehículo.<br>
+                <strong>ENTREGADO:</strong> El vehículo fue entregado a un cliente.<br>
+                <strong>DESCOMPUESTO:</strong> El vehículo está fuera de servicio temporalmente por
+                mantenimiento o reparación.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preguntas Frecuentes - Pagos -->
+      <div class="content-card">
+        <div class="section-title">
+          <i class="bi bi-credit-card-fill"></i>
+          <span>Pagos y Precios</span>
+        </div>
+
+        <div class="accordion" id="accordionPagos">
+          <!-- Pregunta 8 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq8"
+              >
+                ¿Cómo se calcula el precio de mi reserva?
+              </button>
+            </h2>
+            <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#accordionPagos">
+              <div class="accordion-body">
+                El precio se calcula automáticamente multiplicando el <strong>precio diario del
+                vehículo</strong> por la <strong>cantidad de días</strong> de tu reserva. Por ejemplo,
+                si rentas un vehículo de $50 por día durante 5 días, el total será $250. El precio
+                final se muestra antes de confirmar la reserva para que puedas revisarlo.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 9 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq9"
+              >
+                ¿Qué métodos de pago aceptan?
+              </button>
+            </h2>
+            <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#accordionPagos">
+              <div class="accordion-body">
+                Aceptamos los siguientes métodos de pago:<br><br>
+                <strong>TARJETA:</strong> Tarjetas de crédito y débito (Visa, Mastercard, American Express)<br>
+                <strong>TRANSFERENCIA:</strong> Transferencia bancaria (debes presentar el comprobante)<br>
+                <strong>EFECTIVO:</strong> Pago en efectivo al momento de retirar el vehículo en la sucursal<br><br>
+                Selecciona tu método preferido al crear la reserva.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 10 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq10"
+              >
+                ¿Hay cargos ocultos o adicionales?
+              </button>
+            </h2>
+            <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#accordionPagos">
+              <div class="accordion-body">
+                <strong>No.</strong> El precio que ves al confirmar la reserva es el precio final
+                que pagarás. No hay cargos ocultos. Los únicos cargos adicionales que podrían aplicarse
+                son: combustible faltante al devolver el vehículo, devolución tardía (más de 1 hora de
+                tolerancia), o daños al vehículo. Todos estos conceptos están detallados en nuestras
+                políticas.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preguntas Frecuentes - Cuenta -->
+      <div class="content-card">
+        <div class="section-title">
+          <i class="bi bi-person-circle"></i>
+          <span>Mi Cuenta</span>
+        </div>
+
+        <div class="accordion" id="accordionCuenta">
+          <!-- Pregunta 11 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq11"
+              >
+                ¿Cómo puedo ver mis reservas anteriores?
+              </button>
+            </h2>
+            <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#accordionCuenta">
+              <div class="accordion-body">
+                En tu dashboard de cliente, haz clic en <strong>"Mis Reservas"</strong>. Allí verás
+                un listado completo de todas tus reservas: pasadas, actuales y futuras. Cada reserva
+                muestra la fecha, vehículo, sucursales, precio y estado actual. Puedes filtrar y buscar
+                reservas específicas.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 12 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq12"
+              >
+                ¿Puedo actualizar mi información personal?
+              </button>
+            </h2>
+            <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#accordionCuenta">
+              <div class="accordion-body">
+                Sí, puedes actualizar tu información desde la opción <strong>"Editar perfil"</strong>
+                en tu dashboard. Puedes modificar tu nombre, apellido, teléfono y dirección. El email
+                y DNI no pueden ser modificados por razones de seguridad. Si necesitas cambiar estos
+                datos, contacta a nuestro soporte.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pregunta 13 -->
+          <div class="accordion-item faq-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq13"
+              >
+                ¿Olvidé mi contraseña, qué hago?
+              </button>
+            </h2>
+            <div id="faq13" class="accordion-collapse collapse" data-bs-parent="#accordionCuenta">
+              <div class="accordion-body">
+                En la página de login, haz clic en <strong>"¿Olvidaste tu contraseña?"</strong>.
+                Ingresa tu email registrado y recibirás un enlace para restablecer tu contraseña.
+                Si no recibes el email, verifica tu carpeta de spam o contacta a soporte.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enlaces Rápidos -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="quick-link-card">
+            <i class="bi bi-telephone-fill"></i>
+            <h5>Llámanos</h5>
+            <p>Atención 24/7</p>
+            <strong style="color: #92400e;">0800-555-AUTO</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card">
+            <i class="bi bi-envelope-fill"></i>
+            <h5>Escríbenos</h5>
+            <p>Respuesta en 24hs</p>
+            <strong style="color: #92400e;">soporte@rentavehiculos.com</strong>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card">
+            <i class="bi bi-info-circle-fill"></i>
+            <h5>Políticas</h5>
+            <p>Lee nuestros términos</p>
+            <a th:href="@{/cliente/informacion}" class="btn btn-sm btn-warning mt-2">
+              Ver Información
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Navegación -->
+      <div class="d-flex gap-3 flex-wrap">
+        <a th:href="@{/cliente/dashboard}" class="btn-back">
+          <i class="bi bi-arrow-left"></i>
+          Volver al Dashboard
+        </a>
+        <a th:href="@{/cliente/informacion}" class="btn btn-outline-primary">
+          <i class="bi bi-info-circle me-2"></i>
+          Ver Políticas
+        </a>
+        <a th:href="@{/cliente/vehiculos}" class="btn btn-primary">
+          <i class="bi bi-car-front-fill me-2"></i>
+          Buscar Vehículos
+        </a>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          text-align: center;
+          margin-top: 32px;
+          color: #9aa7c7;
+          font-size: 0.9rem;
+        "
+      >
+        <p>¿No encontraste lo que buscabas? Contáctanos directamente.</p>
+        <p style="margin: 0;">
+          © 2025 Sistema de Renta de Vehículos - Centro de Ayuda
+        </p>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Search Filter Script -->
+    <script>
+      function filterQuestions() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const items = document.getElementsByClassName('faq-item');
+
+        for (let i = 0; i < items.length; i++) {
+          const button = items[i].getElementsByClassName('accordion-button')[0];
+          const body = items[i].getElementsByClassName('accordion-body')[0];
+          const textValue = button.textContent + ' ' + body.textContent;
+
+          if (textValue.toLowerCase().indexOf(filter) > -1) {
+            items[i].style.display = '';
+          } else {
+            items[i].style.display = 'none';
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -68,6 +68,32 @@ public class ClienteController {
     }
 
     /**
+     * Página de información y políticas.
+     * GET /cliente/informacion
+     */
+    @GetMapping("/informacion")
+    public String informacion(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+
+        model.addAttribute("usuario", usuario);
+        return "cliente/informacion";
+    }
+
+    /**
+     * Página de ayuda.
+     * GET /cliente/ayuda
+     */
+    @GetMapping("/ayuda")
+    public String ayuda(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+
+        model.addAttribute("usuario", usuario);
+        return "cliente/ayuda";
+    }
+
+    /**
      * Página de búsqueda de vehículos.
      * GET /cliente/vehiculos
      */

@@ -2,6 +2,7 @@ package ProyectoRentaDeAutos.RentaDeAutos.dto.request;
 
 import ProyectoRentaDeAutos.RentaDeAutos.models.enums.MetodoPago;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,12 +30,12 @@ public class ReservaRequestDTO {
     private Long sucursalDevolucionId;
 
     @NotNull(message = "La fecha de inicio es obligatoria")
-    @Future(message = "La fecha de inicio debe ser futura")
+    @FutureOrPresent(message = "La fecha de inicio debe ser futura o presente")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaInicio;
 
     @NotNull(message = "La fecha de fin es obligatoria")
-    @Future(message = "La fecha de fin debe ser futura")
+    @FutureOrPresent(message = "La fecha de fin debe ser futura o presente")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fechaFin;
 

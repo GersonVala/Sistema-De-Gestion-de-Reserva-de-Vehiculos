@@ -3,6 +3,7 @@ package ProyectoRentaDeAutos.RentaDeAutos.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,11 +40,13 @@ public class Usuario {
     private String contra;
 
     @NotBlank(message = "El DNI es obligatorio")
-    @Column(name = "dni", nullable = false, unique = true, length = 50)
+    @Pattern(regexp = "^[0-9]{1,9}$", message = "El DNI debe contener solo números y un máximo de 9 dígitos")
+    @Column(name = "dni", nullable = false, unique = true, length = 9)
     private String dni;
 
     @NotBlank(message = "El teléfono es obligatorio")
-    @Column(name = "telefono", nullable = false, length = 50)
+    @Size(max = 15, message = "El teléfono no puede tener más de 15 caracteres")
+    @Column(name = "telefono", nullable = false, length = 15)
     private String telefono;
 
     @NotBlank(message = "La dirección es obligatoria")
