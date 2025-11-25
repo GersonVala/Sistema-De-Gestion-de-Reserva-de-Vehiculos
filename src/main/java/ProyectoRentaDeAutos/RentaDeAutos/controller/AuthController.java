@@ -5,6 +5,9 @@ import ProyectoRentaDeAutos.RentaDeAutos.exception.BusinessException;
 import ProyectoRentaDeAutos.RentaDeAutos.models.Usuario;
 import ProyectoRentaDeAutos.RentaDeAutos.service.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,10 @@ import jakarta.validation.Valid;
 /**
  * Controlador para autenticación y registro de usuarios.
  * Maneja las rutas públicas de /auth/*
+ *
+ * SEGURIDAD MEJORADA:
+ * - Previene acceso a login/register cuando hay sesión activa
+ * - Redirige automáticamente al dashboard si el usuario ya está autenticado
  */
 @Controller
 @RequestMapping("/auth")
@@ -34,18 +41,33 @@ public class AuthController {
     /**
      * Muestra la página de login.
      * GET /auth/login
+     *
+     * SEGURIDAD: Si el usuario ya está autenticado, redirige al index (/).
+     * Esto previene el problema de "volver al login" con sesión activa.
      */
     @GetMapping("/login")
     public String mostrarLogin() {
+        // Verificar si hay un usuario autenticado
+        if (isAuthenticated()) {
+            log.debug("Usuario ya autenticado intentando acceder a login. Redirigiendo al index.");
+            return "redirect:/";
+        }
         return "auth/login";
     }
 
     /**
      * Muestra la página de registro.
      * GET /auth/register
+     *
+     * SEGURIDAD: Si el usuario ya está autenticado, redirige al index (/).
      */
     @GetMapping("/register")
     public String mostrarRegistro(Model model) {
+        // Verificar si hay un usuario autenticado
+        if (isAuthenticated()) {
+            log.debug("Usuario ya autenticado intentando acceder a registro. Redirigiendo al index.");
+            return "redirect:/";
+        }
         model.addAttribute("usuarioDTO", new UsuarioRegistroDTO());
         return "auth/register";
     }
@@ -115,5 +137,24 @@ public class AuthController {
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "auth/access-denied";
+    }
+
+    // ==================== MÉTODOS DE UTILIDAD ====================
+
+    /**
+     * Verifica si hay un usuario autenticado en la sesión actual.
+     *
+     * IMPORTANTE: Usa AnonymousAuthenticationToken para detectar correctamente
+     * si el usuario es anónimo o está realmente autenticado.
+     *
+     * @return true si hay un usuario REAL autenticado, false si es anónimo o null
+     */
+    private boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Verificar que la autenticación exista, esté autenticada Y NO sea un usuario anónimo
+        return authentication != null
+            && authentication.isAuthenticated()
+            && !(authentication instanceof AnonymousAuthenticationToken);
     }
 }

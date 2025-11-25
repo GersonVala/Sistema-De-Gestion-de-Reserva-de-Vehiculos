@@ -205,7 +205,7 @@
                                 <img th:src="${vehiculo.imagenUrl}"
                                      th:alt="${vehiculo.marca + ' ' + vehiculo.modelo}"
                                      class="vehicle-image"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     >
                                 <div class="vehicle-image-placeholder" style="display: none;">
                                     <i class="bi bi-car-front"></i>
                                 </div>
@@ -307,7 +307,7 @@
                                           style="flex: 1;">
                                         <button type="submit"
                                                 class="btn btn-danger btn-sm w-100"
-                                                onclick="return confirm('¿Está seguro de eliminar este vehículo?')">
+                                                >
                                             <i class="bi bi-trash me-1"></i>
                                             Eliminar
                                         </button>

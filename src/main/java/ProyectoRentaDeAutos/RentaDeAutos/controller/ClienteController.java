@@ -68,6 +68,19 @@ public class ClienteController {
     }
 
     /**
+     * Página de información y ayuda.
+     * GET /cliente/info
+     */
+    @GetMapping("/info")
+    public String informacionYAyuda(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioService.obtenerPorEmail(email);
+
+        model.addAttribute("usuario", usuario);
+        return "cliente/info";
+    }
+
+    /**
      * Página de búsqueda de vehículos.
      * GET /cliente/vehiculos
      */

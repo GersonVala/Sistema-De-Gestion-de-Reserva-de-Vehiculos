@@ -2,6 +2,7 @@ package ProyectoRentaDeAutos.RentaDeAutos.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,11 +38,11 @@ public class UsuarioRegistroDTO {
     private String confirmPassword;
 
     @NotBlank(message = "El DNI es obligatorio")
-    @Size(max = 50, message = "El DNI no puede tener más de 50 caracteres")
+    @Pattern(regexp = "\\d{7,10}", message = "El DNI debe contener entre 7 y 10 dígitos numéricos")
     private String dni;
 
     @NotBlank(message = "El teléfono es obligatorio")
-    @Size(max = 50, message = "El teléfono no puede tener más de 50 caracteres")
+    @Pattern(regexp = "\\d{7,15}", message = "El teléfono debe contener entre 7 y 15 dígitos numéricos")
     private String telefono;
 
     @NotBlank(message = "La dirección es obligatoria")

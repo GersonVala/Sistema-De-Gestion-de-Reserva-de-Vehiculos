@@ -32,18 +32,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Cargando usuario por email: {}", email);
+        log.debug("Intento de autenticación para email: {}", email);
 
         // Buscar usuario por email
         Usuario usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
+            .orElseThrow(() -> {
+                log.warn("Intento de login con email no registrado: {}", email);
+                // SEGURIDAD: mensaje genérico para evitar enumeración de usuarios
+                return new UsernameNotFoundException("Credenciales inválidas");
+            });
 
         // Validar que el usuario esté activo
         if (!usuario.getEstado()) {
-            throw new UsernameNotFoundException("Usuario desactivado: " + email);
+            log.warn("Intento de login con usuario desactivado: {}", email);
+            // SEGURIDAD: mensaje genérico para evitar revelar si el usuario existe
+            throw new UsernameNotFoundException("Credenciales inválidas");
         }
 
-        log.debug("Usuario encontrado: {} con rol: {}", email, usuario.getRol().getNombre());
+        log.debug("Usuario autenticado exitosamente: {} con rol: {}", email, usuario.getRol().getNombre());
 
         // Convertir a UserDetails de Spring Security
         return User.builder()

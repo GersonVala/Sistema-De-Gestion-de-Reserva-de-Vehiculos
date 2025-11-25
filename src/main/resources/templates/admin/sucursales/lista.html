@@ -145,7 +145,7 @@
                                 <img th:src="${sucursal.imagenUrl}"
                                      th:alt="${sucursal.nombre}"
                                      class="sucursal-image"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     >
                                 <div class="sucursal-image-placeholder" style="display: none;">
                                     <i class="bi bi-building"></i>
                                 </div>
@@ -195,7 +195,7 @@
                                               style="flex: 1;">
                                             <button type="submit"
                                                     class="btn btn-danger btn-sm w-100"
-                                                    onclick="return confirm('¿Está seguro de eliminar esta sucursal?')">
+                                                    >
                                                 <i class="bi bi-trash me-1"></i>
                                                 Eliminar
                                             </button>
@@ -208,7 +208,7 @@
                                           method="post">
                                         <button type="submit"
                                                 class="btn btn-warning btn-sm w-100"
-                                                onclick="return confirm('¿Está seguro de desactivar esta sucursal?')">
+                                                >
                                             <i class="bi bi-x-circle me-1"></i>
                                             Desactivar
                                         </button>
