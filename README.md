@@ -1,15 +1,8 @@
 # Sistema de Gestión de Reserva de Vehículos
 
 Aplicación web para gestionar el alquiler de vehículos: administración de flota,
-usuarios con roles y reservas. Desarrollada como **proyecto final grupal** de la
+usuarios con roles y reservas. Desarrollada en grupo como **proyecto final grupal** de la
 materia Programación II en el Técnico Superior en Informática Aplicada (INSPT–UTN).
-
-## Equipo
-
-Proyecto desarrollado en grupo. Commits registrados bajo el usuario:
-- [@GersonVala](https://github.com/GersonVala)
-
-> Si otros integrantes del equipo quieren figurar, pueden abrir un PR o contactar al titular del repo.
 
 ## Objetivo del proyecto
 
