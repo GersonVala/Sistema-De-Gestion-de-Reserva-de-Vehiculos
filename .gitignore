@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Archivos compilados ###
+*.class
+
+### Logs ###
+*.log
+logs/
+
+### Archivos de configuración local (credenciales, entorno) ###
+application-local.properties
+application-local.yml
+*.env
+
+### macOS ###
+.DS_Store
