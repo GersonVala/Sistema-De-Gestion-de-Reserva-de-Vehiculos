@@ -2,7 +2,7 @@
 
 /* ROLES */
 INSERT INTO roles (id_rol, nombre, descripcion) VALUES
-(1, 'ADMINISTRADOR', 'Gestiona sucursales y autos'),
+(1, 'ADMIN', 'Gestiona sucursales y autos'),
 (2, 'VENDEDOR', 'Gestiona reservas'),
 (3, 'CLIENTE', 'Puede reservar');
 
@@ -33,18 +33,19 @@ INSERT INTO sucursales (id_sucursal, nombre, direccion, estado) VALUES
 (3,'Sucursal Sur','Boulevard Sur 789',1);
 
 /* USUARIOS (10: Gerson = ADMIN; varios VENDEDORES y CLIENTES)
-   contraseña = Nombre + '123' según pedido */
+   contraseña = Nombre + '123' (ej: Gerson123), guardada como hash BCrypt
+   porque la app valida con BCryptPasswordEncoder */
 INSERT INTO usuarios (id_usuario, nombre, apellido, email, contra, dni, telefono, direccion, estado, id_rol) VALUES
-(1,'Gerson','Gonzalez','gerson@example.com','Gerson123','DNI0001','111-0001','Av. Admin 1',1,1), -- ADMIN
-(2,'Maria','Perez','maria@example.com','Maria123','DNI0002','111-0002','Calle 2',1,3),
-(3,'Juan','Lopez','juan@example.com','Juan123','DNI0003','111-0003','Calle 3',1,2), -- VENDEDOR
-(4,'Lucia','Martinez','lucia@example.com','Lucia123','DNI0004','111-0004','Calle 4',1,2), -- VENDEDOR
-(5,'Pedro','Ramirez','pedro@example.com','Pedro123','DNI0005','111-0005','Calle 5',1,3),
-(6,'Ana','Torres','ana@example.com','Ana123','DNI0006','111-0006','Calle 6',1,3),
-(7,'Carlos','Diaz','carlos@example.com','Carlos123','DNI0007','111-0007','Calle 7',1,3),
-(8,'Sofia','Gomez','sofia@example.com','Sofia123','DNI0008','111-0008','Calle 8',1,3),
-(9,'Diego','Vega','diego@example.com','Diego123','DNI0009','111-0009','Calle 9',1,2), -- VENDEDOR
-(10,'Marta','Ortiz','marta@example.com','Marta123','DNI0010','111-0010','Calle 10',1,3);
+(1,'Gerson','Gonzalez','gerson@example.com','$2a$10$F55RJg1l2vESx9qeiJyoe.IuozVoNjs7lCMvAH.MST78Ub14Nj2ta','DNI0001','111-0001','Av. Admin 1',1,1), -- ADMIN
+(2,'Maria','Perez','maria@example.com','$2a$10$f5k/cjl/p4tvwxVxud1b3.UpChrbeu5FX09MUXM3sBrLzHyS32Wvi','DNI0002','111-0002','Calle 2',1,3),
+(3,'Juan','Lopez','juan@example.com','$2a$10$NwqiL50WWSHJkccIo6tYTO/68b1.5z9hrD1zuY0FyVmWuM0gK1g7W','DNI0003','111-0003','Calle 3',1,2), -- VENDEDOR
+(4,'Lucia','Martinez','lucia@example.com','$2a$10$CDWwpPEU/alzl7R8ZV1FMegAj3P54LxkIj29DN0mn5Ub5C4U/ezS.','DNI0004','111-0004','Calle 4',1,2), -- VENDEDOR
+(5,'Pedro','Ramirez','pedro@example.com','$2a$10$kgPbAN6aVBY83ww0f9pRVONeaIdC8EKxNv1CY62D.mK4FDjoePyEu','DNI0005','111-0005','Calle 5',1,3),
+(6,'Ana','Torres','ana@example.com','$2a$10$vIBU9Tirf0qEr4aGIdknPujHIa6M.a029AJ0p841qrNgy7XaqiFVm','DNI0006','111-0006','Calle 6',1,3),
+(7,'Carlos','Diaz','carlos@example.com','$2a$10$SZIcBfAsQ3/emX0WQg.hfOEbzQG4DV0dTWlkdeTd2.aWAgQcCYOBW','DNI0007','111-0007','Calle 7',1,3),
+(8,'Sofia','Gomez','sofia@example.com','$2a$10$UzwrVodp0t8YQn8MGCxkyezP/LoBj4edyNsAQCfAXMwcmvtzWemB2','DNI0008','111-0008','Calle 8',1,3),
+(9,'Diego','Vega','diego@example.com','$2a$10$Sc36xTRpL4qtOFKA5k1ynudxkmsRQ3a9vaLwBZWcjmFkxxwsHvII2','DNI0009','111-0009','Calle 9',1,2), -- VENDEDOR
+(10,'Marta','Ortiz','marta@example.com','$2a$10$eTdGOp9.H1/J/TYy3146m.MgHZ.aSLJdyUn1EaxUWqKQfVzXt5oJa','DNI0010','111-0010','Calle 10',1,3);
 
 /* EMPLEADOS: asigno Gerson (admin) + vendedores por sucursal */
 INSERT INTO empleados (id_empleado, id_usuario, id_sucursal, estado) VALUES

@@ -109,7 +109,8 @@ public class SecurityConfig {
                 .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/auth/login?logout=true")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
+                // Debe coincidir con server.servlet.session.cookie.name (application.properties)
+                .deleteCookies("APPSESSIONID")
                 // Limpiar el SecurityContext
                 .clearAuthentication(true)
                 .permitAll()

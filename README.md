@@ -24,7 +24,7 @@ y control de acceso por roles.
 
 ## Funcionalidades
 
-La aplicación tiene tres roles con vistas y rutas separadas: **ADMINISTRADOR**, **VENDEDOR** y **CLIENTE**.
+La aplicación tiene tres roles con vistas y rutas separadas: **ADMIN** (administrador), **VENDEDOR** y **CLIENTE**.
 
 ### Administrador (`/admin/**`)
 - CRUD completo de vehículos (con tipo, motor, imagen, precio diario, sucursal)
@@ -123,17 +123,26 @@ mvnw.cmd spring-boot:run
 
 La aplicación queda disponible en `http://localhost:8080`
 
+**4. Correr los tests (opcional):**
+
+```bash
+./mvnw test
+```
+
+Son tests unitarios que no necesitan MySQL: validan el mapeo de roles de Spring Security
+y que los usuarios de `CargaDeDatos.sql` tengan contraseñas BCrypt y roles válidos.
+
 ### Usuarios de prueba (con datos de CargaDeDatos.sql)
 
 Si cargaste los datos de ejemplo, podés ingresar con:
 
 | Email | Contraseña | Rol |
 |-------|------------|-----|
-| gerson@example.com | `Gerson123` | ADMINISTRADOR |
+| gerson@example.com | `Gerson123` | ADMIN |
 | juan@example.com | `Juan123` | VENDEDOR |
 | maria@example.com | `Maria123` | CLIENTE |
 
-> Las contraseñas en la base de datos de ejemplo están en texto plano. En un flujo real de registro, el sistema hashea con BCrypt automáticamente.
+> En `CargaDeDatos.sql` las contraseñas se guardan hasheadas con BCrypt (la contraseña en texto es `Nombre123`). Si agregás usuarios a mano en la base, también tenés que guardar el hash: la aplicación no acepta contraseñas en texto plano.
 
 ## Documentación
 
